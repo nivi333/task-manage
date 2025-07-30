@@ -149,18 +149,19 @@
   - [x] Last login timestamp
   - [x] Account status (ACTIVE/SUSPENDED/DELETED)
 - [x] Use DTOs and validation annotations for profile data
-- [ ] Implement avatar upload using Spring Boot file upload and storage (local/cloud)
-- [ ] Create user search and listing endpoint (admin only, with pagination/filtering)
-- [ ] Implement user account deletion endpoint (`DELETE /api/v1/users/{id}` - admin only)
+- [x] Implement avatar upload using Spring Boot file upload and storage (local/cloud)
+- [x] Create user search and listing endpoint (admin only, with pagination/filtering)
+- [x] Implement user account deletion endpoint (`DELETE /api/v1/users/{id}` - admin only)
 - [x] Add user activity tracking (last login, audit log)
 
 **[Update July 2025]**
 - Implemented `UserProfileDTO` and `UserProfileUpdateDTO` for secure profile data transfer and validation
-- Added `GET` and `PUT /api/v1/users/profile` endpoints in `UserController`
-- Updated `UserService` with profile and last login logic
-- Added `lastLogin` and `avatarUrl` fields and accessors to `User` entity
-- All profile update fields validated via annotations
-- Project builds and profile management is functional
+- Added `GET`, `PUT`, and `POST /api/v1/users/profile/avatar` endpoints in `UserController`
+- Implemented avatar upload with local storage at `src/main/resources/avatars`
+- Added admin-only endpoints: paginated user search/listing and user deletion
+- Repository and service updated for flexible search, pagination, and deletion
+- All changes committed and pushed to GitHub
+- Project builds and user management is fully functional
 
 **Estimated Time:** 8 hours  
 **Priority:** High  

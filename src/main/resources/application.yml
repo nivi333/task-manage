@@ -7,8 +7,8 @@ spring:
     banner-mode: "console"
   datasource:
     url: jdbc:postgresql://localhost:5432/tasks_manage_dev
-    username: postgres
-    password: postgres
+    username: nivetharamdev
+    password:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
@@ -43,19 +43,6 @@ logging:
 
 server:
   port: 8080
-
-spring:
-  mail:
-    host: localhost
-    port: 1025
-    username: test
-    password: test
-    properties:
-      mail:
-        smtp:
-          auth: false
-          starttls:
-            enable: false
 
 management:
   endpoints:

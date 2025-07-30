@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/tasks_manage_test
-    username: postgres
-    password: postgres
+    username: nivetharamdev
+    password:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:

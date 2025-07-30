@@ -84,13 +84,108 @@ public class UserService {
         return users.map(this::getProfile);
     }
 
+    // ADMIN: Suspend user by id
+    @Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO suspendUser(java.util.UUID id, User actor) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setStatus(com.example.tasksmanage.model.AccountStatus.SUSPENDED);
+        userRepository.save(user);
+        logAudit(user, actor, "SUSPEND", "User suspended by admin");
+        return getProfile(user);
+    }
+
+    // ADMIN: Activate user by id
+    @Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO activateUser(java.util.UUID id, User actor) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setStatus(com.example.tasksmanage.model.AccountStatus.ACTIVE);
+        userRepository.save(user);
+        logAudit(user, actor, "ACTIVATE", "User activated by admin");
+        return getProfile(user);
+    }
+
+    // ADMIN: Restore user by id
+    @Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO restoreUser(java.util.UUID id, User actor) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setStatus(com.example.tasksmanage.model.AccountStatus.ACTIVE);
+        userRepository.save(user);
+        logAudit(user, actor, "RESTORE", "User restored by admin");
+        return getProfile(user);
+    }
+
+    // ADMIN: Bulk suspend
+    @Transactional
+    public void suspendUsers(java.util.List<java.util.UUID> ids, User actor) {
+        for (var id : ids) suspendUser(id, actor);
+    }
+    // ADMIN: Bulk activate
+    @Transactional
+    public void activateUsers(java.util.List<java.util.UUID> ids, User actor) {
+        for (var id : ids) activateUser(id, actor);
+    }
+    // ADMIN: Bulk delete
+    @Transactional
+    public void deleteUsers(java.util.List<java.util.UUID> ids, User actor) {
+        for (var id : ids) deleteUser(id, actor);
+    }
+
     // ADMIN: Delete user by id
     @Transactional
-    public com.example.tasksmanage.dto.UserProfileDTO deleteUser(java.util.UUID id) {
+    public com.example.tasksmanage.dto.UserProfileDTO deleteUser(java.util.UUID id, User actor) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
         com.example.tasksmanage.dto.UserProfileDTO dto = getProfile(user);
         userRepository.delete(user);
+        logAudit(user, actor, "DELETE", "User deleted by admin");
         return dto;
+    }
+
+    // Legacy single-arg delete for compatibility
+    @Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO deleteUser(java.util.UUID id) {
+        return deleteUser(id, null);
+    }
+
+    // ADMIN: Export users (CSV, JSON, XLSX)
+    public java.util.List<com.example.tasksmanage.dto.UserExportDTO> exportUsers() {
+        java.util.List<User> users = userRepository.findAll();
+        java.util.List<com.example.tasksmanage.dto.UserExportDTO> exportList = new java.util.ArrayList<>();
+        for (User user : users) {
+            com.example.tasksmanage.dto.UserExportDTO dto = new com.example.tasksmanage.dto.UserExportDTO();
+            dto.setId(user.getId());
+            dto.setEmail(user.getEmail());
+            dto.setUsername(user.getUsername());
+            dto.setFirstName(user.getFirstName());
+            dto.setLastName(user.getLastName());
+            dto.setStatus(user.getStatus() != null ? user.getStatus().name() : null);
+            dto.setRoles(user.getRoles() != null ? user.getRoles().toString() : null);
+            dto.setCreatedAt(user.getCreatedAt() != null ? user.getCreatedAt().toString() : null);
+            dto.setLastLogin(user.getLastLogin() != null ? user.getLastLogin().toString() : null);
+            exportList.add(dto);
+        }
+        return exportList;
+    }
+
+    // ADMIN: User statistics
+    public java.util.Map<String, Object> getUserStats() {
+        java.util.Map<String, Object> stats = new java.util.HashMap<>();
+        stats.put("total", userRepository.count());
+        stats.put("active", userRepository.countByStatus(com.example.tasksmanage.model.AccountStatus.ACTIVE));
+        stats.put("suspended", userRepository.countByStatus(com.example.tasksmanage.model.AccountStatus.SUSPENDED));
+        stats.put("deleted", userRepository.countByStatus(com.example.tasksmanage.model.AccountStatus.DELETED));
+        stats.put("recentLogins", userRepository.countRecentLogins(java.time.Instant.now().minus(java.time.Duration.ofDays(7))));
+        return stats;
+    }
+
+    // Helper: log audit actions
+    private void logAudit(User user, User actor, String action, String details) {
+        com.example.tasksmanage.model.UserAuditLog log = new com.example.tasksmanage.model.UserAuditLog();
+        log.setUser(user);
+        log.setActor(actor);
+        log.setAction(action);
+        log.setDetails(details);
+        log.setTimestamp(new java.util.Date());
+        userAuditLogRepository.save(log);
     }
 
     @Transactional
@@ -108,9 +203,10 @@ public class UserService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final com.example.tasksmanage.repository.RoleRepository roleRepository;
+    private final com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailVerificationTokenRepository tokenRepository, EmailService emailService, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, PasswordHistoryRepository passwordHistoryRepository, com.example.tasksmanage.repository.RoleRepository roleRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailVerificationTokenRepository tokenRepository, EmailService emailService, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, PasswordHistoryRepository passwordHistoryRepository, com.example.tasksmanage.repository.RoleRepository roleRepository, com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
@@ -120,7 +216,9 @@ public class UserService {
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.passwordHistoryRepository = passwordHistoryRepository;
         this.roleRepository = roleRepository;
+        this.userAuditLogRepository = userAuditLogRepository;
     }
+
 
     @Transactional
     public User registerUser(UserRegistrationRequest req) {
