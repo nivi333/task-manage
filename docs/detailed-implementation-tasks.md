@@ -15,13 +15,13 @@
 **Dependencies:** None
 
 ### Task 1.2: Database Setup
-- [ ] Choose and configure database (PostgreSQL recommended) via Spring Data JPA
-- [ ] Set up datasource configuration in `application.yml`
-- [ ] Configure JPA/Hibernate for ORM and connection pooling
-- [ ] Set up database migration tool (Flyway or Liquibase)
-- [ ] Create initial JPA entities for:
-  - [ ] User, Project, Task, Team, Comment
-  - [ ] Attachment, Notification, ActivityLog
+- [x] Choose and configure database (PostgreSQL recommended) via Spring Data JPA
+- [x] Set up datasource configuration in `application.yml`
+- [x] Configure JPA/Hibernate for ORM and connection pooling
+- [x] Set up database migration tool (Flyway or Liquibase)
+- [x] Create initial JPA entities for:
+  - [x] User, Project, Task, Team, Comment
+  - [x] Attachment, Notification, ActivityLog
 - [ ] Define JPA relationships:
   - [ ] User → Task (one-to-many)
   - [ ] Project → Task (one-to-many)
