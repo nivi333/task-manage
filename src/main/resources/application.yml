@@ -22,6 +22,17 @@ spring:
     locations: classpath:db/migration
     baseline-on-migrate: true
     schemas: public
+  mail:
+    host: localhost
+    port: 1025
+    username: test
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
 
 logging:
   level:
@@ -32,3 +43,25 @@ logging:
 
 server:
   port: 8080
+
+spring:
+  mail:
+    host: localhost
+    port: 1025
+    username: test
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: always

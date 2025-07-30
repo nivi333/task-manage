@@ -46,7 +46,19 @@ public class Task {
     @Column(nullable = false)
     private Date updatedAt;
 
-    // Relationships: comments, attachments, sub-tasks, etc. (to be added)
+    // Relationships
+    @OneToMany(mappedBy = "task")
+    private Set<Comment> comments = new HashSet<>();
+
+    @OneToMany(mappedBy = "task")
+    private Set<Attachment> attachments = new HashSet<>();
+
+    @OneToMany(mappedBy = "parentTask")
+    private Set<Task> subTasks = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "parent_task_id")
+    private Task parentTask;
 
     // Getters and setters omitted for brevity
 }

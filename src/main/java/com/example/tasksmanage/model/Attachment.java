@@ -23,10 +23,5 @@ public class Attachment {
     @JoinColumn(name = "uploaded_by")
     private User uploadedBy;
 
-    @Column(nullable = false, updatable = false)
-    private Date createdAt;
-    @Column(nullable = false)
-    private Date updatedAt;
-
     // Getters and setters omitted for brevity
 }

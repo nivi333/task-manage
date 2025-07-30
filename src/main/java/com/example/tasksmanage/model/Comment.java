@@ -28,10 +28,5 @@ public class Comment {
     @OneToMany(mappedBy = "parentComment")
     private Set<Comment> replies = new HashSet<>();
 
-    @Column(nullable = false, updatable = false)
-    private Date createdAt;
-    @Column(nullable = false)
-    private Date updatedAt;
-
     // Getters and setters omitted for brevity
 }

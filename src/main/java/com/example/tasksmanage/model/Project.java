@@ -28,8 +28,12 @@ public class Project {
     @ManyToMany
     @JoinTable(name = "project_team_members",
         joinColumns = @JoinColumn(name = "project_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id"))
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
     private Set<User> teamMembers = new HashSet<>();
+
+    @OneToMany(mappedBy = "project")
+    private Set<Task> tasks = new HashSet<>();
 
     @Column(nullable = false, updatable = false)
     private Date createdAt;

@@ -22,10 +22,5 @@ public class Notification {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false, updatable = false)
-    private Date createdAt;
-    @Column(nullable = false)
-    private Date updatedAt;
-
     // Getters and setters omitted for brevity
 }

@@ -19,8 +19,5 @@ public class ActivityLog {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(nullable = false, updatable = false)
-    private Date createdAt;
-
     // Getters and setters omitted for brevity
 }

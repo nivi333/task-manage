@@ -25,10 +25,5 @@ public class Team {
     @OneToMany(mappedBy = "parentTeam")
     private Set<Team> childTeams = new HashSet<>();
 
-    @Column(nullable = false, updatable = false)
-    private Date createdAt;
-    @Column(nullable = false)
-    private Date updatedAt;
-
     // Getters and setters omitted for brevity
 }
