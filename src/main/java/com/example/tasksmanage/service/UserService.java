@@ -28,6 +28,77 @@ import jakarta.mail.MessagingException;
 
 @Service
 public class UserService {
+
+    // ... existing fields and constructor
+
+    public com.example.tasksmanage.dto.UserProfileDTO getProfile(User user) {
+        com.example.tasksmanage.dto.UserProfileDTO dto = new com.example.tasksmanage.dto.UserProfileDTO();
+        dto.setId(user.getId());
+        dto.setEmail(user.getEmail());
+        dto.setUsername(user.getUsername());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setAvatarUrl(user.getAvatarUrl());
+        dto.setRoles(user.getRoles());
+        dto.setStatus(user.getStatus());
+        dto.setCreatedAt(user.getCreatedAt());
+        dto.setUpdatedAt(user.getUpdatedAt());
+        dto.setLastLogin(user.getLastLogin());
+        return dto;
+    }
+
+    @Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO updateProfile(User user, com.example.tasksmanage.dto.UserProfileUpdateDTO req) {
+        user.setFirstName(req.getFirstName());
+        user.setLastName(req.getLastName());
+        user.setAvatarUrl(req.getAvatarUrl());
+        user.setUpdatedAt(new java.util.Date());
+        userRepository.save(user);
+        return getProfile(user);
+    }
+
+    @Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO uploadAvatar(User user, org.springframework.web.multipart.MultipartFile file) throws java.io.IOException {
+        String avatarsDir = "src/main/resources/avatars/";
+        java.nio.file.Files.createDirectories(java.nio.file.Paths.get(avatarsDir));
+        String ext = org.springframework.util.StringUtils.getFilenameExtension(file.getOriginalFilename());
+        String filename = user.getId().toString() + "_" + System.currentTimeMillis() + (ext != null ? "." + ext : "");
+        java.nio.file.Path dest = java.nio.file.Paths.get(avatarsDir + filename);
+        file.transferTo(dest);
+        user.setAvatarUrl("/avatars/" + filename);
+        user.setUpdatedAt(new java.util.Date());
+        userRepository.save(user);
+        return getProfile(user);
+    }
+
+    // ADMIN: List users with pagination and optional search
+    public org.springframework.data.domain.Page<com.example.tasksmanage.dto.UserProfileDTO> listUsers(int page, int size, String search) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by("createdAt").descending());
+        org.springframework.data.domain.Page<User> users;
+        if (search != null && !search.isBlank()) {
+            users = userRepository.findByEmailContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
+                search, search, search, search, pageable);
+        } else {
+            users = userRepository.findAll(pageable);
+        }
+        return users.map(this::getProfile);
+    }
+
+    // ADMIN: Delete user by id
+    @Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO deleteUser(java.util.UUID id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        com.example.tasksmanage.dto.UserProfileDTO dto = getProfile(user);
+        userRepository.delete(user);
+        return dto;
+    }
+
+    @Transactional
+    public void updateLastLogin(User user) {
+        user.setLastLogin(new java.util.Date());
+        userRepository.save(user);
+    }
+
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailVerificationTokenRepository tokenRepository;
@@ -36,9 +107,10 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordHistoryRepository passwordHistoryRepository;
+    private final com.example.tasksmanage.repository.RoleRepository roleRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailVerificationTokenRepository tokenRepository, EmailService emailService, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, PasswordHistoryRepository passwordHistoryRepository) {
+    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailVerificationTokenRepository tokenRepository, EmailService emailService, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, PasswordHistoryRepository passwordHistoryRepository, com.example.tasksmanage.repository.RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
@@ -47,6 +119,7 @@ public class UserService {
         this.refreshTokenRepository = refreshTokenRepository;
         this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.passwordHistoryRepository = passwordHistoryRepository;
+        this.roleRepository = roleRepository;
     }
 
     @Transactional
@@ -63,7 +136,10 @@ public class UserService {
         user.setFirstName(req.getFirstName());
         user.setLastName(req.getLastName());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
-        user.setRole("USER");
+        // Assign default role
+        var defaultRole = roleRepository.findByName("USER")
+                .orElseThrow(() -> new IllegalStateException("Default role USER not found"));
+        user.setRoles(new java.util.HashSet<>(java.util.Collections.singleton(defaultRole)));
         user.setStatus(AccountStatus.ACTIVE);
         user.setCreatedAt(new java.util.Date());
         user.setUpdatedAt(new java.util.Date());
@@ -101,7 +177,7 @@ public class UserService {
         // Optionally: check if email is verified
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId().toString());
-        claims.put("role", user.getRole());
+        claims.put("roles", user.getRoles().stream().map(r -> r.getName()).toList());
         String jwt = jwtUtil.generateToken(user.getUsername(), claims);
         String refreshTokenValue = UUID.randomUUID().toString();
         RefreshToken refreshToken = new RefreshToken();
@@ -125,7 +201,7 @@ public class UserService {
         User user = refreshToken.getUser();
         Map<String, Object> claims = new HashMap<>();
         claims.put("userId", user.getId().toString());
-        claims.put("role", user.getRole());
+        claims.put("roles", user.getRoles().stream().map(r -> r.getName()).toList());
         String jwt = jwtUtil.generateToken(user.getUsername(), claims);
         Map<String, String> tokens = new HashMap<>();
         tokens.put("accessToken", jwt);
@@ -233,6 +309,15 @@ public class UserService {
         verificationToken.setUsed(true);
         tokenRepository.save(verificationToken);
         return "Email verified successfully. You can now log in.";
+    }
+
+    public java.util.Optional<User> findByUsernameOrEmail(String usernameOrEmail) {
+        return userRepository.findByEmail(usernameOrEmail)
+                .or(() -> userRepository.findByUsername(usernameOrEmail));
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
     }
 }
 

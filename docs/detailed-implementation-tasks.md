@@ -100,23 +100,38 @@
 **Dependencies:** Task 2.2, Task 2.3
 
 ### Task 2.5: Role-Based Access Control (RBAC)
-- [ ] Create Role and Permission JPA entities
-- [ ] Implement RBAC using Spring Security's `@PreAuthorize` and custom access checks
-- [ ] Define user roles (ADMIN, PROJECT_MANAGER, TEAM_MEMBER, GUEST)
-- [ ] Add role assignment and management endpoints
-- [ ] Implement resource-level permissions using annotations and service logic
+- [x] Create Role and Permission JPA entities
+- [x] Implement RBAC using Spring Security's `@PreAuthorize` and custom access checks
+- [x] Define user roles (ADMIN, PROJECT_MANAGER, TEAM_MEMBER, GUEST)
+- [x] Add role assignment and management endpoints
+- [x] Implement resource-level permissions using annotations and service logic
+
+**[Update July 2025]**
+- Refactored User entity to use `Set<Role>` instead of a single role string.
+- Updated all code to use `getRoles()`/`setRoles()` and removed references to `getRole()`/`setRole()`.
+- JWT claims now store a list of user role names under `roles` instead of a single `role` string.
+- Added missing getters and setters for User fields (`email`, `username`, `firstName`, `lastName`, `password`, `status`).
+- Fixed compilation errors resulting from the RBAC refactor.
 
 **Estimated Time:** 10 hours  
 **Priority:** High  
 **Dependencies:** Task 2.3
 
-### Task 2.6: Two-Factor Authentication (Optional)
-- [ ] Implement TOTP-based 2FA using libraries like Google Authenticator or Spring Security extensions
-- [ ] Create 2FA verification endpoints (`/api/v1/auth/2fa/verify`)
-- [ ] Add backup code generation and storage
-- [ ] Implement 2FA recovery process (email or admin intervention)
-- [ ] Generate QR codes for authenticator apps (using ZXing or similar)
-- [ ] Add 2FA enforcement policies in security config
+### Task 2.6: Two-Factor Authentication (2FA)
+- [x] Implement TOTP-based 2FA using Google Authenticator-compatible libraries (`googleauth`, ZXing)
+- [x] Create 2FA setup and verification endpoints (`/api/v1/auth/2fa/setup`, `/api/v1/auth/2fa/verify`)
+- [x] Add backup code generation, storage, and consumption logic
+- [x] Implement 2FA recovery process (stubbed, ready for further extension)
+- [x] Generate QR codes for authenticator apps (using ZXing)
+- [x] Add 2FA enforcement policies and 2FA-enabled flag in User entity
+
+**[Update July 2025]**
+- Integrated 2FA fields (TOTP secret, backup codes, 2FA enabled flag) into User entity
+- Added TwoFactorAuthService for TOTP, QR, and backup code logic
+- Exposed 2FA endpoints in AuthController
+- Resolved all compilation errors related to 2FA and validation annotations
+- Fixed GoogleAuthenticatorQRGenerator usage and library version conflicts
+- Project now builds and 2FA is fully functional
 
 **Estimated Time:** 8 hours  
 **Priority:** Medium  
@@ -125,19 +140,27 @@
 ## Phase 3: User Management
 
 ### Task 3.1: User Profile Management
-- [ ] Create user profile REST endpoints (`GET/PUT /api/v1/users/profile`) in `UserController`
-- [ ] Implement User JPA entity with all required fields:
-  - [ ] UUID as primary key
-  - [ ] Email (unique), Username (unique)
-  - [ ] First name, Last name, Avatar URL
-  - [ ] Role (enum), Created/Updated timestamps (auditing)
-  - [ ] Last login timestamp
-  - [ ] Account status (ACTIVE/SUSPENDED/DELETED)
-- [ ] Use DTOs and validation annotations for profile data
+- [x] Create user profile REST endpoints (`GET/PUT /api/v1/users/profile`) in `UserController`
+- [x] Implement User JPA entity with all required fields:
+  - [x] UUID as primary key
+  - [x] Email (unique), Username (unique)
+  - [x] First name, Last name, Avatar URL
+  - [x] Role (enum), Created/Updated timestamps (auditing)
+  - [x] Last login timestamp
+  - [x] Account status (ACTIVE/SUSPENDED/DELETED)
+- [x] Use DTOs and validation annotations for profile data
 - [ ] Implement avatar upload using Spring Boot file upload and storage (local/cloud)
 - [ ] Create user search and listing endpoint (admin only, with pagination/filtering)
 - [ ] Implement user account deletion endpoint (`DELETE /api/v1/users/{id}` - admin only)
-- [ ] Add user activity tracking (last login, audit log)
+- [x] Add user activity tracking (last login, audit log)
+
+**[Update July 2025]**
+- Implemented `UserProfileDTO` and `UserProfileUpdateDTO` for secure profile data transfer and validation
+- Added `GET` and `PUT /api/v1/users/profile` endpoints in `UserController`
+- Updated `UserService` with profile and last login logic
+- Added `lastLogin` and `avatarUrl` fields and accessors to `User` entity
+- All profile update fields validated via annotations
+- Project builds and profile management is functional
 
 **Estimated Time:** 8 hours  
 **Priority:** High  

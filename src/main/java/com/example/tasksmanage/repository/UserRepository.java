@@ -6,6 +6,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserRepository extends JpaRepository<User, UUID> {
+    org.springframework.data.domain.Page<User> findByEmailContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
+        String email, String username, String firstName, String lastName, org.springframework.data.domain.Pageable pageable);
+
     Optional<User> findByEmail(String email);
     Optional<User> findByUsername(String username);
     boolean existsByEmail(String email);

@@ -20,10 +20,12 @@ import java.util.Optional;
 @RequestMapping("/api/v1/auth")
 public class AuthController {
     private final UserService userService;
+    private final com.example.tasksmanage.service.TwoFactorAuthService twoFactorAuthService;
 
     @Autowired
-    public AuthController(UserService userService) {
+    public AuthController(UserService userService, com.example.tasksmanage.service.TwoFactorAuthService twoFactorAuthService) {
         this.userService = userService;
+        this.twoFactorAuthService = twoFactorAuthService;
     }
 
     @PostMapping("/register")
@@ -68,6 +70,63 @@ public class AuthController {
         userService.revokeRefreshToken(refreshToken);
         return ResponseEntity.ok(new ApiResponse<>(true, "Logged out successfully", null));
     }
+
+    // 2FA Setup Endpoint
+    @PostMapping("/2fa/setup")
+    public ResponseEntity<ApiResponse<com.example.tasksmanage.dto.TwoFactorSetupResponse>> setup2fa(@RequestParam String usernameOrEmail) {
+        var userOpt = userService.findByUsernameOrEmail(usernameOrEmail);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User not found", null));
+        }
+        var user = userOpt.get();
+        String secret = twoFactorAuthService.generateSecret();
+        user.setTotpSecret(secret);
+        user.set2faEnabled(false);
+        user.setBackupCodes(twoFactorAuthService.generateBackupCodes());
+        userService.save(user);
+        String qrCodeUrl = twoFactorAuthService.getQrCodeUrl(user.getEmail(), secret);
+        return ResponseEntity.ok(new ApiResponse<>(true, "2FA setup initiated", new com.example.tasksmanage.dto.TwoFactorSetupResponse(qrCodeUrl, secret)));
+    }
+
+    // 2FA Verify Endpoint
+    @PostMapping("/2fa/verify")
+    public ResponseEntity<ApiResponse<String>> verify2fa(@RequestParam String usernameOrEmail, @RequestBody com.example.tasksmanage.dto.TwoFactorVerifyRequest req) {
+        var userOpt = userService.findByUsernameOrEmail(usernameOrEmail);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User not found", null));
+        }
+        var user = userOpt.get();
+        boolean valid = twoFactorAuthService.verifyTotpCode(user.getTotpSecret(), Integer.parseInt(req.getCode()));
+        if (valid) {
+            user.set2faEnabled(true);
+            userService.save(user);
+            return ResponseEntity.ok(new ApiResponse<>(true, "2FA enabled successfully", null));
+        } else {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "Invalid 2FA code", null));
+        }
+    }
+
+    // 2FA Backup Codes Endpoint
+    @PostMapping("/2fa/backup")
+    public ResponseEntity<ApiResponse<com.example.tasksmanage.dto.TwoFactorBackupCodesResponse>> regenBackupCodes(@RequestParam String usernameOrEmail) {
+        var userOpt = userService.findByUsernameOrEmail(usernameOrEmail);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User not found", null));
+        }
+        var user = userOpt.get();
+        var codes = twoFactorAuthService.generateBackupCodes();
+        user.setBackupCodes(codes);
+        userService.save(user);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Backup codes regenerated", new com.example.tasksmanage.dto.TwoFactorBackupCodesResponse(codes)));
+    }
+
+    // 2FA Recovery Endpoint (stub)
+    @PostMapping("/2fa/recovery")
+    public ResponseEntity<ApiResponse<String>> recover2fa(@RequestBody com.example.tasksmanage.dto.TwoFactorRecoveryRequest req) {
+        // TODO: Implement admin/email recovery flow
+        return ResponseEntity.ok(new ApiResponse<>(true, "2FA recovery process initiated (stub)", null));
+    }
 }
+
 
 
