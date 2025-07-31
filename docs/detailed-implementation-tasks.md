@@ -109,6 +109,8 @@
 **[Update July 2025]**
 - Refactored User entity to use `Set<Role>` instead of a single role string.
 - Updated all code to use `getRoles()`/`setRoles()` and removed references to `getRole()`/`setRole()`.
+- Added OpenAPI `@Schema` example annotations to key request DTOs (`AuthRequest`, `UserRegistrationRequest`, `PasswordResetRequest`) for improved Swagger UI and Postman import experience. Now, sample request bodies are auto-filled during API testing.
+- Refactored `ApiKeyController` to resolve the authenticated user using `SecurityContextHolder`, ensuring robust principal resolution for both JWT and API key authentication.
 - JWT claims now store a list of user role names under `roles` instead of a single `role` string.
 - Added missing getters and setters for User fields (`email`, `username`, `firstName`, `lastName`, `password`, `status`).
 - Fixed compilation errors resulting from the RBAC refactor.
