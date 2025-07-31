@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import com.example.tasksmanage.service.WebhookService;
 
 import java.util.*;
 
@@ -21,6 +22,9 @@ public class TaskService {
     private UserRepository userRepository;
     @Autowired
     private ProjectRepository projectRepository;
+
+    @Autowired
+    private WebhookService webhookService;
 
     public TaskResponseDTO toDTO(Task task) {
         TaskResponseDTO dto = new TaskResponseDTO();
@@ -96,7 +100,10 @@ public class TaskService {
 
     @Transactional
     public void deleteTask(UUID id) {
+        Task task = taskRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Task not found"));
+        TaskResponseDTO dto = toDTO(task);
         taskRepository.deleteById(id);
+        webhookService.sendEvent("task.deleted", dto);
     }
 
     @Transactional

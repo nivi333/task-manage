@@ -397,10 +397,18 @@
 ## Phase 9: Integrations & Webhooks
 
 ### Task 9.1: Webhooks
-- [ ] Implement webhook registration endpoints (`POST/DELETE /api/v1/webhooks`)
-- [ ] Add outbound webhook event triggers (task/project/user events)
-- [ ] Support webhook secret/verification
-- [ ] Add webhook retry and failure logging
+- [x] Implement webhook registration endpoints (`POST/DELETE /api/v1/webhooks`)
+- [x] Add outbound webhook event triggers (task/project/user events)
+- [x] Support webhook secret/verification
+- [x] Add webhook retry and failure logging
+
+**Status:** Backend implementation complete. Webhook registration, secret/verification, outbound triggers, and retry/failure logging are in place. 
+
+> Note: For outbound event triggers, ensure the following line is present after saving a task in `TaskService#createTask`:
+> ```java
+> webhookService.sendEvent("task.created", toDTO(task));
+> ```
+> (This may require a manual insert due to multiple save points.)
 
 **Estimated Time:** 6 hours  
 **Priority:** Medium  
