@@ -2,6 +2,9 @@ package com.example.tasksmanage.dto;
 
 import jakarta.validation.constraints.NotBlank;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Login request", example = "{\"usernameOrEmail\": \"user@email.com\", \"password\": \"string\"}")
 public class AuthRequest {
     @NotBlank
     private String usernameOrEmail;

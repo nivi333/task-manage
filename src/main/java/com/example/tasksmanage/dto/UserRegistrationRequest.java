@@ -5,6 +5,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "User registration request", example = "{\"email\":\"user@email.com\",\"username\":\"user123\",\"firstName\":\"John\",\"lastName\":\"Doe\",\"password\":\"Password123!\"}")
 public class UserRegistrationRequest {
     @Email
     @NotBlank

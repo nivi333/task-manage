@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
+    @Autowired
+    private com.example.tasksmanage.config.ApiKeyAuthFilter apiKeyAuthFilter;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -32,6 +34,7 @@ public class SecurityConfig {
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .anyRequest().authenticated()
             )
+            .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }

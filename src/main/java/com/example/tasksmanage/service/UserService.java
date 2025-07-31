@@ -251,17 +251,16 @@ public class UserService {
         verificationToken.setExpiryDate(Instant.now().plus(24, ChronoUnit.HOURS));
         tokenRepository.save(verificationToken);
 
-        // Send verification email
-        String verificationUrl = "http://localhost:8080/api/v1/auth/verify-email?token=" + token;
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("firstName", savedUser.getFirstName());
-        variables.put("verificationUrl", verificationUrl);
-        try {
-            emailService.sendVerificationEmail(savedUser.getEmail(), "Verify your email address", "email-verification.html", variables);
-        } catch (MessagingException e) {
-            // Optionally handle email failure (log, retry, etc.)
-            throw new RuntimeException("Failed to send verification email", e);
-        }
+        // Email sending temporarily disabled for development
+        // String verificationUrl = "http://localhost:8080/api/v1/auth/verify-email?token=" + token;
+        // Map<String, Object> variables = new HashMap<>();
+        // variables.put("firstName", savedUser.getFirstName());
+        // variables.put("verificationUrl", verificationUrl);
+        // try {
+        //     emailService.sendVerificationEmail(savedUser.getEmail(), "Verify your email address", "email-verification.html", variables);
+        // } catch (MessagingException e) {
+        //     throw new RuntimeException("Failed to send verification email", e);
+        // }
         return savedUser;
     }
 
