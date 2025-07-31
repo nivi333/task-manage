@@ -20,12 +20,12 @@ public class NotificationPreferencesController {
 
     @GetMapping
     public ResponseEntity<NotificationPreferences> getPreferences(@RequestParam UUID userId) {
-        return ResponseEntity.ok(preferencesRepository.findByUserId(userId));
+        return ResponseEntity.ok(preferencesRepository.findByUser_Id(userId));
     }
 
     @PutMapping
     public ResponseEntity<NotificationPreferences> updatePreferences(@RequestParam UUID userId, @RequestBody NotificationPreferences prefs) {
-        NotificationPreferences existing = preferencesRepository.findByUserId(userId);
+        NotificationPreferences existing = preferencesRepository.findByUser_Id(userId);
         if (existing != null) {
             existing.setEmailEnabled(prefs.isEmailEnabled());
             existing.setWebEnabled(prefs.isWebEnabled());

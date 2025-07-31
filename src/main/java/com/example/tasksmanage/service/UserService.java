@@ -15,7 +15,7 @@ import com.example.tasksmanage.repository.PasswordResetTokenRepository;
 import com.example.tasksmanage.model.PasswordHistory;
 import com.example.tasksmanage.repository.PasswordHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
@@ -195,7 +195,7 @@ public class UserService {
     }
 
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
     private final EmailVerificationTokenRepository tokenRepository;
     private final EmailService emailService;
     private final JwtUtil jwtUtil;
@@ -206,7 +206,7 @@ public class UserService {
     private final com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, EmailVerificationTokenRepository tokenRepository, EmailService emailService, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, PasswordHistoryRepository passwordHistoryRepository, com.example.tasksmanage.repository.RoleRepository roleRepository, com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailVerificationTokenRepository tokenRepository, EmailService emailService, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, PasswordHistoryRepository passwordHistoryRepository, com.example.tasksmanage.repository.RoleRepository roleRepository, com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;

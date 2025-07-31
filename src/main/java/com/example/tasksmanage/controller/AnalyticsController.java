@@ -26,6 +26,7 @@ public class AnalyticsController {
         return analyticsService.getUserWorkload(userId);
     }
 
+
     @GetMapping("/time-tracking")
     public Map<String, Object> getTimeTracking(@RequestParam(required = false) String userId) {
         return analyticsService.getUserTimeTracking(userId);

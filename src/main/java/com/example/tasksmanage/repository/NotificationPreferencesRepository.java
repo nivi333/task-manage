@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 public interface NotificationPreferencesRepository extends JpaRepository<NotificationPreferences, UUID> {
-    NotificationPreferences findByUserId(UUID userId);
+    NotificationPreferences findByUser_Id(UUID userId);
 }

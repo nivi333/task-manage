@@ -15,7 +15,7 @@ public class SearchServiceImpl implements SearchService {
     @Override
     public Map<String, Object> globalSearch(String query) {
         // Demo: search tasks by name/description (expand to projects, users, comments, etc.)
-        List<Task> tasks = taskRepository.findByNameContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query);
+        List<Task> tasks = taskRepository.findByTitleContainingIgnoreCaseOrDescriptionContainingIgnoreCase(query, query);
         Map<String, Object> result = new HashMap<>();
         result.put("tasks", tasks);
         // TODO: add projects, users, comments, etc.

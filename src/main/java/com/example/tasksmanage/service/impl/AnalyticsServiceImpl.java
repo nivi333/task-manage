@@ -1,5 +1,7 @@
 package com.example.tasksmanage.service.impl;
 
+import java.lang.management.ManagementFactory;
+
 import com.example.tasksmanage.model.Task;
 import com.example.tasksmanage.model.User;
 import com.example.tasksmanage.model.ActivityLog;
@@ -27,7 +29,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     @Override
     public Map<String, Object> getUserProductivity(String userId) {
         Map<String, Object> result = new HashMap<>();
-        List<Task> allTasks = userId == null ? taskRepository.findAll() : taskRepository.findByAssigneeId(UUID.fromString(userId));
+        List<Task> allTasks = userId == null ? taskRepository.findAll() : taskRepository.findByAssignedTo_Id(UUID.fromString(userId));
         long completed = allTasks.stream().filter(t -> "COMPLETED".equalsIgnoreCase(t.getStatus())).count();
         long created = allTasks.size();
         long comments = userId == null ? activityLogRepository.count() : activityLogRepository.countByUserIdAndAction(UUID.fromString(userId), "COMMENT");
@@ -41,7 +43,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     @Override
     public Map<String, Object> getUserWorkload(String userId) {
         Map<String, Object> result = new HashMap<>();
-        List<Task> tasks = userId == null ? taskRepository.findAll() : taskRepository.findByAssigneeId(UUID.fromString(userId));
+        List<Task> tasks = userId == null ? taskRepository.findAll() : taskRepository.findByAssignedTo_Id(UUID.fromString(userId));
         long open = tasks.stream().filter(t -> "OPEN".equalsIgnoreCase(t.getStatus())).count();
         long inProgress = tasks.stream().filter(t -> "IN_PROGRESS".equalsIgnoreCase(t.getStatus())).count();
         long overdue = tasks.stream().filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && !"COMPLETED".equalsIgnoreCase(t.getStatus())).count();
@@ -55,7 +57,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     @Override
     public Map<String, Object> getUserTimeTracking(String userId) {
         Map<String, Object> result = new HashMap<>();
-        List<Task> tasks = userId == null ? taskRepository.findAll() : taskRepository.findByAssigneeId(UUID.fromString(userId));
+        List<Task> tasks = userId == null ? taskRepository.findAll() : taskRepository.findByAssignedTo_Id(UUID.fromString(userId));
         double avgCompletionTime = tasks.stream()
             .filter(t -> t.getCompletedAt() != null && t.getCreatedAt() != null)
             .mapToLong(t -> t.getCompletedAt().getTime() - t.getCreatedAt().getTime())
@@ -168,16 +170,16 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     @Override
     public List<Map<String, Object>> getSystemOverdueTasks() {
         List<Task> overdueTasks = taskRepository.findAll().stream()
-            .filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && !"COMPLETED".equalsIgnoreCase(t.getStatus()))
-            .collect(Collectors.toList());
+                .filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && !"COMPLETED".equalsIgnoreCase(t.getStatus()))
+                .toList();
         List<Map<String, Object>> result = new ArrayList<>();
         for (Task t : overdueTasks) {
             Map<String, Object> map = new HashMap<>();
             map.put("taskId", t.getId());
             map.put("title", t.getTitle());
+            map.put("assignedTo", t.getAssignedTo() != null ? t.getAssignedTo().getUsername() : null);
             map.put("dueDate", t.getDueDate());
             map.put("status", t.getStatus());
-            map.put("assignedTo", t.getAssignedTo() != null ? t.getAssignedTo().getUsername() : null);
             map.put("projectId", t.getProject() != null ? t.getProject().getId() : null);
             result.add(map);
         }
@@ -189,7 +191,7 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         List<User> users = userRepository.findAll();
         List<Map<String, Object>> result = new ArrayList<>();
         for (User user : users) {
-            List<Task> tasks = taskRepository.findByAssigneeId(user.getId());
+            List<Task> tasks = taskRepository.findByAssignedTo_Id(user.getId());
             Map<String, Object> map = new HashMap<>();
             map.put("userId", user.getId());
             map.put("username", user.getUsername());
@@ -216,16 +218,20 @@ public class AnalyticsServiceImpl implements AnalyticsService {
 
     @Override
     public Map<String, Object> getSystemPerformance() {
+        // Stub: In a real system, gather JVM/memory/DB stats, etc.
         Map<String, Object> perf = new HashMap<>();
-        List<Task> tasks = taskRepository.findAll();
-        long total = tasks.size();
-        long completed = tasks.stream().filter(t -> "COMPLETED".equalsIgnoreCase(t.getStatus())).count();
-        double avgCompletionTime = tasks.stream()
-            .filter(t -> t.getCompletedAt() != null && t.getCreatedAt() != null)
-            .mapToLong(t -> t.getCompletedAt().getTime() - t.getCreatedAt().getTime())
-            .average().orElse(0);
-        perf.put("tasksTotal", total);
-        perf.put("tasksCompleted", completed);
+        perf.put("uptime", ManagementFactory.getRuntimeMXBean().getUptime());
+        perf.put("heapUsedMB", ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getUsed() / (1024 * 1024));
+        perf.put("heapMaxMB", ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax() / (1024 * 1024));
+        perf.put("availableProcessors", ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
+        // Add DB and other metrics as needed
+        long totalTasks = taskRepository.count();
+        long completedTasks = taskRepository.findAll().stream()
+                .filter(t -> "COMPLETED".equalsIgnoreCase(t.getStatus()))
+                .count();
+        double avgCompletionTime = 0.0; // stub value, implement actual calculation if created/completed timestamps available
+        perf.put("tasksTotal", totalTasks);
+        perf.put("tasksCompleted", completedTasks);
         perf.put("averageCompletionTimeMs", avgCompletionTime);
         // Add more performance metrics as needed
         return perf;
