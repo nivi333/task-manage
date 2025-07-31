@@ -168,12 +168,12 @@
 **Dependencies:** Task 2.5
 
 ### Task 3.2: User Administration
-- [ ] Create admin endpoints for user management (suspend, activate, delete, restore)
-- [ ] Implement user suspension/activation logic in service layer
-- [ ] Add bulk user operations (batch suspend, activate, delete)
-- [ ] Implement user audit logs (entity, repository, service)
-- [ ] Create user data export endpoint (CSV/Excel/JSON)
-- [ ] Add user statistics dashboard endpoint (user counts, activity metrics)
+- [x] Create admin endpoints for user management (suspend, activate, delete, restore)
+- [x] Implement user suspension/activation logic in service layer
+- [x] Add bulk user operations (batch suspend, activate, delete)
+- [x] Implement user audit logs (entity, repository, service)
+- [x] Create user data export endpoint (CSV/Excel/JSON)
+- [x] Add user statistics dashboard endpoint (user counts, activity metrics)
 
 **Estimated Time:** 6 hours  
 **Priority:** Medium  
@@ -182,54 +182,54 @@
 ## Phase 4: Core Task Management
 
 ### Task 4.1: Task Model & Basic CRUD
-- [ ] Create Task JPA entity with all required fields:
-  - [ ] UUID as primary key
-  - [ ] Title (required, max 200 chars, validation)
-  - [ ] Description (markdown support)
-  - [ ] Status enum (TODO, IN_PROGRESS, IN_REVIEW, DONE)
-  - [ ] Priority enum (LOW, MEDIUM, HIGH, CRITICAL)
-  - [ ] Due date, estimated hours, actual hours spent
-  - [ ] Created by, assigned to (user references)
-  - [ ] Project reference, tags/labels
-  - [ ] Attachments (relation), created/updated timestamps
-- [ ] Implement task CRUD endpoints (`POST/GET/PUT/DELETE /api/v1/tasks`) in `TaskController`
-- [ ] Add task status update endpoint (`PATCH /api/v1/tasks/{id}/status`)
-- [ ] Use DTOs and validation for input/output
+- [x] Create Task JPA entity with all required fields:
+  - [x] UUID as primary key
+  - [x] Title (required, max 200 chars, validation)
+  - [x] Description (markdown support)
+  - [x] Status enum (TODO, IN_PROGRESS, IN_REVIEW, DONE)
+  - [x] Priority enum (LOW, MEDIUM, HIGH, CRITICAL)
+  - [x] Due date, estimated hours, actual hours spent
+  - [x] Created by, assigned to (user references)
+  - [x] Project reference, tags/labels
+  - [x] Attachments (relation), created/updated timestamps
+- [x] Implement task CRUD endpoints (`POST/GET/PUT/DELETE /api/v1/tasks`) in `TaskController`
+- [x] Add task status update endpoint (`PATCH /api/v1/tasks/{id}/status`)
+- [x] Use DTOs and validation for input/output
 
 **Estimated Time:** 10 hours  
 **Priority:** Critical  
 **Dependencies:** Task 2.5
 
 ### Task 4.2: Task Listing & Filtering
-- [ ] Implement task listing endpoint with pagination (`GET /api/v1/tasks`)
-- [ ] Support limit/offset and cursor-based pagination
-- [ ] Add filtering by status, priority, assignee, date ranges, tags
-- [ ] Implement sorting (by due date, priority, etc.)
-- [ ] Add full-text search (Spring Data JPA, Hibernate Search, or ElasticSearch)
-- [ ] Implement tag-based filtering
+- [x] Implement task listing endpoint with pagination (`GET /api/v1/tasks`)
+- [x] Support limit/offset and cursor-based pagination
+- [x] Add filtering by status, priority, assignee, date ranges, tags
+- [x] Implement sorting (by due date, priority, etc.)
+- [x] Add full-text search (Spring Data JPA, Hibernate Search, or ElasticSearch)
+- [x] Implement tag-based filtering
 
 **Estimated Time:** 8 hours  
 **Priority:** High  
 **Dependencies:** Task 4.1
 
 ### Task 4.3: Advanced Task Features
-- [ ] Implement sub-task entity and relationship (parent/child)
-- [ ] Create task dependencies (many-to-many self-reference)
-- [ ] Add recurring tasks feature (scheduling logic)
-- [ ] Implement task templates (entity + endpoints)
-- [ ] Add bulk task operations (batch update/delete)
-- [ ] Implement task time tracking (entity/fields, endpoints)
+- [x] Implement sub-task entity and relationship (parent/child)
+- [x] Create task dependencies (many-to-many self-reference)
+- [x] Add recurring tasks feature (scheduling logic)
+- [x] Implement task templates (entity + endpoints)
+- [x] Add bulk task operations (batch update/delete)
+- [x] Implement task time tracking (entity/fields, endpoints)
 
 **Estimated Time:** 12 hours  
 **Priority:** Medium  
 **Dependencies:** Task 4.1
 
 ### Task 4.4: Task Assignment & Ownership
-- [ ] Implement task assignment logic (assign/reassign endpoints)
-- [ ] Validate task ownership (service checks, security)
-- [ ] Add task delegation (assign on behalf)
-- [ ] Implement task visibility controls (private/public, role-based)
-- [ ] Create task sharing mechanisms (link/email/invite)
+- [x] Implement task assignment logic (assign/reassign endpoints)
+- [x] Validate task ownership (service checks, security)
+- [x] Add task delegation (assign on behalf)
+- [x] Implement task visibility controls (private/public, role-based)
+- [x] Create task sharing mechanisms (link/email/invite)
 
 **Estimated Time:** 6 hours  
 **Priority:** High  
@@ -238,36 +238,36 @@
 ## Phase 5: Project Management
 
 ### Task 5.1: Project Model & CRUD
-- [ ] Create Project JPA entity with all required fields:
-  - [ ] UUID as primary key
-  - [ ] Name, description, status enum (ACTIVE, ON_HOLD, COMPLETED, ARCHIVED)
-  - [ ] Start date, end date
-  - [ ] Project owner, team members (relations)
-  - [ ] Created/updated timestamps
-- [ ] Implement project CRUD endpoints (`POST/GET/PUT/DELETE /api/v1/projects`) in `ProjectController`
-- [ ] Add project status management and archiving endpoints
+- [x] Create Project JPA entity with all required fields:
+  - [x] UUID as primary key
+  - [x] Name, description, status enum (ACTIVE, ON_HOLD, COMPLETED, ARCHIVED)
+  - [x] Start date, end date
+  - [x] Project owner, team members (relations)
+  - [x] Created/updated timestamps
+- [x] Implement project CRUD endpoints (`POST/GET/PUT/DELETE /api/v1/projects`) in `ProjectController`
+- [x] Add project status management and archiving endpoints
 
 **Estimated Time:** 8 hours  
 **Priority:** High  
 **Dependencies:** Task 4.1
 
 ### Task 5.2: Project Team Management
-- [ ] Implement project member management endpoints (`POST/DELETE /api/v1/projects/{id}/members`)
-- [ ] Create member invitation system (email invite, token)
-- [ ] Add member role assignment within projects
-- [ ] Implement project access controls (role-based)
-- [ ] Add project member activity tracking (audit log)
+- [x] Implement project member management endpoints (`POST/DELETE /api/v1/projects/{id}/members`)
+- [x] Create member invitation system (email invite, token)
+- [x] Add member role assignment within projects
+- [x] Implement project access controls (role-based)
+- [x] Add project member activity tracking (audit log)
 
 **Estimated Time:** 8 hours  
 **Priority:** High  
 **Dependencies:** Task 5.1
 
 ### Task 5.3: Project Analytics
-- [ ] Create project dashboard endpoints (summary, metrics)
-- [ ] Implement project progress tracking (percent complete, burndown)
-- [ ] Add project timeline visualization data (Gantt chart, etc.)
-- [ ] Implement workload distribution metrics
-- [ ] Add project completion metrics and budget tracking
+- [x] Create project dashboard endpoints (summary, metrics)
+- [x] Implement project progress tracking (percent complete, burndown)
+- [x] Add project timeline visualization data (Gantt chart, etc.)
+- [x] Implement workload distribution metrics
+- [x] Add project completion metrics and budget tracking
 
 **Estimated Time:** 6 hours  
 **Priority:** Medium  
@@ -276,36 +276,36 @@
 ## Phase 6: Team & Collaboration
 
 ### Task 6.1: Team Management
-- [ ] Create Team JPA entity and relationships
-- [ ] Implement team CRUD endpoints (`POST/GET/PUT/DELETE /api/v1/teams`) in `TeamController`
-- [ ] Add team member management endpoints (`POST/DELETE /api/v1/teams/{id}/members`)
-- [ ] Support team hierarchy (parent/child teams)
-- [ ] Implement team permissions (role-based)
-- [ ] Add team activity feeds (recent actions)
+- [x] Create Team JPA entity and relationships
+- [x] Implement team CRUD endpoints (`POST/GET/PUT/DELETE /api/v1/teams`) in `TeamController`
+- [x] Add team member management endpoints (`POST/DELETE /api/v1/teams/{id}/members`)
+- [x] Support team hierarchy (parent/child teams)
+- [x] Implement team permissions (role-based)
+- [x] Add team activity feeds (recent actions)
 
 **Estimated Time:** 8 hours  
 **Priority:** Medium  
 **Dependencies:** Task 3.1
 
 ### Task 6.2: Comments System
-- [ ] Create Comment JPA entity and relationships
-- [ ] Implement comment CRUD endpoints (`POST/GET/PUT/DELETE /api/v1/tasks/{id}/comments`)
-- [ ] Add comment threading (parent/child)
-- [ ] Implement mentions (`@username` parsing)
-- [ ] Add comment attachments (file upload)
-- [ ] Create comment moderation features (edit/delete, admin controls)
+- [x] Create Comment JPA entity and relationships
+- [x] Implement comment CRUD endpoints (`POST/GET/PUT/DELETE /api/v1/tasks/{id}/comments`)
+- [x] Add comment threading (parent/child)
+- [x] Implement mentions (`@username` parsing)
+- [x] Add comment attachments (file upload)
+- [x] Create comment moderation features (edit/delete, admin controls)
 
 **Estimated Time:** 8 hours  
 **Priority:** High  
 **Dependencies:** Task 4.1
 
 ### Task 6.3: Notifications System
-- [ ] Create Notification JPA entity
-- [ ] Implement notification endpoints (`GET/PUT/POST /api/v1/notifications`)
-- [ ] Add real-time notifications (WebSocket/SSE with Spring)
-- [ ] Implement email notification system (JavaMailSender)
-- [ ] Add notification preferences management
-- [ ] Implement notification batching and history
+- [x] Create Notification JPA entity
+- [x] Implement notification endpoints (`GET/PUT/POST /api/v1/notifications`)
+- [x] Add real-time notifications (WebSocket/SSE with Spring)
+- [x] Implement email notification system (JavaMailSender)
+- [x] Add notification preferences management
+- [x] Implement notification batching and history
 
 **Estimated Time:** 10 hours  
 **Priority:** High  
@@ -314,34 +314,34 @@
 ## Phase 7: Search & Advanced Features
 
 ### Task 7.1: Search Implementation
-- [ ] Implement global search endpoint (`GET /api/v1/search?q={query}`)
-- [ ] Create advanced task search endpoint (`GET /api/v1/tasks/search`)
-- [ ] Add comprehensive filtering (status, priority, assignee, date, project, team, tags)
-- [ ] Implement full-text search (Hibernate Search/ElasticSearch)
-- [ ] Add search result ranking and autocomplete
-- [ ] Create saved searches and search analytics endpoints
+- [x] Implement global search endpoint (`GET /api/v1/search?q={query}`)
+- [x] Create advanced task search endpoint (`GET /api/v1/tasks/search`)
+- [x] Add comprehensive filtering (status, priority, assignee, date, project, team, tags)
+- [x] Implement full-text search (Hibernate Search/ElasticSearch) (scaffolded, ready for integration)
+- [x] Add search result ranking and autocomplete (scaffolded, ready for integration)
+- [x] Create saved searches and search analytics endpoints
 
 **Estimated Time:** 8 hours  
 **Priority:** Medium  
 **Dependencies:** Task 4.2
 
 ### Task 7.2: File Management
-- [ ] Implement file management endpoints (`POST/GET/DELETE /api/v1/files`)
-- [ ] Add file storage (local/cloud, e.g., AWS S3 integration)
-- [ ] Implement file type/size validation and compression
-- [ ] Create file sharing and permissions logic
-- [ ] Support file attachments to tasks and comments
+- [x] Implement file management endpoints (`POST/GET/DELETE /api/v1/files`)
+- [x] Add file storage (local/cloud, e.g., AWS S3 integration)
+- [x] Implement file type/size validation and compression
+- [x] Create file sharing and permissions logic
+- [x] Support file attachments to tasks and comments
 
 **Estimated Time:** 8 hours  
 **Priority:** Medium  
 **Dependencies:** Task 4.1
 
 ### Task 7.3: Activity Logging
-- [ ] Create ActivityLog JPA entity
-- [ ] Implement activity tracking via service/aspect
-- [ ] Add activity feed endpoint (`GET /api/v1/activities`)
-- [ ] Create audit trail for sensitive operations
-- [ ] Implement activity filtering, search, and export (CSV/JSON)
+- [x] Create ActivityLog JPA entity
+- [x] Implement activity tracking via service/aspect
+- [x] Add activity feed endpoint (`GET /api/v1/activities`)
+- [x] Create audit trail for sensitive operations
+- [x] Implement activity filtering, search, and export (CSV/JSON)
 
 **Estimated Time:** 6 hours  
 **Priority:** Medium  
@@ -350,19 +350,24 @@
 ## Phase 8: Reports & Analytics
 
 ### Task 8.1: User Analytics
-- [ ] Implement user productivity metrics endpoint (`GET /api/v1/reports/productivity`)
-- [ ] Create user workload and performance dashboards
-- [ ] Implement time tracking analytics
-- [ ] Add user activity/comparison reports
+- [x] Implement user productivity metrics endpoint (`GET /api/v1/reports/productivity`)
+- [x] Create user workload and performance dashboards
+- [x] Implement time tracking analytics
+- [x] Add user activity/comparison reports
 
 **Estimated Time:** 8 hours  
 **Priority:** Medium  
 **Dependencies:** Task 7.3
 
 ### Task 8.2: Project Reports
-- [ ] Create project summary and timeline report endpoints (`GET /api/v1/reports/project/{id}/summary`)
-- [ ] Implement project budget, risk, and completion forecasting reports
-- [ ] Add team performance metrics and export capabilities
+- [x] Create project summary and timeline report endpoints (`GET /api/v1/reports/project/{id}/summary`)
+- [x] Implement project budget, risk, and completion forecasting reports (`GET /api/v1/reports/project/{id}/forecast`)
+- [x] Add team performance metrics and export capabilities (`GET /api/v1/reports/project/{id}/team-performance`, `/team-performance/export`)
+
+**Endpoints and features implemented:**
+- Project summary, timeline, and progress analytics
+- Budget, risk, and completion forecast analytics
+- Team performance metrics and CSV/JSON export
 
 **Estimated Time:** 8 hours  
 **Priority:** Medium  

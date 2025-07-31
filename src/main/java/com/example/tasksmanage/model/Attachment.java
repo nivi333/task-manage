@@ -20,6 +20,10 @@ public class Attachment {
     private Task task;
 
     @ManyToOne
+    @JoinColumn(name = "comment_id")
+    private Comment comment;
+
+    @ManyToOne
     @JoinColumn(name = "uploaded_by")
     private User uploadedBy;
 

@@ -6,6 +6,7 @@ import java.util.*;
 @Entity
 @Table(name = "projects")
 public class Project {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -15,8 +16,9 @@ public class Project {
 
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private ProjectStatus status;
 
     private Date startDate;
     private Date endDate;
@@ -35,10 +37,41 @@ public class Project {
     @OneToMany(mappedBy = "project")
     private Set<Task> tasks = new HashSet<>();
 
+    private Double budgetPlanned;
+    private Double budgetActual;
+
     @Column(nullable = false, updatable = false)
     private Date createdAt;
     @Column(nullable = false)
     private Date updatedAt;
 
-    // Getters and setters omitted for brevity
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+    public ProjectStatus getStatus() { return status; }
+    public void setStatus(ProjectStatus status) { this.status = status; }
+    public Date getStartDate() { return startDate; }
+    public void setStartDate(Date startDate) { this.startDate = startDate; }
+    public Date getEndDate() { return endDate; }
+    public void setEndDate(Date endDate) { this.endDate = endDate; }
+    public User getOwner() { return owner; }
+    public void setOwner(User owner) { this.owner = owner; }
+    public Set<User> getTeamMembers() { return teamMembers; }
+    public void setTeamMembers(Set<User> teamMembers) { this.teamMembers = teamMembers; }
+    public Set<Task> getTasks() { return tasks; }
+    public void setTasks(Set<Task> tasks) { this.tasks = tasks; }
+
+    public Double getBudgetPlanned() { return budgetPlanned; }
+    public void setBudgetPlanned(Double budgetPlanned) { this.budgetPlanned = budgetPlanned; }
+    public Double getBudgetActual() { return budgetActual; }
+    public void setBudgetActual(Double budgetActual) { this.budgetActual = budgetActual; }
+
+    public Date getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Date createdAt) { this.createdAt = createdAt; }
+    public Date getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(Date updatedAt) { this.updatedAt = updatedAt; }
 }
+
