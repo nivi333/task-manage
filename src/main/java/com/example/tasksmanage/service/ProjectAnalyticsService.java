@@ -84,7 +84,7 @@ public class ProjectAnalyticsService {
         List<Task> tasks = taskRepository.findByProjectId(projectId);
         double percentComplete = 0.0;
         long totalTasks = tasks.size();
-        long completed = tasks.stream().filter(t -> t.getStatus() != null && t.getStatus().name().equals("COMPLETED")).count();
+        long completed = tasks.stream().filter(t -> t.getStatus() != null && t.getStatus().equals("COMPLETED")).count();
         if (totalTasks > 0) percentComplete = (double) completed / totalTasks * 100;
         // Budget tracking stub (assume project has budget fields)
         Map<String, Object> result = new HashMap<>();

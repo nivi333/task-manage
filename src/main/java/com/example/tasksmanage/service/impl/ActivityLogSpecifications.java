@@ -2,7 +2,7 @@ package com.example.tasksmanage.service.impl;
 
 import com.example.tasksmanage.model.ActivityLog;
 import org.springframework.data.jpa.domain.Specification;
-import javax.persistence.criteria.*;
+import jakarta.persistence.criteria.*;
 import java.util.Map;
 
 public class ActivityLogSpecifications {

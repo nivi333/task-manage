@@ -163,5 +163,134 @@ public class AnalyticsServiceImpl implements AnalyticsService {
             return sb.toString();
         }
     }
+
+    // --- System Reports ---
+    @Override
+    public List<Map<String, Object>> getSystemOverdueTasks() {
+        List<Task> overdueTasks = taskRepository.findAll().stream()
+            .filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && !"COMPLETED".equalsIgnoreCase(t.getStatus()))
+            .collect(Collectors.toList());
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (Task t : overdueTasks) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("taskId", t.getId());
+            map.put("title", t.getTitle());
+            map.put("dueDate", t.getDueDate());
+            map.put("status", t.getStatus());
+            map.put("assignedTo", t.getAssignedTo() != null ? t.getAssignedTo().getUsername() : null);
+            map.put("projectId", t.getProject() != null ? t.getProject().getId() : null);
+            result.add(map);
+        }
+        return result;
+    }
+
+    @Override
+    public List<Map<String, Object>> getSystemTeamWorkload() {
+        List<User> users = userRepository.findAll();
+        List<Map<String, Object>> result = new ArrayList<>();
+        for (User user : users) {
+            List<Task> tasks = taskRepository.findByAssigneeId(user.getId());
+            Map<String, Object> map = new HashMap<>();
+            map.put("userId", user.getId());
+            map.put("username", user.getUsername());
+            map.put("openTasks", tasks.stream().filter(t -> "OPEN".equalsIgnoreCase(t.getStatus())).count());
+            map.put("inProgressTasks", tasks.stream().filter(t -> "IN_PROGRESS".equalsIgnoreCase(t.getStatus())).count());
+            map.put("overdueTasks", tasks.stream().filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && !"COMPLETED".equalsIgnoreCase(t.getStatus())).count());
+            map.put("totalAssigned", tasks.size());
+            result.add(map);
+        }
+        return result;
+    }
+
+    @Override
+    public Map<String, Object> getSystemUsage() {
+        Map<String, Object> usage = new HashMap<>();
+        usage.put("activeUsers", userRepository.count());
+        usage.put("tasksCreated", taskRepository.count());
+        usage.put("tasksCompleted", taskRepository.findAll().stream().filter(t -> "COMPLETED".equalsIgnoreCase(t.getStatus())).count());
+        usage.put("commentsAdded", activityLogRepository.countByAction("COMMENT"));
+        usage.put("activityLogs", activityLogRepository.count());
+        // Add more usage metrics as needed
+        return usage;
+    }
+
+    @Override
+    public Map<String, Object> getSystemPerformance() {
+        Map<String, Object> perf = new HashMap<>();
+        List<Task> tasks = taskRepository.findAll();
+        long total = tasks.size();
+        long completed = tasks.stream().filter(t -> "COMPLETED".equalsIgnoreCase(t.getStatus())).count();
+        double avgCompletionTime = tasks.stream()
+            .filter(t -> t.getCompletedAt() != null && t.getCreatedAt() != null)
+            .mapToLong(t -> t.getCompletedAt().getTime() - t.getCreatedAt().getTime())
+            .average().orElse(0);
+        perf.put("tasksTotal", total);
+        perf.put("tasksCompleted", completed);
+        perf.put("averageCompletionTimeMs", avgCompletionTime);
+        // Add more performance metrics as needed
+        return perf;
+    }
+
+    @Override
+    public String exportTasks(String format) {
+        List<Task> tasks = taskRepository.findAll();
+        if ("json".equalsIgnoreCase(format)) {
+            try {
+                return new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(tasks);
+            } catch (Exception e) {
+                return "{}";
+            }
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("taskId,title,status,assignedTo,projectId,dueDate\n");
+            for (Task t : tasks) {
+                sb.append(t.getId()).append(",")
+                  .append(t.getTitle()).append(",")
+                  .append(t.getStatus()).append(",")
+                  .append(t.getAssignedTo() != null ? t.getAssignedTo().getUsername() : "").append(",")
+                  .append(t.getProject() != null ? t.getProject().getId() : "").append(",")
+                  .append(t.getDueDate()).append("\n");
+            }
+            return sb.toString();
+        }
+    }
+
+    @Override
+    public String exportActivityLogs(String format) {
+        List<ActivityLog> logs = activityLogRepository.findAll();
+        if ("json".equalsIgnoreCase(format)) {
+            try {
+                return new com.fasterxml.jackson.databind.ObjectMapper().writeValueAsString(logs);
+            } catch (Exception e) {
+                return "{}";
+            }
+        } else {
+            StringBuilder sb = new StringBuilder();
+            sb.append("id,action,details,user,timestamp,entityType,entityId\n");
+            for (ActivityLog log : logs) {
+                sb.append(log.getId()).append(",")
+                  .append(log.getAction()).append(",")
+                  .append(log.getDetails() != null ? log.getDetails().replaceAll(",", " ") : "").append(",")
+                  .append(log.getUser() != null ? log.getUser().getUsername() : "").append(",")
+                  .append(log.getTimestamp()).append(",")
+                  .append(log.getEntityType()).append(",")
+                  .append(log.getEntityId()).append("\n");
+            }
+            return sb.toString();
+        }
+    }
+
+    @Override
+    public String scheduleReport(Map<String, Object> scheduleRequest) {
+        // Stub: In a real system, this would schedule a report for email delivery
+        return "Report scheduling is not implemented yet.";
+    }
+
+    @Override
+    public String shareReport(Map<String, Object> shareRequest) {
+        // Stub: In a real system, this would share a report with users
+        return "Report sharing is not implemented yet.";
+    }
 }
+
 

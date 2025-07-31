@@ -8,4 +8,5 @@ import java.util.UUID;
 public interface ActivityLogRepository extends JpaRepository<ActivityLog, UUID>, JpaSpecificationExecutor<ActivityLog> {
     // Filtering and search handled by specifications
     long countByUserIdAndAction(UUID userId, String action);
+    long countByAction(String action);
 }

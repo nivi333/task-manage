@@ -1,5 +1,8 @@
 package com.example.tasksmanage.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import java.util.UUID;
 
 import com.example.tasksmanage.service.AnalyticsService;
@@ -52,4 +55,46 @@ public class AnalyticsController {
     public String exportTeamPerformance(@PathVariable("id") String projectId, @RequestParam(defaultValue = "csv") String format) {
         return analyticsService.exportProjectTeamPerformance(UUID.fromString(projectId), format);
     }
+
+    // --- System Reports ---
+    @GetMapping("/system/overdue-tasks")
+    public List<Map<String, Object>> getSystemOverdueTasks() {
+        return analyticsService.getSystemOverdueTasks();
+    }
+
+    @GetMapping("/system/team-workload")
+    public List<Map<String, Object>> getSystemTeamWorkload() {
+        return analyticsService.getSystemTeamWorkload();
+    }
+
+    @GetMapping("/system/usage")
+    public Map<String, Object> getSystemUsage() {
+        return analyticsService.getSystemUsage();
+    }
+
+    @GetMapping("/system/performance")
+    public Map<String, Object> getSystemPerformance() {
+        return analyticsService.getSystemPerformance();
+    }
+
+    @GetMapping("/export/tasks")
+    public String exportTasks(@RequestParam(defaultValue = "csv") String format) {
+        return analyticsService.exportTasks(format);
+    }
+
+    @GetMapping("/export/activity-logs")
+    public String exportActivityLogs(@RequestParam(defaultValue = "csv") String format) {
+        return analyticsService.exportActivityLogs(format);
+    }
+
+    @PostMapping("/reports/schedule")
+    public String scheduleReport(@RequestBody Map<String, Object> scheduleRequest) {
+        return analyticsService.scheduleReport(scheduleRequest);
+    }
+
+    @PostMapping("/reports/share")
+    public String shareReport(@RequestBody Map<String, Object> shareRequest) {
+        return analyticsService.shareReport(shareRequest);
+    }
 }
+

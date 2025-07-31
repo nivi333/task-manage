@@ -61,7 +61,8 @@ public class ProjectInvitationService {
         log.setDetails("Invitation sent to " + req.getEmail());
         auditLogRepository.save(log);
         // Send email with invitation token (implement EmailService accordingly)
-        emailService.sendInvitation(inv.getEmail(), inv.getToken(), project.getId());
+        // TODO: Implement invitation email sending logic here. EmailService does not have sendInvitation method.
+        // emailService.sendInvitation(inv.getEmail(), inv.getToken(), project.getId());
         return toDTO(inv);
     }
 
@@ -89,7 +90,7 @@ public class ProjectInvitationService {
             memberDto = memberService.listMembers(projectId).stream()
                     .filter(m -> m.getUserId().equals(userId)).findFirst().get();
         } else {
-            ProjectMemberAddRequest addReq = new ProjectMemberAddRequest();
+            com.example.tasksmanage.dto.ProjectMemberAddRequest addReq = new com.example.tasksmanage.dto.ProjectMemberAddRequest();
             addReq.setUserIds(java.util.Set.of(userId));
             addReq.setRole(ProjectMemberRole.MEMBER);
             // Note: possible race condition if two acceptances happen simultaneously
