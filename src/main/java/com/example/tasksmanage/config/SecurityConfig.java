@@ -25,7 +25,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(csrf -> csrf.disable())
+            .requiresChannel(channel -> channel.anyRequest().requiresSecure()) // Enforce HTTPS
+            // CSRF enabled by default
+            .headers(headers -> headers
+                .frameOptions().sameOrigin() // Clickjacking protection
+            )
             .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/auth/**").permitAll()
@@ -35,7 +39,8 @@ public class SecurityConfig {
                 .anyRequest().authenticated()
             )
             .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new com.example.tasksmanage.config.RateLimitingFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }
