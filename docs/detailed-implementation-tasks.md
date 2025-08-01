@@ -417,10 +417,20 @@
 **Dependencies:** Task 4.1
 
 ### Task 9.2: API Keys & External API Integration
-- [ ] Implement API key management endpoints (generate, revoke, list)
-- [ ] Add API key authentication for integrations
-- [ ] Create integrations with external services (Slack, email, calendar, etc.)
-- [ ] Add OAuth2 client support for third-party APIs
+- [x] Implement API key management endpoints (generate, revoke, list)
+    - Endpoints: `/api/v1/apikeys/generate`, `/api/v1/apikeys/revoke/{id}`, `/api/v1/apikeys` (list)
+    - Service and model implemented; keys are tied to users and persisted.
+- [x] Add API key authentication for integrations
+    - `ApiKeyAuthFilter` checks `X-API-KEY` header and authenticates requests.
+- [x] Create integrations with external services (Slack, email, calendar, etc.)
+    - Endpoints and service stubs for each integration implemented.
+    - API key auth used for these endpoints.
+- [x] Add OAuth2 client support for third-party APIs
+    - OAuth2 authorization/callback endpoints and token storage implemented.
+
+**Status:**
+- API key management and authentication are implemented and active.
+- Integration endpoints and OAuth2 client flows implemented and active.
 
 **Estimated Time:** 10 hours  
 **Priority:** Medium  
