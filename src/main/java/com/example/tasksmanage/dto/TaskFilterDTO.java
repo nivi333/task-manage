@@ -3,6 +3,10 @@ package com.example.tasksmanage.dto;
 import java.util.*;
 
 public class TaskFilterDTO {
+    private UUID teamId;
+    public UUID getTeamId() { return teamId; }
+    public void setTeamId(UUID teamId) { this.teamId = teamId; }
+
     private String status;
     private String priority;
     private UUID assignedTo;

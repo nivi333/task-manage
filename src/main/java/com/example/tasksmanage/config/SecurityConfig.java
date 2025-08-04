@@ -40,7 +40,9 @@ public class SecurityConfig {
             )
             .addFilterBefore(apiKeyAuthFilter, UsernamePasswordAuthenticationFilter.class)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-            .addFilterBefore(new com.example.tasksmanage.config.RateLimitingFilter(), UsernamePasswordAuthenticationFilter.class);
+            .addFilterBefore(new com.example.tasksmanage.config.RateLimitingFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new com.example.tasksmanage.config.SecurityHeadersFilter(), UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(new com.example.tasksmanage.config.XssSanitizationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 }

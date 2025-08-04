@@ -4,7 +4,14 @@ import jakarta.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "projects")
+@Table(name = "projects",
+    indexes = {
+        @Index(name = "idx_project_name", columnList = "name"),
+        @Index(name = "idx_project_status", columnList = "status"),
+        @Index(name = "idx_project_owner", columnList = "owner_id"),
+        @Index(name = "idx_project_start_date", columnList = "startDate")
+    }
+)
 public class Project {
 
     @Id

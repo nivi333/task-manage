@@ -15,6 +15,8 @@ public interface TaskRepository extends JpaRepository<Task, UUID>, org.springfra
     default java.util.List<Task> advancedSearch(java.util.Map<String, String> params) {
         Specification<Task> spec = (root, query, cb) -> {
             List<jakarta.persistence.criteria.Predicate> predicates = new ArrayList<>();
+            if (params.containsKey("teamId"))
+                predicates.add(cb.equal(root.get("team").get("id"), UUID.fromString(params.get("teamId"))));
             if (params.containsKey("status"))
                 predicates.add(cb.equal(root.get("status"), params.get("status")));
             if (params.containsKey("priority"))
@@ -23,6 +25,8 @@ public interface TaskRepository extends JpaRepository<Task, UUID>, org.springfra
                 predicates.add(cb.equal(root.get("assignedTo").get("id"), java.util.UUID.fromString(params.get("assignedTo"))));
             if (params.containsKey("projectId"))
                 predicates.add(cb.equal(root.get("project").get("id"), java.util.UUID.fromString(params.get("projectId"))));
+            if (params.containsKey("teamId"))
+                predicates.add(cb.equal(root.get("team").get("id"), java.util.UUID.fromString(params.get("teamId"))));
             if (params.containsKey("tags")) {
                 String[] tags = params.get("tags").split(",");
                 for (String tag : tags) {

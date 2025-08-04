@@ -4,7 +4,16 @@ import jakarta.persistence.*;
 import java.util.*;
 
 @Entity
-@Table(name = "tasks")
+@Table(name = "tasks",
+    indexes = {
+        @Index(name = "idx_task_title", columnList = "title"),
+        @Index(name = "idx_task_status", columnList = "status"),
+        @Index(name = "idx_task_priority", columnList = "priority"),
+        @Index(name = "idx_task_assigned_to", columnList = "assignedTo_id"),
+        @Index(name = "idx_task_project", columnList = "project_id"),
+        @Index(name = "idx_task_due_date", columnList = "dueDate")
+    }
+)
 public class Task {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Attachment> attachments = new ArrayList<>();
@@ -68,7 +77,7 @@ public class Task {
     private User createdBy;
 
     @ManyToOne
-    @JoinColumn(name = "assigned_to")
+    @JoinColumn(name = "assigned_to_id")
     private User assignedTo;
 
     @ManyToOne
@@ -98,6 +107,9 @@ public class Task {
     @OneToMany(mappedBy = "task")
     private Set<Comment> comments = new HashSet<>();
 
+    @ManyToOne
+    @JoinColumn(name = "team_id")
+    private Team team;
 
     @OneToMany(mappedBy = "parentTask")
     private Set<Task> subTasks = new HashSet<>();
@@ -105,6 +117,13 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "parent_task_id")
     private Task parentTask;
+
+    public Team getTeam() {
+        return team;
+    }
+    public void setTeam(Team team) {
+        this.team = team;
+    }
 
     // Getters and setters omitted for brevity
 }

@@ -23,6 +23,12 @@ public class TaskController {
 
     @PostMapping
     public ResponseEntity<TaskResponseDTO> createTask(@Valid @RequestBody TaskCreateDTO dto, Principal principal) {
+        if (!com.example.tasksmanage.util.InputValidationUtil.isValidString(dto.getTitle(), 1, 255)) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (!com.example.tasksmanage.util.InputValidationUtil.isValidString(dto.getDescription(), 0, 2000)) {
+            return ResponseEntity.badRequest().build();
+        }
         UUID creatorId = principal != null ? UUID.fromString(principal.getName()) : null;
         return ResponseEntity.ok(taskService.createTask(dto, creatorId));
     }
@@ -34,6 +40,12 @@ public class TaskController {
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskResponseDTO> updateTask(@PathVariable UUID id, @Valid @RequestBody TaskCreateDTO dto) {
+        if (!com.example.tasksmanage.util.InputValidationUtil.isValidString(dto.getTitle(), 1, 255)) {
+            return ResponseEntity.badRequest().build();
+        }
+        if (!com.example.tasksmanage.util.InputValidationUtil.isValidString(dto.getDescription(), 0, 2000)) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.ok(taskService.updateTask(id, dto));
     }
 
@@ -66,6 +78,7 @@ public class TaskController {
             @RequestParam(required = false) String createdAtFrom,
             @RequestParam(required = false) String createdAtTo,
             @RequestParam(required = false) String search,
+            @RequestParam(required = false) UUID teamId,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDir,
             @RequestParam(defaultValue = "0") int page,
@@ -82,6 +95,10 @@ public class TaskController {
         filter.setSortDir(sortDir);
         filter.setPage(page);
         filter.setSize(size);
+        // Set teamId for team filtering
+        if (teamId != null) {
+            filter.setTeamId(teamId);
+        }
         // Date parsing for dueDateFrom, dueDateTo, createdAtFrom, createdAtTo
         try {
             if (dueDateFrom != null) filter.setDueDateFrom(Date.from(Instant.parse(dueDateFrom)));

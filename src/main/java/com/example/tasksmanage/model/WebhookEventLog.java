@@ -20,7 +20,7 @@ public class WebhookEventLog {
 
     @Lob
     @Column(nullable = false)
-    private String payload;
+    private String payload; // Compatible with both H2 and Postgres
 
     @Column(name = "attempt_count", nullable = false)
     private int attemptCount;
