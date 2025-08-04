@@ -6,4 +6,5 @@ import java.util.UUID;
 
 public interface NotificationPreferencesRepository extends JpaRepository<NotificationPreferences, UUID> {
     NotificationPreferences findByUser_Id(UUID userId);
+    java.util.List<NotificationPreferences> findByBatchEnabled(boolean batchEnabled);
 }

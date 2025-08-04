@@ -547,58 +547,58 @@
 ## Phase 4: Core Task Management
 
 ### Task 4.1: Task Model & Basic CRUD
-- [ ] Create Task model with all required fields:
-  - [ ] Task ID (UUID)
-  - [ ] Title (required, max 200 chars validation)
-  - [ ] Description with markdown support
-  - [ ] Status enum (To Do, In Progress, In Review, Done)
-  - [ ] Priority enum (Low, Medium, High, Critical)
-  - [ ] Due date, Estimated hours, Actual hours spent
-  - [ ] Created by, Assigned to (user references)
-  - [ ] Project ID reference, Tags/Labels
-  - [ ] Attachments support, Created/Updated timestamps
-- [ ] Implement task creation (`POST /api/v1/tasks`)
-- [ ] Create task retrieval (`GET /api/v1/tasks/{id}`)
-- [ ] Implement task updates (`PUT /api/v1/tasks/{id}`)
-- [ ] Add task deletion (`DELETE /api/v1/tasks/{id}`)
-- [ ] Implement task status updates (`PATCH /api/v1/tasks/{id}/status`)
+- [x] Create Task model with all required fields:
+  - [x] Task ID (UUID)
+  - [x] Title (required, max 200 chars validation)
+  - [x] Description with markdown support
+  - [x] Status enum (To Do, In Progress, In Review, Done)
+  - [x] Priority enum (Low, Medium, High, Critical)
+  - [x] Due date, Estimated hours, Actual hours spent
+  - [x] Created by, Assigned to (user references)
+  - [x] Project ID reference, Tags/Labels
+  - [x] Attachments support, Created/Updated timestamps
+- [x] Implement task creation (`POST /api/v1/tasks`)
+- [x] Create task retrieval (`GET /api/v1/tasks/{id}`)
+- [x] Implement task updates (`PUT /api/v1/tasks/{id}`)
+- [x] Add task deletion (`DELETE /api/v1/tasks/{id}`)
+- [x] Implement task status updates (`PATCH /api/v1/tasks/{id}/status`)
 
 **Estimated Time:** 10 hours  
 **Priority:** Critical  
 **Dependencies:** Task 2.5
 
 ### Task 4.2: Task Listing & Filtering
-- [ ] Implement task listing with pagination (`GET /api/v1/tasks`)
-- [ ] Add both limit/offset and cursor-based pagination options
-- [ ] Add filtering by status, priority, assignee
-- [ ] Implement date range filtering
-- [ ] Add sorting capabilities
-- [ ] Create full-text search functionality
-- [ ] Implement tag-based filtering
+- [x] Implement task listing with pagination (`GET /api/v1/tasks`)
+- [x] Add both limit/offset and cursor-based pagination options
+- [x] Add filtering by status, priority, assignee
+- [x] Implement date range filtering
+- [x] Add sorting capabilities
+- [x] Create full-text search functionality
+- [x] Implement tag-based filtering
 
 **Estimated Time:** 8 hours  
 **Priority:** High  
 **Dependencies:** Task 4.1
 
 ### Task 4.3: Advanced Task Features
-- [ ] Implement sub-tasks functionality
-- [ ] Create task dependencies system
-- [ ] Add recurring tasks feature
-- [ ] Implement task templates
-- [ ] Create bulk task operations
-- [ ] Add task time tracking
+- [x] Implement sub-tasks functionality
+- [x] Create task dependencies system
+- [x] Add recurring tasks feature
+- [x] Implement task templates
+- [x] Create bulk task operations
+- [x] Add task time tracking
 
 **Estimated Time:** 12 hours  
 **Priority:** Medium  
 **Dependencies:** Task 4.1
 
 ### Task 4.4: Task Assignment & Ownership
-- [ ] Implement task assignment logic
-- [ ] Add task ownership validation
-- [ ] Create task reassignment functionality
-- [ ] Implement task delegation
-- [ ] Add task visibility controls
-- [ ] Create task sharing mechanisms
+- [x] Implement task assignment logic
+- [x] Add task ownership validation
+- [x] Create task reassignment functionality
+- [x] Implement task delegation
+- [x] Add task visibility controls
+- [x] Create task sharing mechanisms
 
 **Estimated Time:** 6 hours  
 **Priority:** High  
@@ -607,44 +607,44 @@
 ## Phase 5: Project Management
 
 ### Task 5.1: Project Model & CRUD
-- [ ] Create Project model with all required fields:
-  - [ ] Project ID (UUID)
-  - [ ] Name, Description
-  - [ ] Status enum (Active, On Hold, Completed, Archived)
-  - [ ] Start date, End date
-  - [ ] Project owner, Team members
-  - [ ] Created/Updated timestamps
-- [ ] Implement project creation (`POST /api/v1/projects`)
-- [ ] Create project retrieval endpoints (`GET /api/v1/projects`, `GET /api/v1/projects/{id}`)
-- [ ] Implement project updates (`PUT /api/v1/projects/{id}`)
-- [ ] Add project deletion (`DELETE /api/v1/projects/{id}`)
-- [ ] Add project status management
-- [ ] Create project archiving functionality
+- [x] Create Project model with all required fields:
+  - [x] Project ID (UUID)
+  - [x] Name, Description
+  - [x] Status enum (Active, On Hold, Completed, Archived)
+  - [x] Start date, End date
+  - [x] Project owner, Team members
+  - [x] Created/Updated timestamps
+- [x] Implement project creation (`POST /api/v1/projects`)
+- [x] Create project retrieval endpoints (`GET /api/v1/projects`, `GET /api/v1/projects/{id}`)
+- [x] Implement project updates (`PUT /api/v1/projects/{id}`)
+- [x] Add project deletion (`DELETE /api/v1/projects/{id}`)
+- [x] Add project status management
+- [x] Create project archiving functionality
 
 **Estimated Time:** 8 hours  
 **Priority:** High  
 **Dependencies:** Task 4.1
 
 ### Task 5.2: Project Team Management
-- [ ] Implement project member management endpoints:
-  - [ ] `POST /api/v1/projects/{id}/members` - Add project members
-  - [ ] `DELETE /api/v1/projects/{id}/members/{userId}` - Remove member
-- [ ] Create member invitation system
-- [ ] Add member role assignment within projects
-- [ ] Create project access controls
-- [ ] Add project member activity tracking
+- [x] Implement project member management endpoints:
+  - [x] `POST /api/v1/projects/{id}/members` - Add project members
+  - [x] `DELETE /api/v1/projects/{id}/members/{userId}` - Remove member
+- [x] Create member invitation system
+- [x] Add member role assignment within projects
+- [x] Create project access controls
+- [x] Add project member activity tracking
 
 **Estimated Time:** 8 hours  
 **Priority:** High  
 **Dependencies:** Task 5.1
 
 ### Task 5.3: Project Analytics
-- [ ] Create project dashboard endpoints
-- [ ] Implement project progress tracking
-- [ ] Add project timeline visualization data
-- [ ] Create project workload distribution
-- [ ] Implement project completion metrics
-- [ ] Add project budget tracking
+- [x] Create project dashboard endpoints
+- [x] Implement project progress tracking
+- [x] Add project timeline visualization data
+- [x] Create project workload distribution
+- [x] Implement project completion metrics
+- [x] Add project budget tracking
 
 **Estimated Time:** 6 hours  
 **Priority:** Medium  
@@ -653,50 +653,50 @@
 ## Phase 6: Team & Collaboration
 
 ### Task 6.1: Team Management
-- [ ] Create Team model and relationships
-- [ ] Implement team CRUD operations:
-  - [ ] `POST /api/v1/teams` - Create team
-  - [ ] `GET /api/v1/teams` - List teams
-  - [ ] `PUT /api/v1/teams/{id}` - Update team
-  - [ ] `DELETE /api/v1/teams/{id}` - Delete team
-- [ ] Add team member management:
-  - [ ] `POST /api/v1/teams/{id}/members` - Add team members
-  - [ ] `DELETE /api/v1/teams/{id}/members/{userId}` - Remove member
-- [ ] Create team hierarchy support
-- [ ] Implement team permissions
-- [ ] Add team activity feeds
+- [x] Create Team model and relationships
+- [x] Implement team CRUD operations:
+  - [x] `POST /api/v1/teams` - Create team
+  - [x] `GET /api/v1/teams` - List teams
+  - [x] `PUT /api/v1/teams/{id}` - Update team
+  - [x] `DELETE /api/v1/teams/{id}` - Delete team
+- [x] Add team member management:
+  - [x] `POST /api/v1/teams/{id}/members` - Add team members
+  - [x] `DELETE /api/v1/teams/{id}/members/{userId}` - Remove member
+- [x] Create team hierarchy support
+- [x] Implement team permissions
+- [x] Add team activity feeds
 
 **Estimated Time:** 8 hours  
 **Priority:** Medium  
 **Dependencies:** Task 3.1
 
 ### Task 6.2: Comments System
-- [ ] Create Comment model with relationships
-- [ ] Implement comment CRUD operations:
-  - [ ] `POST /api/v1/tasks/{id}/comments` - Add comment
-  - [ ] `GET /api/v1/tasks/{id}/comments` - List comments
-  - [ ] `PUT /api/v1/comments/{id}` - Edit comment
-  - [ ] `DELETE /api/v1/comments/{id}` - Delete comment
-- [ ] Add comment threading/replies
-- [ ] Implement comment mentions (@username)
-- [ ] Add comment attachments
-- [ ] Create comment moderation features
+- [x] Create Comment model with relationships
+- [x] Implement comment CRUD operations:
+  - [x] `POST /api/v1/tasks/{id}/comments` - Add comment
+  - [x] `GET /api/v1/tasks/{id}/comments` - List comments
+  - [x] `PUT /api/v1/comments/{id}` - Edit comment
+  - [x] `DELETE /api/v1/comments/{id}` - Delete comment
+- [x] Add comment threading/replies
+- [x] Implement comment mentions (@username)
+- [x] Add comment attachments
+- [x] Create comment moderation features
 
 **Estimated Time:** 8 hours  
 **Priority:** High  
 **Dependencies:** Task 4.1
 
 ### Task 6.3: Notifications System
-- [ ] Create Notification model
-- [ ] Implement notification endpoints:
-  - [ ] `GET /api/v1/notifications` - Get user notifications
-  - [ ] `PUT /api/v1/notifications/{id}/read` - Mark as read
-  - [ ] `POST /api/v1/notifications/preferences` - Update settings
-- [ ] Implement real-time notifications (WebSocket/SSE)
-- [ ] Add email notification system
-- [ ] Create notification preferences management
-- [ ] Implement notification batching
-- [ ] Add notification history and management
+- [x] Create Notification model
+- [x] Implement notification endpoints:
+  - [x] `GET /api/v1/notifications` - Get user notifications
+  - [x] `PUT /api/v1/notifications/{id}/read` - Mark as read
+  - [x] `POST /api/v1/notifications/preferences` - Update settings *(implemented as `PUT /api/v1/notifications/preferences`; functionality present, method is PUT not POST)*
+- [x] Implement real-time notifications (WebSocket/SSE)
+- [x] Add email notification system
+- [x] Create notification preferences management
+- [x] Implement notification batching *(batch digest email, hourly, via NotificationBatchJob)*
+- [x] Add notification history and management *(archive, unarchive, delete, and fetch archived notifications; endpoints and model fields implemented)*
 
 **Estimated Time:** 10 hours  
 **Priority:** High  
@@ -705,16 +705,17 @@
 ## Phase 7: Search & Advanced Features
 
 ### Task 7.1: Search Implementation
-- [ ] Implement global search endpoint (`GET /api/v1/search?q={query}`)
-- [ ] Create advanced task search (`GET /api/v1/tasks/search`)
-- [ ] Add comprehensive filtering:
-  - [ ] Status, Priority, Assignee filters
-  - [ ] Date ranges (created, due date)
-  - [ ] Projects, Teams filters
-  - [ ] Tags/Labels filtering
-  - [ ] Full-text search capability
-- [ ] Add search result ranking
-- [ ] Implement search autocomplete
+- [x] Implement global search endpoint (`GET /api/v1/search?q={query}`) *(searches tasks, projects, users, comments)*
+- [x] Create advanced task search (`GET /api/v1/tasks/search`) *(dynamic filters: status, priority, assignee, project, tags, date ranges, free-text)*
+- [x] Add comprehensive filtering:
+  - [x] Status, Priority, Assignee filters
+  - [x] Date ranges (created, due date)
+  - [x] Projects filters
+  - [ ] Teams filters *(requires model support)*
+  - [x] Tags/Labels filtering
+  - [x] Full-text search capability *(LIKE-based; not external engine)*
+- [ ] Add search result ranking *(basic ordering only; no advanced ranking yet)*
+- [x] Implement search autocomplete *(tasks, projects, users)*
 - [ ] Create saved searches functionality
 - [ ] Add search analytics
 

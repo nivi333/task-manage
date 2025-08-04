@@ -56,4 +56,35 @@ public class NotificationServiceImpl implements NotificationService {
         n.setRead(false);
         return notificationRepository.save(n);
     }
+
+    @Override
+    public List<Notification> getArchivedNotifications(UUID userId) {
+        return notificationRepository.findByUser_IdAndArchived(userId, true);
+    }
+
+    @Override
+    public List<Notification> getAllNotifications(UUID userId) {
+        return notificationRepository.findByUser_Id(userId);
+    }
+
+    @Override
+    public Notification archiveNotification(UUID notificationId) {
+        Notification n = notificationRepository.findById(notificationId).orElseThrow();
+        n.setArchived(true);
+        n.setArchivedAt(java.time.LocalDateTime.now());
+        return notificationRepository.save(n);
+    }
+
+    @Override
+    public Notification unarchiveNotification(UUID notificationId) {
+        Notification n = notificationRepository.findById(notificationId).orElseThrow();
+        n.setArchived(false);
+        n.setArchivedAt(null);
+        return notificationRepository.save(n);
+    }
+
+    @Override
+    public void deleteNotification(UUID notificationId) {
+        notificationRepository.deleteById(notificationId);
+    }
 }

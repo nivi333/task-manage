@@ -6,6 +6,9 @@ import java.util.*;
 @Entity
 @Table(name = "notifications")
 public class Notification {
+    private boolean batched = false;
+    private boolean archived = false;
+    private java.time.LocalDateTime archivedAt;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -52,6 +55,30 @@ public class Notification {
 
     public void setRead(boolean read) {
         this.read = read;
+    }
+
+    public boolean isBatched() {
+        return batched;
+    }
+
+    public void setBatched(boolean batched) {
+        this.batched = batched;
+    }
+
+    public boolean isArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
+    }
+
+    public java.time.LocalDateTime getArchivedAt() {
+        return archivedAt;
+    }
+
+    public void setArchivedAt(java.time.LocalDateTime archivedAt) {
+        this.archivedAt = archivedAt;
     }
 
     public User getUser() {

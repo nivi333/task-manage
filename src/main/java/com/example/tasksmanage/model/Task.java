@@ -6,6 +6,9 @@ import java.util.*;
 @Entity
 @Table(name = "tasks")
 public class Task {
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Attachment> attachments = new ArrayList<>();
+
     // --- Getters and Setters for all fields below ---
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
@@ -95,8 +98,6 @@ public class Task {
     @OneToMany(mappedBy = "task")
     private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "task")
-    private Set<Attachment> attachments = new HashSet<>();
 
     @OneToMany(mappedBy = "parentTask")
     private Set<Task> subTasks = new HashSet<>();

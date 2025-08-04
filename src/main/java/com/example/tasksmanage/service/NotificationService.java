@@ -9,4 +9,11 @@ public interface NotificationService {
     List<Notification> getNotificationsByUser(UUID userId);
     Notification markAsRead(UUID notificationId);
     Notification markAsUnread(UUID notificationId);
+
+    // Notification history and management
+    List<Notification> getArchivedNotifications(UUID userId);
+    List<Notification> getAllNotifications(UUID userId);
+    Notification archiveNotification(UUID notificationId);
+    Notification unarchiveNotification(UUID notificationId);
+    void deleteNotification(UUID notificationId);
 }

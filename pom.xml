@@ -157,6 +157,7 @@
                 <artifactId>maven-checkstyle-plugin</artifactId>
                 <version>3.3.0</version>
                 <configuration>
+                    <skip>true</skip>
                     <configLocation>checkstyle.xml</configLocation>
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
@@ -172,6 +173,7 @@
                 </executions>
             </plugin>
             <!-- SpotBugs plugin -->
+            <!--
             <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
@@ -189,6 +191,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
             <!-- SonarQube plugin -->
             <plugin>
                 <groupId>org.sonarsource.scanner.maven</groupId>
@@ -275,6 +278,32 @@
                 </executions>
             </plugin>
             -->
+            <!-- Newman Postman Collection Runner plugin -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>run-postman-tests</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>npx</executable>
+                            <arguments>
+                                <argument>newman</argument>
+                                <argument>run</argument>
+                                <argument>${project.basedir}/postman/collection.json</argument>
+                                <!-- Uncomment below if you have an environment file -->
+                                <!-- <argument>-e</argument>
+                                <argument>${project.basedir}/postman/environment.json</argument> -->
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>

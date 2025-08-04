@@ -33,4 +33,29 @@ public class NotificationController {
     public ResponseEntity<Notification> markAsUnread(@PathVariable UUID id) {
         return ResponseEntity.ok(notificationService.markAsUnread(id));
     }
+
+    @GetMapping("/history")
+    public ResponseEntity<List<Notification>> getNotificationHistory(@RequestParam UUID userId, @RequestParam(required = false) Boolean archived) {
+        if (archived != null && archived) {
+            return ResponseEntity.ok(notificationService.getArchivedNotifications(userId));
+        } else {
+            return ResponseEntity.ok(notificationService.getAllNotifications(userId));
+        }
+    }
+
+    @PutMapping("/{id}/archive")
+    public ResponseEntity<Notification> archiveNotification(@PathVariable UUID id) {
+        return ResponseEntity.ok(notificationService.archiveNotification(id));
+    }
+
+    @PutMapping("/{id}/unarchive")
+    public ResponseEntity<Notification> unarchiveNotification(@PathVariable UUID id) {
+        return ResponseEntity.ok(notificationService.unarchiveNotification(id));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteNotification(@PathVariable UUID id) {
+        notificationService.deleteNotification(id);
+        return ResponseEntity.noContent().build();
+    }
 }
