@@ -31,7 +31,7 @@ public class OpenAPIConfig {
                         .description("Project Wiki")
                         .url("https://github.com/nivi333/task-manage/wiki"))
                 .servers(List.of(
-                        new Server().url("http://localhost:8081").description("Local Dev Server")
+                        new Server().url("http://localhost:8080").description("Local Dev Server")
                 ));
     }
 }
