@@ -28,7 +28,7 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             // .requiresChannel(channel -> channel.anyRequest().requiresSecure()) // Enforce HTTPS - disabled for local dev
-            // CSRF enabled by default
+            .csrf(csrf -> csrf.disable())
             .headers(headers -> headers
                 .frameOptions().sameOrigin() // Clickjacking protection
             )
