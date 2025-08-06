@@ -26,7 +26,7 @@ public class WebhookController {
         webhook.setId(null);
         webhook.setActive(true);
         Webhook created = webhookRepository.save(webhook);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.status(201).body(created);
     }
 
     @DeleteMapping("/{id}")

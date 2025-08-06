@@ -1,5 +1,7 @@
 package com.example.tasksmanage.util;
 
+import org.apache.commons.text.StringEscapeUtils;
+
 public class InputValidationUtil {
     public static boolean isValidString(String input, int minLength, int maxLength) {
         return input != null && input.length() >= minLength && input.length() <= maxLength;
@@ -15,6 +17,6 @@ public class InputValidationUtil {
     }
     public static String sanitize(String input) {
         if (input == null) return null;
-        return input.replaceAll("[<>]", "");
+        return StringEscapeUtils.escapeHtml4(input);
     }
 }

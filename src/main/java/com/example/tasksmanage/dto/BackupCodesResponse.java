@@ -2,10 +2,10 @@ package com.example.tasksmanage.dto;
 
 import java.util.Set;
 
-public class TwoFactorBackupCodesResponse {
+public class BackupCodesResponse {
     private Set<String> backupCodes;
 
-    public TwoFactorBackupCodesResponse(Set<String> backupCodes) {
+    public BackupCodesResponse(Set<String> backupCodes) {
         this.backupCodes = backupCodes;
     }
 

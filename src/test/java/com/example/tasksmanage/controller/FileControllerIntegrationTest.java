@@ -20,7 +20,7 @@ public class FileControllerIntegrationTest {
     @Test
     void testFileUpload() throws Exception {
         MockMultipartFile file = new MockMultipartFile("file", "test.txt", "text/plain", "test content".getBytes());
-        mockMvc.perform(multipart("/api/files/upload").file(file))
+        mockMvc.perform(multipart("/api/v1/files/upload").file(file))
                 .andExpect(status().isOk());
     }
 }

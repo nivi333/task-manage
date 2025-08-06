@@ -11,8 +11,8 @@ public class ApiKey {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(nullable = false, unique = true)
-    private String key;
+    @Column(name = "api_key", nullable = false, unique = true)
+    private String apiKey;
 
     @Column(nullable = false)
     private String name;
@@ -29,8 +29,12 @@ public class ApiKey {
     // Getters and setters
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
-    public String getKey() { return key; }
-    public void setKey(String key) { this.key = key; }
+    public String getApiKey() {
+        return apiKey;
+    }
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public boolean isActive() { return active; }

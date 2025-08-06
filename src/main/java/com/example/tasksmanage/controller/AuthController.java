@@ -108,7 +108,7 @@ public class AuthController {
 
     // 2FA Backup Codes Endpoint
     @PostMapping("/2fa/backup")
-    public ResponseEntity<ApiResponse<com.example.tasksmanage.dto.TwoFactorBackupCodesResponse>> regenBackupCodes(@RequestParam String usernameOrEmail) {
+    public ResponseEntity<ApiResponse<com.example.tasksmanage.dto.BackupCodesResponse>> regenBackupCodes(@RequestParam String usernameOrEmail) {
         var userOpt = userService.findByUsernameOrEmail(usernameOrEmail);
         if (userOpt.isEmpty()) {
             return ResponseEntity.badRequest().body(new ApiResponse<>(false, "User not found", null));
@@ -117,7 +117,7 @@ public class AuthController {
         var codes = twoFactorAuthService.generateBackupCodes();
         user.setBackupCodes(codes);
         userService.save(user);
-        return ResponseEntity.ok(new ApiResponse<>(true, "Backup codes regenerated", new com.example.tasksmanage.dto.TwoFactorBackupCodesResponse(codes)));
+        return ResponseEntity.ok(new ApiResponse<>(true, "Backup codes regenerated", new com.example.tasksmanage.dto.BackupCodesResponse(codes)));
     }
 
     // 2FA Recovery Endpoint (stub)

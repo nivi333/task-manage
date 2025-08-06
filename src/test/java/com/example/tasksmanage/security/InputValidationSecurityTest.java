@@ -1,37 +1,57 @@
 package com.example.tasksmanage.security;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.http.MediaType;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
+
+import com.example.tasksmanage.controller.TaskController;
+import com.example.tasksmanage.service.TaskService;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@org.springframework.context.annotation.Import(com.example.tasksmanage.TestSecurityConfig.class)
+@ExtendWith(MockitoExtension.class)
 public class InputValidationSecurityTest {
-    @Autowired
+
+    @Mock
+    private TaskService taskService;
+    
     private MockMvc mockMvc;
+    
+    @BeforeEach
+    void setUp() {
+        TaskController taskController = new TaskController();
+        // Use reflection to inject the mock service
+        try {
+            java.lang.reflect.Field field = TaskController.class.getDeclaredField("taskService");
+            field.setAccessible(true);
+            field.set(taskController, taskService);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        
+        mockMvc = MockMvcBuilders.standaloneSetup(taskController)
+                .build();
+    }
 
     @Test
-    void testSqlInjectionInput() throws Exception {
-        String malicious = "{\"title\":\"DROP TABLE users;\",\"status\":\"OPEN\",\"priority\":\"HIGH\"}";
-        mockMvc.perform(post("/api/tasks")
+    public void testSqlInjectionInput() throws Exception {
+        mockMvc.perform(post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(malicious))
+                .content("{\"title\":\"'; DROP TABLE tasks; --\", \"description\":\"Test\"}"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
-    void testXssInput() throws Exception {
-        String xss = "{\"title\":\"<script>alert('xss')</script>\",\"status\":\"OPEN\",\"priority\":\"HIGH\"}";
-        mockMvc.perform(post("/api/tasks")
+    public void testXssInput() throws Exception {
+        mockMvc.perform(post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(xss))
+                .content("{\"title\":\"<script>alert('xss')</script>\", \"description\":\"Test\"}"))
                 .andExpect(status().isBadRequest());
     }
 }

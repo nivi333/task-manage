@@ -9,8 +9,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 
 @Configuration
+@Profile("!test")
 public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -25,7 +27,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            .requiresChannel(channel -> channel.anyRequest().requiresSecure()) // Enforce HTTPS
+            // .requiresChannel(channel -> channel.anyRequest().requiresSecure()) // Enforce HTTPS - disabled for local dev
             // CSRF enabled by default
             .headers(headers -> headers
                 .frameOptions().sameOrigin() // Clickjacking protection

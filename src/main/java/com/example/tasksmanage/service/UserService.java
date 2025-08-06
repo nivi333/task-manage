@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import jakarta.mail.MessagingException;
+
 
 @Service
 public class UserService {
@@ -48,7 +48,8 @@ public class UserService {
     }
 
     @Transactional
-    public com.example.tasksmanage.dto.UserProfileDTO updateProfile(User user, com.example.tasksmanage.dto.UserProfileUpdateDTO req) {
+    public com.example.tasksmanage.dto.UserProfileDTO updateProfile(User user,
+            com.example.tasksmanage.dto.UserProfileUpdateDTO req) {
         user.setFirstName(req.getFirstName());
         user.setLastName(req.getLastName());
         user.setAvatarUrl(req.getAvatarUrl());
@@ -58,7 +59,8 @@ public class UserService {
     }
 
     @Transactional
-    public com.example.tasksmanage.dto.UserProfileDTO uploadAvatar(User user, org.springframework.web.multipart.MultipartFile file) throws java.io.IOException {
+    public com.example.tasksmanage.dto.UserProfileDTO uploadAvatar(User user,
+            org.springframework.web.multipart.MultipartFile file) throws java.io.IOException {
         String avatarsDir = "src/main/resources/avatars/";
         java.nio.file.Files.createDirectories(java.nio.file.Paths.get(avatarsDir));
         String ext = org.springframework.util.StringUtils.getFilenameExtension(file.getOriginalFilename());
@@ -72,12 +74,13 @@ public class UserService {
     }
 
     // ADMIN: List users with pagination and optional search
-    public org.springframework.data.domain.Page<com.example.tasksmanage.dto.UserProfileDTO> listUsers(int page, int size, String search) {
-        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size, org.springframework.data.domain.Sort.by("createdAt").descending());
+    public org.springframework.data.domain.Page<com.example.tasksmanage.dto.UserProfileDTO> listUsers(int page,
+            int size, String search) {
+        org.springframework.data.domain.Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by("createdAt").descending());
         org.springframework.data.domain.Page<User> users;
         if (search != null && !search.isBlank()) {
-            users = userRepository.findByEmailContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
-                search, search, search, search, pageable);
+            users = userRepository.findUsersBySearchTerm(search, pageable);
         } else {
             users = userRepository.findAll(pageable);
         }
@@ -117,17 +120,22 @@ public class UserService {
     // ADMIN: Bulk suspend
     @Transactional
     public void suspendUsers(java.util.List<java.util.UUID> ids, User actor) {
-        for (var id : ids) suspendUser(id, actor);
+        for (var id : ids)
+            suspendUser(id, actor);
     }
+
     // ADMIN: Bulk activate
     @Transactional
     public void activateUsers(java.util.List<java.util.UUID> ids, User actor) {
-        for (var id : ids) activateUser(id, actor);
+        for (var id : ids)
+            activateUser(id, actor);
     }
+
     // ADMIN: Bulk delete
     @Transactional
     public void deleteUsers(java.util.List<java.util.UUID> ids, User actor) {
-        for (var id : ids) deleteUser(id, actor);
+        for (var id : ids)
+            deleteUser(id, actor);
     }
 
     // ADMIN: Delete user by id
@@ -173,7 +181,8 @@ public class UserService {
         stats.put("active", userRepository.countByStatus(com.example.tasksmanage.model.AccountStatus.ACTIVE));
         stats.put("suspended", userRepository.countByStatus(com.example.tasksmanage.model.AccountStatus.SUSPENDED));
         stats.put("deleted", userRepository.countByStatus(com.example.tasksmanage.model.AccountStatus.DELETED));
-        stats.put("recentLogins", userRepository.countRecentLogins(java.time.Instant.now().minus(java.time.Duration.ofDays(7))));
+        stats.put("recentLogins",
+                userRepository.countRecentLogins(java.time.Instant.now().minus(java.time.Duration.ofDays(7))));
         return stats;
     }
 
@@ -206,7 +215,12 @@ public class UserService {
     private final com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailVerificationTokenRepository tokenRepository, EmailService emailService, JwtUtil jwtUtil, RefreshTokenRepository refreshTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository, PasswordHistoryRepository passwordHistoryRepository, com.example.tasksmanage.repository.RoleRepository roleRepository, com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
+            EmailVerificationTokenRepository tokenRepository, EmailService emailService, JwtUtil jwtUtil,
+            RefreshTokenRepository refreshTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository,
+            PasswordHistoryRepository passwordHistoryRepository,
+            com.example.tasksmanage.repository.RoleRepository roleRepository,
+            com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
@@ -218,7 +232,6 @@ public class UserService {
         this.roleRepository = roleRepository;
         this.userAuditLogRepository = userAuditLogRepository;
     }
-
 
     @Transactional
     public User registerUser(UserRegistrationRequest req) {
@@ -252,14 +265,16 @@ public class UserService {
         tokenRepository.save(verificationToken);
 
         // Email sending temporarily disabled for development
-        // String verificationUrl = "http://localhost:8080/api/v1/auth/verify-email?token=" + token;
+        // String verificationUrl =
+        // "http://localhost:8080/api/v1/auth/verify-email?token=" + token;
         // Map<String, Object> variables = new HashMap<>();
         // variables.put("firstName", savedUser.getFirstName());
         // variables.put("verificationUrl", verificationUrl);
         // try {
-        //     emailService.sendVerificationEmail(savedUser.getEmail(), "Verify your email address", "email-verification.html", variables);
+        // emailService.sendVerificationEmail(savedUser.getEmail(), "Verify your email
+        // address", "email-verification.html", variables);
         // } catch (MessagingException e) {
-        //     throw new RuntimeException("Failed to send verification email", e);
+        // throw new RuntimeException("Failed to send verification email", e);
         // }
         return savedUser;
     }
@@ -326,11 +341,8 @@ public class UserService {
         Map<String, Object> variables = new HashMap<>();
         variables.put("firstName", user.getFirstName());
         variables.put("resetUrl", "http://localhost:8080/api/v1/auth/reset-password?token=" + token);
-        try {
-            emailService.sendVerificationEmail(user.getEmail(), "Reset your password", "password-reset.html", variables);
-        } catch (MessagingException e) {
-            throw new RuntimeException("Failed to send password reset email", e);
-        }
+            emailService.sendVerificationEmail(user.getEmail(), "Reset your password", "password-reset.html",
+                    variables);
     }
 
     @Transactional
@@ -386,8 +398,10 @@ public class UserService {
     }
 
     // Account lockout logic (stub):
-    // Track failed login attempts, lock user after N tries, unlock after time or admin intervention.
-    // This can be implemented via a field in User and event listeners in Spring Security.
+    // Track failed login attempts, lock user after N tries, unlock after time or
+    // admin intervention.
+    // This can be implemented via a field in User and event listeners in Spring
+    // Security.
 
     @Transactional
     public String verifyEmailToken(String token) {
@@ -417,4 +431,3 @@ public class UserService {
         return userRepository.save(user);
     }
 }
-

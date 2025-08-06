@@ -30,7 +30,7 @@ public class TaskController {
             return ResponseEntity.badRequest().build();
         }
         UUID creatorId = principal != null ? UUID.fromString(principal.getName()) : null;
-        return ResponseEntity.ok(taskService.createTask(dto, creatorId));
+        return ResponseEntity.status(201).body(taskService.createTask(dto, creatorId));
     }
 
     @GetMapping("/{id}")

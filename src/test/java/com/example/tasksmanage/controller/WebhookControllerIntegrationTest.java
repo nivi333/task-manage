@@ -29,11 +29,11 @@ public class WebhookControllerIntegrationTest {
     @Test
     void testCreateAndDeleteWebhook() throws Exception {
         String json = "{\"callbackUrl\":\"http://example.com/webhook\",\"secret\":\"s3cr3t\",\"subscribedEvents\":[\"TASK_CREATED\"]}";
-        mockMvc.perform(post("/api/webhooks")
+        mockMvc.perform(post("/api/v1/webhooks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isCreated());
-        mockMvc.perform(get("/api/webhooks"))
+        mockMvc.perform(get("/api/v1/webhooks"))
                 .andExpect(status().isOk());
     }
 }

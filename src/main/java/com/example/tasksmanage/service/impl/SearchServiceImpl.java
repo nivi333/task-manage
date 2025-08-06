@@ -65,8 +65,7 @@ public class SearchServiceImpl implements SearchService {
             .toList();
         result.put("projects", projects);
         // Users (search by email, username, firstName, lastName)
-        List<User> users = userRepository.findByEmailContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
-            query, query, query, query, PageRequest.of(0, 10)).getContent();
+        List<User> users = userRepository.findUsersBySearchTerm(query, PageRequest.of(0, 10)).getContent();
         users = users.stream()
             .sorted(Comparator.comparingInt(u -> {
                 String q = query.toLowerCase();
@@ -119,8 +118,7 @@ public class SearchServiceImpl implements SearchService {
             .distinct().limit(10).toList();
         result.put("projects", projectNames);
         // User usernames/emails/names
-        List<User> users = userRepository.findByEmailContainingIgnoreCaseOrUsernameContainingIgnoreCaseOrFirstNameContainingIgnoreCaseOrLastNameContainingIgnoreCase(
-            query, query, query, query, org.springframework.data.domain.PageRequest.of(0, 10)).getContent();
+        List<User> users = userRepository.findUsersBySearchTerm(query, PageRequest.of(0, 10)).getContent();
         Set<String> userSuggestions = new LinkedHashSet<>();
         for (User u : users) {
             if (u.getUsername() != null && u.getUsername().toLowerCase().contains(query.toLowerCase())) userSuggestions.add(u.getUsername());

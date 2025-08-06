@@ -26,7 +26,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     public ApiKey generateApiKey(UUID userId, String name) {
         String key = generateRandomKey();
         ApiKey apiKey = new ApiKey();
-        apiKey.setKey(key);
+        apiKey.setApiKey(key);
         apiKey.setName(name);
         apiKey.setUserId(userId);
         apiKey.setActive(true);
@@ -52,7 +52,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
 
     @Override
     public ApiKey validateApiKey(String key) {
-        return apiKeyRepository.findByKey(key)
+        return apiKeyRepository.findByApiKey(key)
                 .filter(ApiKey::isActive)
                 .orElse(null);
     }

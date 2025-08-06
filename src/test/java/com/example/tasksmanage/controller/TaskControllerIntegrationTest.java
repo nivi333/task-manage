@@ -30,12 +30,12 @@ public class TaskControllerIntegrationTest {
 
     @Test
     void testCreateAndGetTask() throws Exception {
-        String json = "{\"title\":\"Integration Task\",\"status\":\"OPEN\",\"priority\":\"HIGH\"}";
-        mockMvc.perform(post("/api/tasks")
+        String json = "{\"title\":\"Integration Task\",\"description\":\"Test description\",\"status\":\"OPEN\",\"priority\":\"HIGH\"}";
+        mockMvc.perform(post("/api/v1/tasks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isCreated());
-        mockMvc.perform(get("/api/tasks"))
+        mockMvc.perform(get("/api/v1/tasks"))
                 .andExpect(status().isOk());
     }
 }

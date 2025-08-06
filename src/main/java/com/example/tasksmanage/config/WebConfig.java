@@ -8,9 +8,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(@org.springframework.lang.NonNull CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("https://yourdomain.com") // Restrict to production domain
+        registry.addMapping("/**")
+                .allowedOrigins("https://yourdomain.com", "http://localhost:8081") // Allow Swagger UI and production domain
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
-                .allowedHeaders("Authorization", "Content-Type", "X-API-KEY");
+                .allowedHeaders("Authorization", "Content-Type", "X-API-KEY", "Accept");
     }
 }
