@@ -5,20 +5,12 @@ import {
   Button,
   Checkbox,
   message,
-  Upload,
   Modal,
-  Avatar,
 } from "antd";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
-import {
-  UserOutlined,
-  LockOutlined,
-  MailOutlined,
-  SmileOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { UserOutlined, LockOutlined, MailOutlined } from "@ant-design/icons";
 import styled from "styled-components";
-import { colors } from "../../styles/colors";
+ 
 import { authAPI, RegisterRequest } from "../../services/authService";
 import LoadingSpinner from "../common/LoadingSpinner";
 import { useNavigate } from 'react-router-dom';
@@ -34,27 +26,7 @@ const RegistrationCard = styled.div`
   margin-top: 0;
 `;
 
-const AvatarUploadWrapper = styled.div`
-  position: absolute;
-  top: 32px;
-  right: 32px;
-  z-index: 2;
-`;
-
-const AvatarCircle = styled.div`
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  background: ${colors.background};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: ${colors.secondary};
-  overflow: hidden;
-  border: 2px solid ${colors.accent};
-  cursor: pointer;
-`;
+ 
 
 const RegistrationTitle = styled.h1`
   text-align: center;
@@ -99,7 +71,7 @@ const RegistrationForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [profilePic, setProfilePic] = useState<string | null>(null);
+  
 
   const handleFinish = async (values: any) => {
     console.log('Submitting registration with values:', values);
@@ -125,7 +97,6 @@ const RegistrationForm: React.FC = () => {
       );
       form.resetFields();
       setAcceptedTerms(false);
-      setProfilePic(null);
     } catch (err: any) {
       message.error(err.response?.data?.message || "Registration failed");
     } finally {
@@ -156,57 +127,12 @@ const RegistrationForm: React.FC = () => {
     form.setFieldsValue({ acceptTerms: false });
   };
 
-  const beforeUpload = (file: any) => {
-    const isImage = file.type.startsWith("image/");
-    if (!isImage) {
-      message.error("Only image files are allowed!");
-      return false;
-    }
-    const reader = new FileReader();
-    reader.onload = (e: any) => setProfilePic(e.target.result);
-    reader.readAsDataURL(file);
-    return false; // prevent upload
-  };
+  
 
   return (
     <RegistrationCard>
       <RegistrationTitle>Register</RegistrationTitle>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: 24,
-        }}
-      >
-        <Upload
-          beforeUpload={beforeUpload}
-          showUploadList={false}
-          listType="picture-card"
-          maxCount={1}
-          accept="image/*"
-        >
-          {profilePic ? (
-            <img
-              src={profilePic}
-              alt="avatar"
-              style={{
-                width: 64,
-                height: 64,
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-            />
-          ) : (
-            <span>
-              <Avatar
-                style={{ backgroundColor: "#f5f5f5" }}
-                size={64}
-                icon={<UserOutlined />}
-              />
-            </span>
-          )}
-        </Upload>
-      </div>
+      
       <Form
         form={form}
         layout="vertical"
