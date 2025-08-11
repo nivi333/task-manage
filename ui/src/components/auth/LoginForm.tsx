@@ -6,20 +6,12 @@ import { authAPI } from '../../services/authService';
 import TwoFactorModal from './TwoFactorModal';
 import LoadingSpinner from '../common/LoadingSpinner';
 
-const LoginContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-`;
 
 const LoginCard = styled.div`
   background: white;
   padding: 40px;
   border-radius: 12px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  /* Removed box-shadow for a flat, non-popping look */
   width: 100%;
   max-width: 400px;
 `;
@@ -202,29 +194,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   };
 
   return (
-    <LoginContainer>
+    <>
       <LoginCard>
-        <LoginTitle>Welcome Back</LoginTitle>
+        <LoginTitle>Login</LoginTitle>
         
-        {/* Social Login Buttons */}
-        <SocialButtonsContainer>
-          <SocialButton 
-            className="google" 
-            icon={<GoogleOutlined />}
-            onClick={() => handleSocialLogin('google')}
-          >
-            Google
-          </SocialButton>
-          <SocialButton 
-            className="github" 
-            icon={<GithubOutlined />}
-            onClick={() => handleSocialLogin('github')}
-          >
-            GitHub
-          </SocialButton>
-        </SocialButtonsContainer>
-
-        <Divider>or</Divider>
 
         <StyledForm
           form={form}
@@ -311,7 +284,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
       {/* Global Loading Spinner */}
       {loading && <LoadingSpinner />}
-    </LoginContainer>
+    </>
   );
 };
 

@@ -5,13 +5,16 @@ import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import { authAPI } from './services/authService';
 import './App.css';
+import { colors } from './styles/colors';
 
 // Theme configuration for Ant Design
 const theme = {
   token: {
-    colorPrimary: '#667eea',
+    colorPrimary: colors.primary,
+    colorSecondary: colors.secondary,
+    colorBgContainer: colors.background,
+    colorAccent: colors.accent,
     borderRadius: 8,
-    colorBgContainer: '#ffffff',
   },
 };
 

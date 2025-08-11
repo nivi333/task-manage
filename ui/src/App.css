@@ -14,18 +14,18 @@
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: var(--color-background);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: calc(10px + 2vmin);
-  color: white;
+  color: var(--color-primary);
 }
 
 .App-link {
-  color: #61dafb;
+  color: var(--color-accent);
 }
 
 @keyframes App-logo-spin {
@@ -35,4 +35,32 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+:root {
+  --color-surface: #fff;
+  --color-success: #2ecc40;
+  --color-warning: #ffb703;
+  --color-error: #e63946;
+  --color-info: #2196f3;
+  --color-text-primary: #222;
+  --color-text-secondary: #666;
+  --color-text-disabled: #bbb;
+  --color-border: #e0e0e0;
+  --color-disabled: #f0f0f0;
+  --color-overlay: rgba(0,0,0,0.4);
+  --color-primary: #9381ff;
+  --color-secondary: #c2bbf0;
+  --color-accent: #edf6f9;
+  --color-background: #f6f6f6;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-accent);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--color-accent);
+  margin: 24px 0;
 }

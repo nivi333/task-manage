@@ -1,8 +1,13 @@
 import axios from 'axios';
 
 // Create axios instance with base configuration
+// Prefer environment variable for backend base URL. Example for CRA:
+//   REACT_APP_API_BASE_URL=https://your-api.example.com/api/v1
+// Falls back to localhost if not provided.
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080/api/v1';
+
 const apiClient = axios.create({
-  baseURL: 'http://localhost:8080/api/v1',
+  baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
