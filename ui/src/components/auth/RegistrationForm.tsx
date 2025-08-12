@@ -92,9 +92,7 @@ const RegistrationForm: React.FC = () => {
       console.log('Calling register API with payload:', req);
       const resp = await authAPI.register(req);
       console.log('Register API response:', resp);
-      message.success(
-        "Registration successful! Please check your email for verification."
-      );
+      message.success("Registration successful!");
       form.resetFields();
       setAcceptedTerms(false);
     } catch (err: any) {
