@@ -15,6 +15,7 @@ import com.example.tasksmanage.repository.PasswordResetTokenRepository;
 import com.example.tasksmanage.model.PasswordHistory;
 import com.example.tasksmanage.repository.PasswordHistoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -213,6 +214,7 @@ public class UserService {
     private final PasswordHistoryRepository passwordHistoryRepository;
     private final com.example.tasksmanage.repository.RoleRepository roleRepository;
     private final com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository;
+    private final boolean emailEnabled;
 
     @Autowired
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder,
@@ -220,7 +222,8 @@ public class UserService {
             RefreshTokenRepository refreshTokenRepository, PasswordResetTokenRepository passwordResetTokenRepository,
             PasswordHistoryRepository passwordHistoryRepository,
             com.example.tasksmanage.repository.RoleRepository roleRepository,
-            com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository) {
+            com.example.tasksmanage.repository.UserAuditLogRepository userAuditLogRepository,
+            @Value("${app.email.enabled:true}") boolean emailEnabled) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenRepository = tokenRepository;
@@ -231,6 +234,7 @@ public class UserService {
         this.passwordHistoryRepository = passwordHistoryRepository;
         this.roleRepository = roleRepository;
         this.userAuditLogRepository = userAuditLogRepository;
+        this.emailEnabled = emailEnabled;
     }
 
     @Transactional
@@ -341,8 +345,14 @@ public class UserService {
         Map<String, Object> variables = new HashMap<>();
         variables.put("firstName", user.getFirstName());
         variables.put("resetUrl", "http://localhost:8080/api/v1/auth/reset-password?token=" + token);
-            emailService.sendVerificationEmail(user.getEmail(), "Reset your password", "password-reset.html",
-                    variables);
+        if (emailEnabled) {
+            emailService.sendVerificationEmail(
+                user.getEmail(),
+                "Reset your password",
+                "password-reset.html",
+                variables
+            );
+        }
     }
 
     @Transactional
