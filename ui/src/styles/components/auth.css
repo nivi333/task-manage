@@ -1,0 +1,330 @@
+/* Auth Layout */
+.auth-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-background);
+}
+
+.auth-image-section {
+  flex: 1.2;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  );
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--spacing-xxl) var(--spacing-xl) var(--spacing-xl)
+    var(--spacing-xxl);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-form-section {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-surface);
+}
+
+/* Brand Logo Styles */
+.brand-logo {
+  position: absolute;
+  top: var(--spacing-xl);
+  left: var(--spacing-xxl);
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  color: white;
+}
+
+.logo-icon {
+  width: 60px;
+  height: 48px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flowing-shape {
+  position: relative;
+  width: 54px;
+  height: 42px;
+}
+
+.flowing-shape::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 8px;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.8) 50%,
+    rgba(255, 255, 255, 0.6) 100%
+  );
+  border-radius: 50% 40% 60% 30%;
+  transform: rotate(-15deg);
+  animation: morph 8s ease-in-out infinite;
+}
+
+.flowing-shape::after {
+  content: "";
+  position: absolute;
+  top: 12px;
+  left: 0;
+  width: 28px;
+  height: 28px;
+  background: linear-gradient(
+    225deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.4) 100%
+  );
+  border-radius: 40% 60% 50% 30%;
+  transform: rotate(25deg);
+  animation: morph 8s ease-in-out infinite reverse;
+}
+
+@keyframes morph {
+  0%,
+  100% {
+    border-radius: 50% 40% 60% 30%;
+    transform: rotate(-15deg) scale(1);
+  }
+  25% {
+    border-radius: 40% 60% 30% 50%;
+    transform: rotate(-10deg) scale(1.05);
+  }
+  50% {
+    border-radius: 60% 30% 50% 40%;
+    transform: rotate(-20deg) scale(0.95);
+  }
+  75% {
+    border-radius: 30% 50% 40% 60%;
+    transform: rotate(-12deg) scale(1.02);
+  }
+}
+
+.star-accent {
+  position: absolute;
+  top: -2px;
+  right: 2px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  animation: twinkle 4s ease-in-out infinite;
+}
+
+.star-accent::before {
+  content: "✦";
+}
+
+.secondary-accent {
+  position: absolute;
+  bottom: 2px;
+  left: -2px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 10px;
+  animation: twinkle 4s ease-in-out infinite 2s;
+}
+
+.secondary-accent::before {
+  content: "✧";
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1) rotate(180deg);
+  }
+}
+
+.logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.logo-title {
+  font-size: var(--font-size-xxl);
+  font-weight: 300;
+  letter-spacing: -1px;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.95);
+  font-family: var(--font-family-serif);
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  font-style: italic;
+}
+
+.logo-subtitle {
+  font-size: 11px;
+  font-weight: var(--font-weight-normal);
+  letter-spacing: 3px;
+  text-transform: lowercase;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: var(--font-family-primary);
+  margin-top: 2px;
+}
+
+/* Task Icons Animation */
+.task-icons {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  opacity: 0.1;
+}
+
+.task-icons::before,
+.task-icons::after {
+  content: "";
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius-lg);
+}
+
+.task-icons::before {
+  top: 20%;
+  right: 10%;
+  animation: pulse 4s ease-in-out infinite;
+}
+
+.task-icons::after {
+  bottom: 30%;
+  left: 15%;
+  animation: pulse 4s ease-in-out infinite 2s;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.2;
+  }
+}
+
+/* Auth Card Styles */
+.auth-card {
+  background: white;
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  width: 100%;
+  max-width: 400px;
+  box-shadow: var(--shadow-lg);
+}
+
+.auth-title {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-primary);
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+}
+
+.auth-subtitle {
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+/* Form Styles */
+.auth-form .ant-form-item {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Remember Me Container */
+.remember-me-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Back to Login */
+.back-to-login-container {
+  text-align: center;
+  margin-top: var(--spacing-lg);
+}
+
+/* Registration Steps */
+.ant-steps .ant-steps-item-title {
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  white-space: nowrap !important;
+  overflow: visible !important;
+}
+
+.ant-steps.ant-steps-horizontal {
+  margin-bottom: 32px !important;
+}
+
+.ant-steps-item-content {
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+/* Success Message Styles */
+.success-card {
+  background: white;
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius-lg);
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.countdown-text {
+  color: var(--color-text-light);
+  font-size: var(--font-size-sm);
+  margin-top: var(--spacing-md);
+  margin-bottom: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .auth-layout {
+    flex-direction: column;
+  }
+
+  .auth-left {
+    min-height: 200px;
+  }
+
+  .auth-right {
+    padding: var(--spacing-lg);
+  }
+
+  .auth-card {
+    padding: var(--spacing-lg);
+  }
+
+  .auth-title {
+    font-size: var(--font-size-xl);
+  }
+
+  .success-card {
+    max-width: 100%;
+  }
+}

@@ -3,9 +3,14 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { ConfigProvider, App as AntdApp } from 'antd';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ResetPasswordPage from './pages/ResetPasswordPage';
 import { authAPI } from './services/authService';
 import { initNotificationService } from './services/notificationService';
 import './App.css';
+import './styles/global.css';
+import './styles/components/auth.css';
+import './styles/components/forms.css';
 import { colors } from './styles/colors';
 
 // Theme configuration for Ant Design
@@ -16,6 +21,36 @@ const theme = {
     colorBgContainer: colors.background,
     colorAccent: colors.accent,
     borderRadius: 8,
+    // Input field styling
+    colorBgBase: '#ffffff',
+    colorBgElevated: '#ffffff',
+    colorFillAlter: '#ffffff',
+    colorFillSecondary: '#fafafa',
+    colorFillTertiary: '#f5f5f5',
+    colorFillQuaternary: '#f0f0f0',
+  },
+  components: {
+    Input: {
+      colorBgContainer: '#ffffff',
+      colorBorder: '#d9d9d9',
+      colorBorderHover: '#4096ff',
+      colorBgContainerDisabled: '#f5f5f5',
+    },
+    Select: {
+      colorBgContainer: '#ffffff',
+      colorBorder: '#d9d9d9',
+      colorBorderHover: '#4096ff',
+    },
+    DatePicker: {
+      colorBgContainer: '#ffffff',
+      colorBorder: '#d9d9d9',
+      colorBorderHover: '#4096ff',
+    },
+    TextArea: {
+      colorBgContainer: '#ffffff',
+      colorBorder: '#d9d9d9',
+      colorBorderHover: '#4096ff',
+    },
   },
 };
 
@@ -56,7 +91,9 @@ const AppContent: React.FC = () => {
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
-<Route path="/register" element={<RegistrationPage />} />
+            <Route path="/register" element={<RegistrationPage />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
             
             {/* Protected Routes */}
             <Route 

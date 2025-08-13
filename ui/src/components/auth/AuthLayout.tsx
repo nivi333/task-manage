@@ -24,36 +24,6 @@ const ImageSection = styled.div<{ imageUrl?: string }>`
   padding: 48px 40px 40px 48px;
   position: relative;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
-    z-index: 1;
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: float 20s ease-in-out infinite;
-    z-index: 1;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translate(0, 0) rotate(0deg); }
-    33% { transform: translate(30px, -30px) rotate(120deg); }
-    66% { transform: translate(-20px, 20px) rotate(240deg); }
-  }
 `;
 
 const Overlay = styled.div`
@@ -137,7 +107,7 @@ const BrandLogo = styled.div`
 `;
 
 const LogoIcon = styled.div`
-  width: 48px;
+  width: 60px;
   height: 48px;
   position: relative;
   display: flex;
@@ -145,79 +115,118 @@ const LogoIcon = styled.div`
   justify-content: center;
 `;
 
-const LogoSymbol = styled.div`
+const FlowingShape = styled.div`
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 54px;
+  height: 42px;
   
   &::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 0;
-    width: 16px;
-    height: 16px;
-    background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    left: 8px;
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, 
+      rgba(255,255,255,0.95) 0%, 
+      rgba(255,255,255,0.8) 50%,
+      rgba(255,255,255,0.6) 100%);
+    border-radius: 50% 40% 60% 30%;
+    transform: rotate(-15deg);
+    animation: morph 8s ease-in-out infinite;
   }
   
   &::after {
     content: '';
     position: absolute;
-    top: 8px;
-    left: 8px;
-    right: 0;
-    bottom: 0;
-    border: 2px solid #fff;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.1);
-    backdrop-filter: blur(10px);
+    top: 12px;
+    left: 0;
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(225deg, 
+      rgba(255,255,255,0.7) 0%, 
+      rgba(255,255,255,0.4) 100%);
+    border-radius: 40% 60% 50% 30%;
+    transform: rotate(25deg);
+    animation: morph 8s ease-in-out infinite reverse;
+  }
+  
+  @keyframes morph {
+    0%, 100% { 
+      border-radius: 50% 40% 60% 30%;
+      transform: rotate(-15deg) scale(1);
+    }
+    25% { 
+      border-radius: 40% 60% 30% 50%;
+      transform: rotate(-10deg) scale(1.05);
+    }
+    50% { 
+      border-radius: 60% 30% 50% 40%;
+      transform: rotate(-20deg) scale(0.95);
+    }
+    75% { 
+      border-radius: 30% 50% 40% 60%;
+      transform: rotate(-12deg) scale(1.02);
+    }
   }
 `;
 
-const ConnectionLine = styled.div`
+const StarAccent = styled.div`
   position: absolute;
-  top: 12px;
-  left: 20px;
-  width: 12px;
-  height: 2px;
-  background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.6) 100%);
-  border-radius: 1px;
+  top: -2px;
+  right: 2px;
+  color: rgba(255,255,255,0.9);
+  font-size: 14px;
+  animation: twinkle 4s ease-in-out infinite;
   
   &::before {
-    content: '';
-    position: absolute;
-    top: 6px;
-    left: 0;
-    width: 8px;
-    height: 2px;
-    background: linear-gradient(90deg, #fff 0%, rgba(255,255,255,0.4) 100%);
-    border-radius: 1px;
+    content: '✦';
+  }
+  
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.7; transform: scale(1) rotate(0deg); }
+    50% { opacity: 1; transform: scale(1.1) rotate(180deg); }
+  }
+`;
+
+const SecondaryAccent = styled.div`
+  position: absolute;
+  bottom: 2px;
+  left: -2px;
+  color: rgba(255,255,255,0.6);
+  font-size: 10px;
+  animation: twinkle 4s ease-in-out infinite 2s;
+  
+  &::before {
+    content: '✧';
   }
 `;
 
 const LogoText = styled.div`
   display: flex;
   flex-direction: column;
-  gap: -2px;
+  gap: 2px;
 `;
 
 const LogoTitle = styled.span`
-  font-size: 26px;
-  font-weight: 800;
+  font-size: 32px;
+  font-weight: 300;
   letter-spacing: -1px;
   line-height: 1;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  color: rgba(255,255,255,0.95);
+  font-family: 'Georgia', 'Times New Roman', serif;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  font-style: italic;
 `;
 
 const LogoSubtitle = styled.span`
   font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  opacity: 0.9;
-  margin-top: -2px;
+  font-weight: 400;
+  letter-spacing: 3px;
+  text-transform: lowercase;
+  color: rgba(255,255,255,0.75);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  margin-top: 2px;
 `;
 
 const FormSection = styled.div`
@@ -233,12 +242,13 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ imageUrl, imageTitle, imageSubt
     <ImageSection imageUrl={imageUrl}>
       <BrandLogo>
         <LogoIcon>
-          <LogoSymbol />
-          <ConnectionLine />
+          <FlowingShape />
+          <StarAccent />
+          <SecondaryAccent />
         </LogoIcon>
         <LogoText>
-          <LogoTitle>TASK TANGO</LogoTitle>
-          <LogoSubtitle>MANAGE SMARTER, NOT HARDER</LogoSubtitle>
+          <LogoTitle>Task Tango</LogoTitle>
+          <LogoSubtitle>manage smarter, not harder</LogoSubtitle>
         </LogoText>
       </BrandLogo>
       <TaskIcons />

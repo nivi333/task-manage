@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Checkbox, message, Modal } from "antd";
+import { Form, Input, Checkbox, message, Modal } from "antd";
+import Button from "../common/Button";
 import styled from "styled-components";
 import RegistrationStepper from "./RegistrationStepper";
 import PasswordStrengthMeter from "./PasswordStrengthMeter";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
-import { UserOutlined, LockOutlined, MailOutlined, UploadOutlined } from "@ant-design/icons";
+import { UserOutlined, LockOutlined, MailOutlined, UploadOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import ProfileImageCropper from "./ProfileImageCropper";
 
 import { authAPI, RegisterRequest } from "../../services/authService";
@@ -57,10 +58,10 @@ const TermsModal = ({
     <p>
       By registering, you agree to our Terms and Conditions and Privacy Policy.
     </p>
-    <Button type="primary" block onClick={onOk}>
+    <Button variant="primary" block onClick={onOk}>
       Accept
     </Button>
-    <Button block onClick={onCancel} style={{ marginTop: 8 }}>
+    <Button variant="secondary" block onClick={onCancel} style={{ marginTop: 8 }}>
       Decline
     </Button>
   </Modal>
@@ -205,7 +206,7 @@ const RegistrationForm: React.FC = () => {
               <Input prefix={<MailOutlined />} placeholder="Email" />
             </Form.Item>
             <Form.Item>
-              <Button type="primary" block onClick={async () => {
+              <Button variant="primary" block onClick={async () => {
                 try {
                   await form.validateFields(["firstName", "lastName", "username", "email"]);
                   setCurrentStep(1);
@@ -302,7 +303,7 @@ const RegistrationForm: React.FC = () => {
               </Checkbox>
             </Form.Item>
             <Form.Item>
-              <Button type="primary" block onClick={async () => {
+              <Button variant="primary" block onClick={async () => {
                 try {
                   await form.validateFields(["password", "confirmPassword", "acceptTerms"]);
                   setCurrentStep(2);
@@ -311,7 +312,7 @@ const RegistrationForm: React.FC = () => {
               }}>Register</Button>
             </Form.Item>
             <Form.Item>
-              <Button type="default" block onClick={() => setCurrentStep(0)}>
+              <Button variant="secondary" block onClick={() => setCurrentStep(0)}>
                 Back
               </Button>
             </Form.Item>
@@ -324,7 +325,7 @@ const RegistrationForm: React.FC = () => {
           </div>
         )}
         <Form.Item>
-          <Button type="default" block onClick={() => navigate("/login")}>Back to Login</Button>
+          <Button variant="transparent" block onClick={() => navigate("/login")}> <ArrowLeftOutlined /> Back to Login</Button>
         </Form.Item>
       </StyledForm>
       <TermsModal

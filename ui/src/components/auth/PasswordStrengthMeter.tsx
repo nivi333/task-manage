@@ -1,26 +1,4 @@
 import React from "react";
-import styled from "styled-components";
-
-const StrengthBar = styled.div<{ strength: number }>`
-  height: 8px;
-  border-radius: 6px;
-  background: ${({ strength }) => {
-    if (strength === 0) return "#eee";
-    if (strength < 2) return "#ff4d4f";
-    if (strength < 3) return "#faad14";
-    if (strength < 4) return "#52c41a";
-    return "#389e0d";
-  }};
-  width: ${({ strength }) => (strength * 25)}%;
-  transition: width 0.3s, background 0.3s;
-`;
-
-const StrengthText = styled.div`
-  margin-top: 4px;
-  font-size: 12px;
-  color: #888;
-  text-align: right;
-`;
 
 function getStrength(password: string): {score: number, label: string} {
   let score = 0;
@@ -42,10 +20,27 @@ interface Props {
 
 const PasswordStrengthMeter: React.FC<Props> = ({ password }) => {
   const { score, label } = getStrength(password);
+  
+  const getStrengthClass = () => {
+    if (score === 0) return "";
+    if (score < 3) return "weak";
+    if (score < 5) return "fair";
+    return "strong";
+  };
+
   return (
-    <div>
-      <StrengthBar strength={score} />
-      {label && <StrengthText>{label}</StrengthText>}
+    <div className="password-strength-meter">
+      <div className="password-strength-bar">
+        <div 
+          className={`password-strength-fill ${getStrengthClass()}`}
+          style={{ width: `${score * 20}%` }}
+        />
+      </div>
+      {label && (
+        <div className={`password-strength-text ${getStrengthClass()}`}>
+          {label}
+        </div>
+      )}
     </div>
   );
 };

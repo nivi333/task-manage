@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Form, Input, Button, Checkbox, message, Divider } from "antd";
+import { Form, Input, Checkbox, message, Divider } from "antd";
+import Button from "../common/Button";
 // All notifications will use Ant Design's message API at the top by default.
 import {
   UserOutlined,
@@ -285,7 +286,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           </RememberMeContainer>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" loading={loading} block>
+            <Button variant="primary" htmlType="submit" loading={loading} block>
               {loading ? "Signing in..." : "Sign In"}
             </Button>
           </Form.Item>
