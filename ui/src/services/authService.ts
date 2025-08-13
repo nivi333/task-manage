@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { notificationService } from './notificationService';
 
 // Create axios instance with base configuration
 // Prefer environment variable for backend base URL. Example for CRA:
@@ -30,13 +31,24 @@ apiClient.interceptors.request.use(
 
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Show notification popup for API success if message exists
+    if (response.data && response.data.message) {
+      console.log('[NOTIFICATION] Success:', response.data.message);
+      notificationService.success(response.data.message);
+    }
+    return response;
+  },
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
       localStorage.removeItem('authToken');
       localStorage.removeItem('rememberMe');
       window.location.href = '/login';
+    } else if (error.response?.data?.message) {
+      // Show notification popup for API error if message exists
+      console.log('[NOTIFICATION] Error:', error.response.data.message);
+      notificationService.error(error.response.data.message);
     }
     return Promise.reject(error);
   }
@@ -80,6 +92,8 @@ export interface RegisterRequest {
   firstName: string;
   lastName: string;
   acceptTerms: boolean;
+  // Optional profile image for registration (File object)
+  profileImage?: File;
 }
 
 export interface ForgotPasswordRequest {
@@ -108,7 +122,22 @@ export const authAPI = {
 
   // Register new user
   register: async (data: RegisterRequest): Promise<any> => {
-    const response = await apiClient.post('/auth/register', data);
+    let payload: any = data;
+    let config = {};
+    if (data.profileImage) {
+      // Use FormData for multipart upload if profileImage is present
+      const formData = new FormData();
+      formData.append("username", data.username);
+      formData.append("email", data.email);
+      formData.append("password", data.password);
+      formData.append("firstName", data.firstName);
+      formData.append("lastName", data.lastName);
+      formData.append("acceptTerms", String(data.acceptTerms));
+      formData.append("profileImage", data.profileImage);
+      payload = formData;
+      config = { headers: { "Content-Type": "multipart/form-data" } };
+    }
+    const response = await apiClient.post('/auth/register', payload, config);
     return response.data;
   },
 

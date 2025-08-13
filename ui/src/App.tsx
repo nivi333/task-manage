@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, App as AntdApp } from 'antd';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import { authAPI } from './services/authService';
+import { initNotificationService } from './services/notificationService';
 import './App.css';
 import { colors } from './styles/colors';
 
@@ -38,7 +39,16 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
-function App() {
+// Inner App component that uses the App context
+const AppContent: React.FC = () => {
+  const { message } = AntdApp.useApp();
+
+  useEffect(() => {
+    // Initialize the notification service with the message API from App context
+    initNotificationService(message);
+    console.log('[NOTIFICATION] Service initialized with App context');
+  }, [message]);
+
   return (
     <ConfigProvider theme={theme}>
       <Router>
@@ -67,6 +77,14 @@ function App() {
         </div>
       </Router>
     </ConfigProvider>
+  );
+};
+
+function App() {
+  return (
+    <AntdApp>
+      <AppContent />
+    </AntdApp>
   );
 }
 

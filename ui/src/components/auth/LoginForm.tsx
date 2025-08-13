@@ -1,11 +1,18 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Checkbox, message, Divider } from 'antd';
-import { UserOutlined, LockOutlined, EyeInvisibleOutlined, EyeTwoTone, GoogleOutlined, GithubOutlined } from '@ant-design/icons';
-import styled from 'styled-components';
-import { authAPI } from '../../services/authService';
-import TwoFactorModal from './TwoFactorModal';
-import LoadingSpinner from '../common/LoadingSpinner';
-
+import React, { useState } from "react";
+import { Form, Input, Button, Checkbox, message, Divider } from "antd";
+// All notifications will use Ant Design's message API at the top by default.
+import {
+  UserOutlined,
+  LockOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  GoogleOutlined,
+  GithubOutlined,
+} from "@ant-design/icons";
+import styled from "styled-components";
+import { authAPI } from "../../services/authService";
+import TwoFactorModal from "./TwoFactorModal";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 const LoginCard = styled.div`
   background: white;
@@ -39,21 +46,21 @@ const SocialButton = styled(Button)`
   gap: 8px;
   border-radius: 8px;
   font-weight: 500;
-  
+
   &.google {
     border-color: #db4437;
     color: #db4437;
-    
+
     &:hover {
       background-color: #db4437;
       color: white;
     }
   }
-  
+
   &.github {
     border-color: #333;
     color: #333;
-    
+
     &:hover {
       background-color: #333;
       color: white;
@@ -65,12 +72,12 @@ const StyledForm = styled(Form)`
   .ant-form-item {
     margin-bottom: 20px;
   }
-  
+
   .ant-input-affix-wrapper {
     height: 45px;
     border-radius: 8px;
   }
-  
+
   .ant-btn-primary {
     height: 45px;
     border-radius: 8px;
@@ -89,7 +96,7 @@ const RememberMeContainer = styled.div`
 const ForgotPasswordLink = styled.a`
   color: #667eea;
   text-decoration: none;
-  
+
   &:hover {
     color: #764ba2;
     text-decoration: underline;
@@ -123,41 +130,48 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
   const handleLogin = async (values: LoginFormData) => {
     setLoading(true);
-    
+
     try {
       const response = await authAPI.login({
         usernameOrEmail: values.usernameOrEmail,
         password: values.password,
-        rememberMe: values.rememberMe
+        rememberMe: values.rememberMe,
       });
 
       if (response.data.requires2FA) {
         setTempLoginData(response.data);
         setTwoFactorVisible(true);
-        message.info('Please enter your 2FA code to complete login');
+        console.log("[NOTIFICATION] LoginForm info");
+        message.info("Please enter your 2FA code to complete login");
       } else {
         // Store auth token
         if (response.data.token) {
-          localStorage.setItem('authToken', response.data.token);
+          localStorage.setItem("authToken", response.data.token);
         }
         if (values.rememberMe) {
-          localStorage.setItem('rememberMe', 'true');
+          localStorage.setItem("rememberMe", "true");
         }
-        
-        message.success('Login successful!');
+
+        console.log("[NOTIFICATION] LoginForm success");
+        message.success("Login successful!");
         onLoginSuccess(response.data.user);
       }
     } catch (error: any) {
-      console.error('Login error:', error);
-      
+      console.error("Login error:", error);
+
       if (error.response?.status === 401) {
-        message.error('Invalid credentials. Please check your username/email and password.');
+        console.log("[NOTIFICATION] LoginForm error");
+        message.error(
+          "Invalid credentials. Please check your username/email and password."
+        );
       } else if (error.response?.status === 423) {
-        message.error('Account is locked. Please contact support or try again later.');
-      } else if (error.response?.data?.message) {
-        message.error(error.response.data.message);
+        console.log("[NOTIFICATION] LoginForm error");
+        message.error(
+          "Account is locked. Please contact support or try again later."
+        );
       } else {
-        message.error('Login failed. Please try again.');
+        console.log("[NOTIFICATION] LoginForm error");
+        message.error(error.response?.data?.message || "Login failed");
       }
     } finally {
       setLoading(false);
@@ -166,28 +180,31 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
   const handle2FASuccess = async (twoFactorCode: string) => {
     setLoading(true);
-    
+
     try {
       const response = await authAPI.verify2FA({
-        tempToken: tempLoginData?.tempToken || '',
-        code: twoFactorCode
+        tempToken: tempLoginData?.tempToken || "",
+        code: twoFactorCode,
       });
 
       if (response.data.token) {
-        localStorage.setItem('authToken', response.data.token);
+        localStorage.setItem("authToken", response.data.token);
       }
-      message.success('2FA verification successful!');
+      console.log("[NOTIFICATION] LoginForm success");
+      message.success("2FA verification successful!");
       onLoginSuccess(response.data.user);
       setTwoFactorVisible(false);
     } catch (error: any) {
-      console.error('2FA verification error:', error);
-      message.error('Invalid 2FA code. Please try again.');
+      console.error("2FA verification error:", error);
+      console.log("[NOTIFICATION] LoginForm error");
+      message.error("Invalid 2FA code. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleSocialLogin = (provider: 'google' | 'github') => {
+  const handleSocialLogin = (provider: "google" | "github") => {
+    console.log("[NOTIFICATION] LoginForm info");
     message.info(`${provider} login will be implemented soon`);
     // TODO: Implement OAuth2 flow
     // window.location.href = `/api/v1/oauth2/authorize/${provider}`;
@@ -197,7 +214,6 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
     <>
       <LoginCard>
         <LoginTitle>Login</LoginTitle>
-        
 
         <StyledForm
           form={form}
@@ -209,21 +225,30 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           <Form.Item
             name="usernameOrEmail"
             rules={[
-              { required: true, message: 'Please input your username or email!' },
+              {
+                required: true,
+                message: "Please input your username or email!",
+              },
               {
                 validator: (_, value) => {
                   if (!value) return Promise.resolve();
-                  
-                  const isEmail = value.includes('@');
+
+                  const isEmail = value.includes("@");
                   if (isEmail && !validateEmail(value)) {
-                    return Promise.reject(new Error('Please enter a valid email address!'));
+                    return Promise.reject(
+                      new Error("Please enter a valid email address!")
+                    );
                   }
                   if (!isEmail && !validateUsername(value)) {
-                    return Promise.reject(new Error('Username must be at least 3 characters and contain only letters, numbers, and underscores!'));
+                    return Promise.reject(
+                      new Error(
+                        "Username must be at least 3 characters and contain only letters, numbers, and underscores!"
+                      )
+                    );
                   }
                   return Promise.resolve();
-                }
-              }
+                },
+              },
             ]}
           >
             <Input
@@ -236,15 +261,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           <Form.Item
             name="password"
             rules={[
-              { required: true, message: 'Please input your password!' },
-              { min: 6, message: 'Password must be at least 6 characters!' }
+              { required: true, message: "Please input your password!" },
+              { min: 6, message: "Password must be at least 6 characters!" },
             ]}
           >
             <Input.Password
               prefix={<LockOutlined />}
               placeholder="Password"
               autoComplete="current-password"
-              iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+              iconRender={(visible) =>
+                visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
+              }
             />
           </Form.Item>
 
@@ -258,19 +285,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           </RememberMeContainer>
 
           <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              loading={loading}
-              block
-            >
-              {loading ? 'Signing in...' : 'Sign In'}
+            <Button type="primary" htmlType="submit" loading={loading} block>
+              {loading ? "Signing in..." : "Sign In"}
             </Button>
           </Form.Item>
         </StyledForm>
 
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          Don't have an account? <a href="/register" style={{ color: '#667eea' }}>Sign up</a>
+        <div style={{ textAlign: "center", marginTop: "20px" }}>
+          Don't have an account?{" "}
+          <a href="/register" style={{ color: "#667eea" }}>
+            Sign up
+          </a>
         </div>
       </LoginCard>
 
