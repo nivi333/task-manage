@@ -53,26 +53,29 @@ const StyledButton = styled(AntButton)<{ $variant: string; $size: string }>`
       color: white;
       
       &:hover:not(:disabled) {
-        background: linear-gradient(135deg, #7a8ef0 0%, #8a5fb8 100%) !important;
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%) !important;
         color: white !important;
         box-shadow: var(--shadow-md) !important;
         transform: translateY(-1px) !important;
         transition: all 0.2s ease !important;
+        filter: brightness(1.1) !important;
       }
       
       &:focus:not(:disabled) {
-        background: linear-gradient(135deg, #7a8ef0 0%, #8a5fb8 100%) !important;
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%) !important;
         color: white !important;
         box-shadow: var(--shadow-md) !important;
         transform: translateY(-1px) !important;
         transition: all 0.2s ease !important;
+        filter: brightness(1.1) !important;
       }
       
       &:active:not(:disabled) {
-        background: linear-gradient(135deg, #5a6ee8 0%, #6a4fa0 100%) !important;
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%) !important;
         color: white !important;
         transform: translateY(0px) !important;
         box-shadow: var(--shadow-sm) !important;
+        filter: brightness(0.9) !important;
       }
     `}
     
