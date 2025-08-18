@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Space, Typography, Modal, message } from 'antd';
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { PlusOutlined, ExclamationCircleOutlined, LogoutOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import UserTable from '../components/admin/UserTable';
 import UserFilters from '../components/admin/UserFilters';
 import BulkActions from '../components/admin/BulkActions';
@@ -16,6 +17,7 @@ import {
   UserListResponse
 } from '../types/user';
 import { userService } from '../services/userService';
+import { authAPI } from '../services/authService';
 
 const { Title } = Typography;
 const { confirm } = Modal;
@@ -37,6 +39,8 @@ const UserManagementPage: React.FC = () => {
     sortBy: 'createdAt',
     sortDirection: 'desc' as const,
   });
+
+  const navigate = useNavigate();
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -89,6 +93,14 @@ const UserManagementPage: React.FC = () => {
   const handleCreateUser = () => {
     setEditingUser(undefined);
     setUserModalVisible(true);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await authAPI.logout();
+    } finally {
+      navigate('/login');
+    }
   };
 
   const handleEditUser = (user: User) => {
@@ -172,13 +184,22 @@ const UserManagementPage: React.FC = () => {
           <Title level={2} style={{ margin: 0 }}>
             User Management
           </Title>
-          <Button
-            variant="primary"
-            icon={<PlusOutlined />}
-            onClick={handleCreateUser}
-          >
-            Add User
-          </Button>
+          <Space>
+            <Button
+              variant="secondary"
+              icon={<LogoutOutlined />}
+              onClick={handleLogout}
+            >
+              Logout
+            </Button>
+            <Button
+              variant="primary"
+              icon={<PlusOutlined />}
+              onClick={handleCreateUser}
+            >
+              Add User
+            </Button>
+          </Space>
         </div>
         
         <Card>

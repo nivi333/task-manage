@@ -1,11 +1,13 @@
-import axios from 'axios';
-import { User, CreateUserRequest, UpdateUserRequest, UserFilters, UserListResponse, BulkUserAction } from '../types/user';
+import { User, CreateUserRequest, UpdateUserRequest, UserFilters, UserListResponse, BulkUserAction, UserProfile, UpdateProfileRequest, ChangePasswordRequest, TwoFAEnableResponse } from '../types/user';
 import { notificationService } from './notificationService';
+import apiClient from './authService';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8080';
+// Prefer the same base URL env var used by authService for consistency
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080/api/v1';
 
 export class UserService {
-  private baseURL = `${API_BASE_URL}/api/v1/users`;
+  private baseURL = `${API_BASE_URL}/users`;
+  private authBaseURL = `${API_BASE_URL}/auth`;
 
   async getUsers(filters: UserFilters = {}): Promise<UserListResponse> {
     try {
@@ -19,8 +21,34 @@ export class UserService {
       if (filters.sortBy) params.append('sortBy', filters.sortBy);
       if (filters.sortDirection) params.append('sortDirection', filters.sortDirection);
 
-      const response = await axios.get(`${this.baseURL}?${params.toString()}`);
-      return response.data;
+      const response = await apiClient.get(`${this.baseURL}?${params.toString()}`);
+      const page = response.data;
+      const users: User[] = (page.content || []).map((u: any) => {
+        const primaryRole = Array.isArray(u.roles)
+          ? (u.roles[0]?.name || u.roles[0] || 'USER')
+          : u.role || 'USER';
+        return {
+          id: u.id,
+          username: u.username,
+          email: u.email,
+          firstName: u.firstName,
+          lastName: u.lastName,
+          role: primaryRole,
+          status: u.status,
+          createdAt: u.createdAt,
+          updatedAt: u.updatedAt,
+          lastLogin: u.lastLogin,
+          profilePicture: u.avatarUrl,
+        } as User;
+      });
+      const result: UserListResponse = {
+        users,
+        totalElements: page.totalElements ?? users.length,
+        totalPages: page.totalPages ?? 1,
+        currentPage: page.number ?? 0,
+        pageSize: page.size ?? users.length,
+      };
+      return result;
     } catch (error: any) {
       console.error('Error fetching users:', error);
       notificationService.error('Failed to fetch users');
@@ -30,7 +58,7 @@ export class UserService {
 
   async getUserById(id: string): Promise<User> {
     try {
-      const response = await axios.get(`${this.baseURL}/${id}`);
+      const response = await apiClient.get(`${this.baseURL}/${id}`);
       return response.data;
     } catch (error: any) {
       console.error('Error fetching user:', error);
@@ -41,7 +69,7 @@ export class UserService {
 
   async createUser(userData: CreateUserRequest): Promise<User> {
     try {
-      const response = await axios.post(this.baseURL, userData);
+      const response = await apiClient.post(this.baseURL, userData);
       notificationService.success('User created successfully');
       return response.data;
     } catch (error: any) {
@@ -54,7 +82,7 @@ export class UserService {
 
   async updateUser(id: string, userData: UpdateUserRequest): Promise<User> {
     try {
-      const response = await axios.put(`${this.baseURL}/${id}`, userData);
+      const response = await apiClient.put(`${this.baseURL}/${id}`, userData);
       notificationService.success('User updated successfully');
       return response.data;
     } catch (error: any) {
@@ -67,7 +95,7 @@ export class UserService {
 
   async deleteUser(id: string): Promise<void> {
     try {
-      await axios.delete(`${this.baseURL}/${id}`);
+      await apiClient.delete(`${this.baseURL}/${id}`);
       notificationService.success('User deleted successfully');
     } catch (error: any) {
       console.error('Error deleting user:', error);
@@ -79,7 +107,7 @@ export class UserService {
 
   async bulkAction(action: BulkUserAction): Promise<void> {
     try {
-      await axios.post(`${this.baseURL}/bulk-action`, action);
+      await apiClient.post(`${this.baseURL}/bulk-action`, action);
       
       const actionMessages = {
         delete: 'Users deleted successfully',
@@ -105,7 +133,7 @@ export class UserService {
       if (filters.role) params.append('role', filters.role);
       if (filters.status) params.append('status', filters.status);
 
-      const response = await axios.get(`${this.baseURL}/export?${params.toString()}`, {
+      const response = await apiClient.get(`${this.baseURL}/export?${params.toString()}`, {
         responseType: 'blob'
       });
       
@@ -114,6 +142,56 @@ export class UserService {
     } catch (error: any) {
       console.error('Error exporting users:', error);
       notificationService.error('Failed to export users');
+      throw error;
+    }
+  }
+
+  // ===== Profile endpoints =====
+  async getProfile(): Promise<UserProfile> {
+    try {
+      const { data } = await apiClient.get(`${this.baseURL}/profile`);
+      return data;
+    } catch (error: any) {
+      console.error('Error fetching profile:', error);
+      notificationService.error('Failed to load profile');
+      throw error;
+    }
+  }
+
+  async updateProfile(req: UpdateProfileRequest): Promise<UserProfile> {
+    try {
+      const { data } = await apiClient.put(`${this.baseURL}/profile`, req);
+      notificationService.success('Profile updated');
+      return data;
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
+      const message = error.response?.data?.message || 'Failed to update profile';
+      notificationService.error(message);
+      throw error;
+    }
+  }
+
+  async changePassword(req: ChangePasswordRequest): Promise<void> {
+    try {
+      await apiClient.post(`${this.baseURL}/change-password`, req);
+      notificationService.success('Password changed successfully');
+    } catch (error: any) {
+      console.error('Error changing password:', error);
+      const message = error.response?.data?.message || 'Failed to change password';
+      notificationService.error(message);
+      throw error;
+    }
+  }
+
+  async enable2FA(): Promise<TwoFAEnableResponse> {
+    try {
+      const { data } = await apiClient.post(`${this.authBaseURL}/2fa/enable`);
+      notificationService.success('2FA enabled');
+      return data;
+    } catch (error: any) {
+      console.error('Error enabling 2FA:', error);
+      const message = error.response?.data?.message || 'Failed to enable 2FA';
+      notificationService.error(message);
       throw error;
     }
   }

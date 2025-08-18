@@ -8,7 +8,7 @@ export interface User {
   status: UserStatus;
   createdAt: string;
   updatedAt: string;
-  lastLoginAt?: string;
+  lastLogin?: string;
   profilePicture?: string;
 }
 
@@ -64,4 +64,34 @@ export interface UserListResponse {
 export interface BulkUserAction {
   userIds: string[];
   action: 'delete' | 'activate' | 'deactivate' | 'suspend';
+}
+
+// Profile types
+export interface UserProfile {
+  id: string;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  profilePicture?: string;
+}
+
+export interface UpdateProfileRequest {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  username?: string;
+  profilePicture?: string; // URL or base64 as per backend contract
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+
+export interface TwoFAEnableResponse {
+  qrImageUrl?: string; // URL for QR image if backend returns
+  secretKey?: string;  // fallback secret
+  message?: string;
 }

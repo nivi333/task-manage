@@ -6,7 +6,7 @@ interface ButtonProps
   extends Omit<AntButtonProps, "type" | "size" | "variant"> {
   variant?: "primary" | "secondary" | "transparent";
   size?: "sm" | "md" | "lg";
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const StyledButton = styled(AntButton)<{ $variant: string; $size: string }>`

@@ -88,6 +88,44 @@ public class UserService {
         return users.map(this::getProfile);
     }
 
+    // ADMIN: Create user
+    @org.springframework.transaction.annotation.Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO adminCreateUser(
+            com.example.tasksmanage.dto.AdminCreateUserRequest req, User actor) {
+        if (userRepository.existsByEmail(req.getEmail())) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+        if (userRepository.existsByUsername(req.getUsername())) {
+            throw new IllegalArgumentException("Username already in use");
+        }
+
+        User user = new User();
+        user.setEmail(req.getEmail());
+        user.setUsername(req.getUsername());
+        user.setFirstName(req.getFirstName());
+        user.setLastName(req.getLastName());
+        user.setPassword(passwordEncoder.encode(req.getPassword()));
+
+        // Set role
+        var roleEntity = roleRepository.findByName(req.getRole())
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + req.getRole()));
+        user.setRoles(new java.util.HashSet<>(java.util.Collections.singleton(roleEntity)));
+
+        // Set status
+        try {
+            user.setStatus(com.example.tasksmanage.model.AccountStatus.valueOf(req.getStatus()));
+        } catch (IllegalArgumentException ex) {
+            throw new IllegalArgumentException("Invalid status: " + req.getStatus());
+        }
+
+        user.setCreatedAt(new java.util.Date());
+        user.setUpdatedAt(new java.util.Date());
+
+        User saved = userRepository.save(user);
+        logAudit(saved, actor, "CREATE", "User created by admin");
+        return getProfile(saved);
+    }
+
     // ADMIN: Suspend user by id
     @Transactional
     public com.example.tasksmanage.dto.UserProfileDTO suspendUser(java.util.UUID id, User actor) {

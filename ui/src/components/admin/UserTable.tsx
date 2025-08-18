@@ -201,18 +201,18 @@ const UserTable: React.FC<UserTableProps> = ({
     },
     {
       title: 'Last Login',
-      dataIndex: 'lastLoginAt',
-      key: 'lastLoginAt',
-      render: (date: string) => date ? new Date(date).toLocaleDateString() : 'Never',
+      dataIndex: 'lastLogin',
+      key: 'lastLogin',
+      render: (date?: string) => (date ? new Date(date).toLocaleDateString() : 'Never'),
       sorter: true,
-      sortOrder: filters.sortBy === 'lastLoginAt' ? 
+      sortOrder: filters.sortBy === 'lastLogin' ? 
         (filters.sortDirection === 'asc' ? 'ascend' : 'descend') as SortOrder : undefined,
     },
     {
       title: 'Created',
       dataIndex: 'createdAt',
       key: 'createdAt',
-      render: (date: string) => new Date(date).toLocaleDateString(),
+      render: (date?: string) => (date ? new Date(date).toLocaleDateString() : '-'),
       sorter: true,
       sortOrder: filters.sortBy === 'createdAt' ? 
         (filters.sortDirection === 'asc' ? 'ascend' : 'descend') as SortOrder : undefined,

@@ -175,57 +175,66 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   - **Priority:** HIGH | **Estimated:** 5 days
   - **Components:** TaskBoard, TaskCard, FilterSidebar, QuickActions, TaskStats
   - **Features:**
-    - [ ] Kanban board view (To Do, In Progress, Done)
-    - [ ] List view with sorting/filtering
-    - [ ] Task cards with priority indicators
-    - [ ] Drag-and-drop functionality
-    - [ ] Quick task creation
-    - [ ] Advanced filters (status, priority, assignee, date range)
-    - [ ] Task statistics dashboard
+    - [x] Kanban board view (To Do, In Progress, Done) — route: `/tasks/board`
+    - [x] List view with sorting/filtering — route: `/tasks`
+    - [x] Task cards with priority indicators
+    - [x] Drag-and-drop functionality (native HTML5)
+    - [x] Quick task creation (modal)
+    - [x] Advanced filters (status, priority, assignee, due date range)
+    - [x] Task statistics dashboard — route: `/tasks/stats`
   - **API Integration:**
-    - [ ] `GET /api/v1/tasks` (with advanced filtering)
-    - [ ] `PUT /api/v1/tasks/{id}` (for status updates)
+    - [x] `GET /api/v1/tasks` (with advanced filtering)
+    - [x] `PUT /api/v1/tasks/{id}` (for status updates)
+  - **Routes:**
+    - [x] `/tasks` — Task list view
+    - [x] `/tasks/board` — Kanban board view
+    - [x] `/tasks/stats` — Task statistics dashboard
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid status
-    - [ ] Filter logic
+    - [x] Required fields (quick create title)
+    - [x] Valid status (select options)
+    - [x] Filter logic (includes due date range)
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors (global notifications)
+    - [x] Validation errors (form + filters)
+    - [x] Unauthorized access (handled by auth interceptor)
 
-- [ ] **Task 7: Task Creation/Edit Form**
+- [x] **Task 7: Task Creation/Edit Form**
 
-  - **Priority:** HIGH | **Estimated:** 3 days
-  - **Components:** TaskForm, DatePicker, UserSelector, TagInput, FileUpload
+  - **Priority:** HIGH | **Estimated:** 3 days | **✅ COMPLETED**
+  - **Components:** TaskForm, DatePicker, UserSelector, TagInput, FileUpload (UI), DependencySelector, RecurringOptions
   - **Features:**
-    - [ ] Rich text editor for description
-    - [ ] Due date picker with calendar
-    - [ ] Priority selection (High, Medium, Low)
-    - [ ] Assignee selection with search
-    - [ ] Tag management with autocomplete
-    - [ ] File attachments
-    - [ ] Task dependencies selection
-    - [ ] Recurring task options
+    - [ ] Rich text editor for description (TextArea placeholder in place)
+    - [x] Due date picker with calendar
+    - [x] Priority selection (High, Medium, Low)
+    - [x] Assignee selection with search
+    - [x] Tag management with autocomplete
+    - [x] File attachments (UI only; backend upload wiring TBD)
+    - [x] Task dependencies selection (search tasks)
+    - [x] Recurring task options (frequency/interval/count)
   - **API Integration:**
-    - [ ] `POST /api/v1/tasks`
-    - [ ] `PUT /api/v1/tasks/{id}`
-    - [ ] `GET /api/v1/users` (for assignee dropdown)
+    - [x] `POST /api/v1/tasks`
+    - [x] `PUT /api/v1/tasks/{id}`
+    - [x] `GET /api/v1/users` (for assignee dropdown; requires ADMIN by backend policy)
+  - **Routes:**
+    - [x] `/tasks/new` — Create Task page
+    - [x] `/tasks/:id/edit` — Edit Task page
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid dates
-    - [ ] Valid priority
+    - [x] Required fields (Title)
+    - [x] Valid dates
+    - [x] Valid priority
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors (global notifications)
+    - [x] Validation errors
+    - [x] Unauthorized access (401 handled by auth interceptor)
+
+  > **Status:** Implemented create/edit flows with global notifications. Description rich text editor and backend file upload integration remain as enhancements.
 
 - [ ] **Task 8: Task Detail View**
 
   - **Priority:** HIGH | **Estimated:** 4 days
   - **Components:** TaskHeader, TaskDescription, CommentSection, ActivityTimeline, TimeTracker
   - **Features:**
-    - [ ] Full task information display
+    - [x] Full task information display
     - [ ] Inline editing capabilities
     - [ ] Comment system with mentions
     - [ ] Activity/audit log
@@ -234,7 +243,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [ ] Task dependency visualization
     - [ ] Subtask management
   - **API Integration:**
-    - [ ] `GET /api/v1/tasks/{id}`
+    - [x] `GET /api/v1/tasks/{id}`
     - [ ] `GET /api/v1/tasks/{taskId}/comments`
     - [ ] `POST /api/v1/tasks/{taskId}/comments`
     - [ ] `POST /api/v1/task-time-tracking`

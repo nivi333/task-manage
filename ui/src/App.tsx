@@ -1,11 +1,19 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider, App as AntdApp } from 'antd';
+import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
+import { ConfigProvider, App as AntdApp, Button, Space, Typography, Card } from 'antd';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import UserManagementPage from './pages/UserManagementPage';
+import TasksListPage from './pages/TasksListPage';
+import TasksBoardPage from './pages/TasksBoardPage';
+import TaskDetailPage from './pages/TaskDetailPage';
+import CreateTaskPage from './pages/CreateTaskPage';
+import EditTaskPage from './pages/EditTaskPage';
+import TasksStatsPage from './pages/TasksStatsPage';
+import UserProfilePage from './pages/UserProfilePage';
+import DashboardPage from './pages/DashboardPage';
 import { authAPI } from './services/authService';
 import { initNotificationService } from './services/notificationService';
 import './App.css';
@@ -56,17 +64,22 @@ const theme = {
   },
 };
 
-// Temporary Dashboard component (will be replaced with actual dashboard)
+// Temporary Dashboard component with navigation shortcuts
 const Dashboard: React.FC = () => (
-  <div style={{ padding: '50px', textAlign: 'center' }}>
-    <h1>Welcome to Task Management Dashboard!</h1>
-    <p>Login successful. Dashboard implementation coming soon...</p>
-    <button onClick={() => {
-      authAPI.logout();
-      window.location.href = '/login';
-    }}>
-      Logout
-    </button>
+  <div style={{ padding: 24, display: 'flex', justifyContent: 'center' }}>
+    <Card style={{ maxWidth: 720, width: '100%', textAlign: 'center' }}>
+      <Typography.Title level={3} style={{ marginBottom: 8 }}>Welcome to Task Management Dashboard</Typography.Title>
+      <Typography.Paragraph type="secondary" style={{ marginBottom: 24 }}>
+        Choose a section below to get started.
+      </Typography.Paragraph>
+      <Space size={[12, 12]} wrap>
+        <Link to="/tasks"><Button type="primary">View Task List</Button></Link>
+        <Link to="/tasks/board"><Button>Open Kanban Board</Button></Link>
+        <Link to="/tasks/stats"><Button>View Task Statistics</Button></Link>
+        <Link to="/profile"><Button>My Profile</Button></Link>
+        <Button danger onClick={() => { authAPI.logout(); window.location.href = '/login'; }}>Logout</Button>
+      </Space>
+    </Card>
   </div>
 );
 
@@ -122,9 +135,65 @@ const AppContent: React.FC = () => {
               path="/dashboard" 
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <DashboardPage />
                 </ProtectedRoute>
               } 
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <UserProfilePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks"
+              element={
+                <ProtectedRoute>
+                  <TasksListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks/board"
+              element={
+                <ProtectedRoute>
+                  <TasksBoardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks/stats"
+              element={
+                <ProtectedRoute>
+                  <TasksStatsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks/new"
+              element={
+                <ProtectedRoute>
+                  <CreateTaskPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks/:id"
+              element={
+                <ProtectedRoute>
+                  <TaskDetailPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/tasks/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <EditTaskPage />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/admin/users"

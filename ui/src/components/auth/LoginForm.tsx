@@ -139,15 +139,20 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         rememberMe: values.rememberMe,
       });
 
-      if (response.data.requires2FA) {
+      if ((response as any)?.data?.requires2FA) {
         setTempLoginData(response.data);
         setTwoFactorVisible(true);
         console.log("[NOTIFICATION] LoginForm info");
         message.info("Please enter your 2FA code to complete login");
       } else {
-        // Store auth token
-        if (response.data.token) {
-          localStorage.setItem("authToken", response.data.token);
+        // Store auth tokens (backend returns accessToken/refreshToken)
+        const accessToken = (response as any)?.data?.accessToken;
+        const refreshToken = (response as any)?.data?.refreshToken;
+        if (accessToken) {
+          localStorage.setItem("authToken", accessToken);
+        }
+        if (refreshToken) {
+          localStorage.setItem("refreshToken", refreshToken);
         }
         if (values.rememberMe) {
           localStorage.setItem("rememberMe", "true");
@@ -155,7 +160,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
         console.log("[NOTIFICATION] LoginForm success");
         message.success("Login successful!");
-        onLoginSuccess(response.data.user);
+        // Decode roles from JWT if present and pass to caller
+        let roles: string[] = [];
+        try {
+          if (accessToken) {
+            const payloadStr = atob(accessToken.split(".")[1] || "");
+            const payload = JSON.parse(payloadStr);
+            roles = Array.isArray(payload?.roles) ? payload.roles : [];
+          }
+        } catch (e) {
+          // ignore decoding errors
+        }
+        onLoginSuccess({ roles });
       }
     } catch (error: any) {
       console.error("Login error:", error);
@@ -188,12 +204,27 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         code: twoFactorCode,
       });
 
-      if (response.data.token) {
-        localStorage.setItem("authToken", response.data.token);
+      // Store access token from backend
+      const accessToken = (response as any)?.data?.accessToken || (response as any)?.data?.token;
+      const refreshToken = (response as any)?.data?.refreshToken;
+      if (accessToken) {
+        localStorage.setItem("authToken", accessToken);
+      }
+      if (refreshToken) {
+        localStorage.setItem("refreshToken", refreshToken);
       }
       console.log("[NOTIFICATION] LoginForm success");
       message.success("2FA verification successful!");
-      onLoginSuccess(response.data.user);
+      // Pass roles decoded from token if possible
+      let roles: string[] = [];
+      try {
+        if (accessToken) {
+          const payloadStr = atob(accessToken.split(".")[1] || "");
+          const payload = JSON.parse(payloadStr);
+          roles = Array.isArray(payload?.roles) ? payload.roles : [];
+        }
+      } catch (e) {}
+      onLoginSuccess({ roles });
       setTwoFactorVisible(false);
     } catch (error: any) {
       console.error("2FA verification error:", error);

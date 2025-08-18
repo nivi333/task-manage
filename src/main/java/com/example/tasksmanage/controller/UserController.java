@@ -7,6 +7,7 @@ import com.example.tasksmanage.model.User;
 import com.example.tasksmanage.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,16 @@ public class UserController {
             @RequestParam(required = false) String search
     ) {
         return ResponseEntity.ok(userService.listUsers(page, size, search));
+    }
+
+    // ADMIN: Create user
+    @PostMapping("")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<com.example.tasksmanage.dto.UserProfileDTO> createUser(
+            @Valid @RequestBody com.example.tasksmanage.dto.AdminCreateUserRequest req,
+            @AuthenticationPrincipal User actor) {
+        com.example.tasksmanage.dto.UserProfileDTO created = userService.adminCreateUser(req, actor);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     // ADMIN: Suspend user
