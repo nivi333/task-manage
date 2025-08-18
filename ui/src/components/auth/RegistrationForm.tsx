@@ -91,7 +91,9 @@ const RegistrationForm: React.FC = () => {
     setShowProfileCropper(false);
   };
 
-  const handleFinish = async (values: any) => {
+  const handleFinish = async (_values: any) => {
+    // Always read all values from the form store, including unmounted fields across steps
+    const values = form.getFieldsValue(true);
     console.log("Submitting registration with values:", values);
     if (!values.acceptTerms) {
       console.log('[NOTIFICATION] RegistrationForm error');
@@ -119,6 +121,8 @@ const RegistrationForm: React.FC = () => {
       console.log('[NOTIFICATION] RegistrationForm success');
       console.log('[NOTIFICATION] RegistrationForm info');
       message.success("Registration successful!");
+      // Move to completion step only after successful submission
+      setCurrentStep(2);
       form.resetFields();
       setAcceptedTerms(false);
     } catch (err: any) {
@@ -170,6 +174,7 @@ const RegistrationForm: React.FC = () => {
             );
           }
         }}
+        preserve
         initialValues={{ acceptTerms: false }}
       >
         {currentStep === 0 && (
@@ -240,16 +245,6 @@ const RegistrationForm: React.FC = () => {
               <Input.Password prefix={<LockOutlined />} placeholder="Password" onChange={e => setPasswordValue(e.target.value)} />
             </Form.Item>
             <PasswordStrengthMeter password={passwordValue} />
-            <Form.Item label="Profile Picture (optional)">
-              <Button icon={<UploadOutlined />} block onClick={() => setShowProfileCropper(true)}>
-                Upload Profile Picture (optional)
-              </Button>
-              {profileImageUrl && (
-                <div style={{ marginTop: 12, textAlign: 'center' }}>
-                  <img src={profileImageUrl} alt="Profile Preview" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '1px solid #ddd' }} />
-                </div>
-              )}
-            </Form.Item>
             <Form.Item
               name="confirmPassword"
               label="Confirm Password"
@@ -271,6 +266,16 @@ const RegistrationForm: React.FC = () => {
                 prefix={<LockOutlined />}
                 placeholder="Confirm Password"
               />
+            </Form.Item>
+            <Form.Item label="Profile Picture (optional)">
+              <Button icon={<UploadOutlined />} block onClick={() => setShowProfileCropper(true)}>
+                Upload Profile Picture (optional)
+              </Button>
+              {profileImageUrl && (
+                <div style={{ marginTop: 12, textAlign: 'center' }}>
+                  <img src={profileImageUrl} alt="Profile Preview" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '1px solid #ddd' }} />
+                </div>
+              )}
             </Form.Item>
             <Form.Item
               name="acceptTerms"
@@ -306,7 +311,7 @@ const RegistrationForm: React.FC = () => {
               <Button variant="primary" block onClick={async () => {
                 try {
                   await form.validateFields(["password", "confirmPassword", "acceptTerms"]);
-                  setCurrentStep(2);
+                  // Submit before changing steps to avoid unmounting fields and losing values
                   form.submit();
                 } catch {}
               }}>Register</Button>

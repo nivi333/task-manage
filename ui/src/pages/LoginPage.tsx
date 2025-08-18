@@ -9,7 +9,12 @@ const LoginPage: React.FC = () => {
 
   const handleLoginSuccess = (user: any) => {
     console.log('Login successful:', user);
-    navigate('/dashboard');
+    const roles: string[] = user?.roles || [];
+    if (roles.includes('ADMIN')) {
+      navigate('/admin/users');
+    } else {
+      navigate('/dashboard');
+    }
   };
 
   return (

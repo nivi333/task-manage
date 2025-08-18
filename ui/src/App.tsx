@@ -76,6 +76,26 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
 };
 
+// Admin Route component (checks JWT roles in localStorage token)
+const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const isAuthenticated = authAPI.isAuthenticated();
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  // Try to read roles from JWT payload
+  const token = authAPI.getToken();
+  try {
+    if (token) {
+      const payload = JSON.parse(atob(token.split('.')[1] || ''));
+      const roles: string[] = payload?.roles || [];
+      if (roles.includes('ADMIN')) {
+        return <>{children}</>;
+      }
+    }
+  } catch (e) {
+    // Fallback to deny access
+  }
+  return <Navigate to="/dashboard" replace />;
+};
+
 // Inner App component that uses the App context
 const AppContent: React.FC = () => {
   const { message } = AntdApp.useApp();
@@ -105,6 +125,14 @@ const AppContent: React.FC = () => {
                   <Dashboard />
                 </ProtectedRoute>
               } 
+            />
+            <Route
+              path="/admin/users"
+              element={
+                <AdminRoute>
+                  <UserManagementPage />
+                </AdminRoute>
+              }
             />
             
             {/* Default redirect */}
