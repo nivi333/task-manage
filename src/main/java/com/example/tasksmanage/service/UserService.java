@@ -251,10 +251,12 @@ public class UserService {
         user.setFirstName(req.getFirstName());
         user.setLastName(req.getLastName());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
-        // Assign default role
-        var defaultRole = roleRepository.findByName("USER")
-                .orElseThrow(() -> new IllegalStateException("Default role USER not found"));
-        user.setRoles(new java.util.HashSet<>(java.util.Collections.singleton(defaultRole)));
+        // Assign role: first registered user becomes ADMIN, others become USER
+        boolean isFirstUser = userRepository.count() == 0;
+        var assignedRole = isFirstUser
+                ? roleRepository.findByName("ADMIN").orElseThrow(() -> new IllegalStateException("Default role ADMIN not found"))
+                : roleRepository.findByName("USER").orElseThrow(() -> new IllegalStateException("Default role USER not found"));
+        user.setRoles(new java.util.HashSet<>(java.util.Collections.singleton(assignedRole)));
         user.setStatus(AccountStatus.ACTIVE);
         user.setCreatedAt(new java.util.Date());
         user.setUpdatedAt(new java.util.Date());
