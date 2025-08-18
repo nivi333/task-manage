@@ -5,12 +5,14 @@ import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import UserManagementPage from './pages/UserManagementPage';
 import { authAPI } from './services/authService';
 import { initNotificationService } from './services/notificationService';
 import './App.css';
 import './styles/global.css';
 import './styles/components/auth.css';
 import './styles/components/forms.css';
+import './styles/components/admin.css';
 import { colors } from './styles/colors';
 
 // Theme configuration for Ant Design

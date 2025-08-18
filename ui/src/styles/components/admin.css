@@ -1,0 +1,268 @@
+/* User Management Admin Styles */
+
+.user-management-page {
+  background: var(--color-background);
+  min-height: 100vh;
+}
+
+.user-management-page .ant-card {
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+/* User Filters */
+.user-filters {
+  padding: var(--spacing-md) 0;
+}
+
+.user-filters .ant-input {
+  border-radius: var(--border-radius-md);
+  border-color: var(--color-border);
+}
+
+.user-filters .ant-input:hover {
+  border-color: var(--color-border-hover);
+}
+
+.user-filters .ant-input:focus,
+.user-filters .ant-input-focused {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1);
+}
+
+.user-filters .ant-select {
+  border-radius: var(--border-radius-md);
+}
+
+.user-filters .ant-select .ant-select-selector {
+  border-color: var(--color-border);
+  border-radius: var(--border-radius-md);
+}
+
+.user-filters .ant-select:hover .ant-select-selector {
+  border-color: var(--color-border-hover);
+}
+
+.user-filters .ant-select-focused .ant-select-selector {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Bulk Actions */
+.bulk-actions {
+  padding: var(--spacing-sm) 0;
+}
+
+.bulk-actions .ant-dropdown-menu {
+  border-radius: var(--border-radius-md);
+  box-shadow: var(--shadow-lg);
+}
+
+.bulk-actions .ant-dropdown-menu-item {
+  padding: var(--spacing-sm) var(--spacing-md);
+}
+
+.bulk-actions .ant-dropdown-menu-item:hover {
+  background-color: var(--color-background);
+}
+
+/* User Table */
+.ant-table {
+  border-radius: var(--border-radius-lg);
+}
+
+.ant-table-thead > tr > th {
+  background-color: var(--color-background);
+  border-bottom: 1px solid var(--color-border);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.ant-table-tbody > tr > td {
+  border-bottom: 1px solid var(--color-border);
+}
+
+.ant-table-tbody > tr:hover > td {
+  background-color: var(--color-background);
+}
+
+.ant-table-row-selected > td {
+  background-color: rgba(102, 126, 234, 0.05) !important;
+}
+
+.ant-table-row-selected:hover > td {
+  background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+/* User Avatar and Info */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.user-info .ant-avatar {
+  border: 2px solid var(--color-border);
+}
+
+.user-details h4 {
+  margin: 0;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.user-details p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+}
+
+/* Status Tags */
+.ant-tag {
+  border-radius: var(--border-radius-sm);
+  font-weight: var(--font-weight-medium);
+  font-size: var(--font-size-xs);
+  padding: 2px var(--spacing-sm);
+}
+
+/* User Modal */
+.ant-modal .ant-modal-content {
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.ant-modal .ant-modal-header {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-lg) var(--spacing-xl);
+}
+
+.ant-modal .ant-modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary);
+}
+
+.ant-modal .ant-modal-body {
+  padding: var(--spacing-xl);
+}
+
+.ant-modal .ant-modal-footer {
+  background-color: var(--color-background);
+  border-top: 1px solid var(--color-border);
+  padding: var(--spacing-md) var(--spacing-xl);
+}
+
+/* Form Styles */
+.ant-form-item-label > label {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text-primary);
+}
+
+.ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+  color: var(--color-error);
+}
+
+.ant-form-item-explain-error {
+  color: var(--color-error);
+  font-size: var(--font-size-sm);
+}
+
+.ant-form-item-has-error .ant-input,
+.ant-form-item-has-error .ant-input:hover {
+  border-color: var(--color-error);
+}
+
+.ant-form-item-has-error .ant-input:focus,
+.ant-form-item-has-error .ant-input-focused {
+  border-color: var(--color-error);
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1);
+}
+
+.ant-form-item-has-error .ant-select .ant-select-selector,
+.ant-form-item-has-error .ant-select:hover .ant-select-selector {
+  border-color: var(--color-error);
+}
+
+.ant-form-item-has-error .ant-select-focused .ant-select-selector {
+  border-color: var(--color-error) !important;
+  box-shadow: 0 0 0 2px rgba(255, 77, 79, 0.1) !important;
+}
+
+/* Upload Component */
+.ant-upload {
+  border: 1px dashed var(--color-border);
+  border-radius: var(--border-radius-md);
+}
+
+.ant-upload:hover {
+  border-color: var(--color-primary);
+}
+
+/* Pagination */
+.ant-pagination {
+  margin-top: var(--spacing-lg);
+}
+
+.ant-pagination .ant-pagination-item {
+  border-radius: var(--border-radius-sm);
+}
+
+.ant-pagination .ant-pagination-item-active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.ant-pagination .ant-pagination-item-active a {
+  color: white;
+}
+
+/* Loading States */
+.ant-spin-container {
+  min-height: 200px;
+}
+
+.ant-table-placeholder .ant-table-expanded-row-fixed {
+  margin: var(--spacing-xl) 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .user-management-page {
+    padding: var(--spacing-md);
+  }
+  
+  .user-filters .ant-row {
+    gap: var(--spacing-sm);
+  }
+  
+  .bulk-actions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-sm);
+  }
+  
+  .ant-table {
+    font-size: var(--font-size-sm);
+  }
+  
+  .ant-modal {
+    margin: var(--spacing-md);
+    max-width: calc(100vw - 32px);
+  }
+}
+
+@media (max-width: 576px) {
+  .user-management-page {
+    padding: var(--spacing-sm);
+  }
+  
+  .ant-modal .ant-modal-body {
+    padding: var(--spacing-md);
+  }
+  
+  .ant-form-item {
+    margin-bottom: var(--spacing-md);
+  }
+}
