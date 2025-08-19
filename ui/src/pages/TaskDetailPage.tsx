@@ -11,6 +11,9 @@ import { activityService, ActivityLogItem } from '../services/activityService';
 import { attachmentService, Attachment } from '../services/attachmentService';
 import { dependencyService, TaskDependency } from '../services/dependencyService';
 import AppLayout from '../components/layout/AppLayout';
+import CommentForm from '../components/comments/CommentForm';
+import CommentList from '../components/comments/CommentList';
+import { userService } from '../services/userService';
 
 const { Text } = Typography;
 
@@ -23,8 +26,8 @@ const TaskDetailPage: React.FC = () => {
   const [trackingStartIso, setTrackingStartIso] = useState<string | null>(null);
   const [comments, setComments] = useState<CommentModel[]>([]);
   const [commentsLoading, setCommentsLoading] = useState(false);
-  const [newComment, setNewComment] = useState('');
   const [postingComment, setPostingComment] = useState(false);
+  const [mentionUsernames, setMentionUsernames] = useState<string[]>([]);
   const [activities, setActivities] = useState<ActivityLogItem[]>([]);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
   const [attachments, setAttachments] = useState<Attachment[]>([]);
@@ -70,6 +73,33 @@ const TaskDetailPage: React.FC = () => {
     };
     loadComments();
   }, [id]);
+
+  // Polling-based realtime updates for comments (can be replaced with WebSocket later)
+  useEffect(() => {
+    if (!id) return;
+    const interval = setInterval(async () => {
+      try {
+        const list = await commentService.list(id);
+        setComments(list);
+      } catch {
+        // ignore polling errors
+      }
+    }, 10000); // 10s
+    return () => clearInterval(interval);
+  }, [id]);
+
+  // Load initial mention users and provide async search hook
+  useEffect(() => {
+    const loadMentions = async () => {
+      try {
+        const res = await userService.getUsers({ size: 10 });
+        setMentionUsernames(res.users.map(u => u.username).filter(Boolean));
+      } catch {
+        // handled globally
+      }
+    };
+    loadMentions();
+  }, []);
 
   useEffect(() => {
     const loadActivities = async () => {
@@ -264,22 +294,13 @@ const TaskDetailPage: React.FC = () => {
 
         <Card title="Comments">
           <Space direction="vertical" style={{ width: '100%' }}>
-            <Input.TextArea
-              rows={3}
-              placeholder="Write a comment..."
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-            />
-            <AntButton
-              type="primary"
-              loading={postingComment}
-              disabled={!newComment.trim()}
-              onClick={async () => {
-                if (!id || !newComment.trim()) return;
+            <CommentForm
+              submitting={postingComment}
+              onSubmit={async (html) => {
+                if (!id) return;
                 setPostingComment(true);
                 try {
-                  await commentService.create(id, { content: newComment.trim() });
-                  setNewComment('');
+                  await commentService.create(id, { content: html });
                   const list = await commentService.list(id);
                   setComments(list);
                   notificationService.success('Comment posted');
@@ -289,29 +310,56 @@ const TaskDetailPage: React.FC = () => {
                   setPostingComment(false);
                 }
               }}
-            >
-              Post Comment
-            </AntButton>
-            <Divider />
-            <List
-              loading={commentsLoading}
-              dataSource={comments}
-              locale={{ emptyText: <Text type="secondary">No comments yet.</Text> as any }}
-              renderItem={(c) => (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={<Avatar>{(c.authorId || 'U').toString().slice(0, 1)}</Avatar>}
-                    title={<Text strong>Comment</Text>}
-                    description={<>
-                      <div style={{ whiteSpace: 'pre-wrap' }}>{c.content}</div>
-                      <Text type="secondary" style={{ fontSize: 12 }}>
-                        {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
-                      </Text>
-                    </>}
-                  />
-                </List.Item>
-              )}
+              mentionUsernames={mentionUsernames}
+              onMentionSearch={async (q) => {
+                try {
+                  const res = await userService.getUsers({ search: q, size: 8 });
+                  return res.users.map(u => u.username).filter(Boolean);
+                } catch {
+                  return mentionUsernames;
+                }
+              }}
             />
+            <Divider />
+            <div>
+              {commentsLoading ? (
+                <Spin />
+              ) : (
+                <CommentList
+                  comments={comments}
+                  onReply={async (html, parentId) => {
+                    if (!id) return;
+                    try {
+                      await commentService.create(id, { content: html, parentCommentId: parentId as any });
+                      const list = await commentService.list(id);
+                      setComments(list);
+                    } catch (e) {
+                      notificationService.error('Failed to post reply');
+                    }
+                  }}
+                  onEdit={async (commentId, html) => {
+                    if (!id) return;
+                    try {
+                      await commentService.update(id, commentId as any, html);
+                      const list = await commentService.list(id);
+                      setComments(list);
+                    } catch (e) {
+                      notificationService.error('Failed to update comment');
+                    }
+                  }}
+                  onDelete={async (commentId) => {
+                    if (!id) return;
+                    try {
+                      await commentService.remove(id, commentId as any);
+                      setComments(prev => prev.filter(c => String(c.id) !== String(commentId)));
+                    } catch (e) {
+                      notificationService.error('Failed to delete comment');
+                    }
+                  }}
+                  mentionUsernames={mentionUsernames}
+                />
+              )}
+            </div>
           </Space>
         </Card>
 
