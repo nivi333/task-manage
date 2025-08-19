@@ -51,6 +51,69 @@
   --font-weight-extrabold: 800;
 }
 
+.app-header {
+  position: relative;
+}
+.app-header::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary, #735cff), transparent);
+  opacity: 0.7;
+}
+
+/* Compact page header with gradient divider */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0 12px 0; /* reduce top spacing */
+  margin-bottom: 12px;   /* tighter to content */
+  position: relative;
+}
+.page-header::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  opacity: 0.6;
+}
+
+/* Avatar Upload tweaks */
+.avatar-upload .ant-upload {
+  border: none !important; /* remove dotted/dashed border */
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+.avatar-upload .ant-upload::before,
+.avatar-upload .ant-upload::after {
+  display: none !important; /* hide default outline indicators */
+}
+
+/* Highlight the actual Avatar on hover */
+/* Single dotted border on hover using outline to avoid double ring */
+.avatar-upload:hover .ant-avatar {
+  outline: 2px dotted var(--color-primary);
+  outline-offset: 2px;
+  box-shadow: none !important;
+  transition: outline 0.15s ease;
+}
+
+/* Cropper frame (square) */
+.cropper-frame {
+  position: relative;
+  width: 256px;
+  height: 256px;
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: repeating-conic-gradient(#f5f5f5 0% 25%, #fff 0% 50%) 50% / 20px 20px;
+}
+
 /* Global Reset */
 * {
   box-sizing: border-box;
@@ -271,3 +334,165 @@ body {
 .mt-md { margin-top: var(--spacing-md); }
 .mt-lg { margin-top: var(--spacing-lg); }
 .mt-xl { margin-top: var(--spacing-xl); }
+
+/* User Management: neutralize sorted-column background ONLY for body cells (keep header highlight) */
+.user-management-page .ant-table-wrapper .ant-table-tbody td.ant-table-column-sort {
+  background: transparent !important;
+}
+
+/* Ensure hover/striped states remain subtle and consistent */
+.user-management-page .ant-table-wrapper .ant-table-tbody > tr:hover > td {
+  background: rgba(0,0,0,0.02) !important;
+}
+
+/* User Management: remove Card borders completely */
+.user-management-page .ant-card {
+  border: none !important;
+  box-shadow: none !important;
+}
+.user-management-page .ant-card .ant-card-body {
+  border: none !important;
+}
+
+/* User Management: unify table header (title) cell background */
+.user-management-page .ant-table-wrapper .ant-table-thead > tr > th {
+  background: #fff !important;
+}
+.user-management-page .ant-table-wrapper .ant-table-thead > tr > th.ant-table-column-sort {
+  background: #fff !important; /* ensure Created matches others */
+}
+
+/* User Management: remove padding around filters block */
+.user-management-page .user-filters {
+  padding: 0 !important;
+}
+
+/* Global: normalize all Ant Design buttons to a compact size */
+.ant-btn,
+.ant-btn-lg,
+.ant-btn-sm {
+  height: 32px !important;
+  padding: 4px 8px !important;
+  font-size: var(--font-size-sm) !important;
+  border-radius: var(--border-radius-md) !important;
+}
+
+/* Tasks: rectangular search bar with dark right block */
+.tt-search.ant-input-search {
+  --tt-search-height: 36px;
+}
+.tt-search.ant-input-search .ant-input-group {
+  border: 1px solid #d9d9d9 !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+  background: #fff !important;
+}
+.tt-search.ant-input-search .ant-input-group * {
+  box-shadow: none !important;
+}
+.tt-search.ant-input-search .ant-input-affix-wrapper {
+  border: none !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+}
+.tt-search.ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+  border-radius: 8px 0 0 8px !important;
+}
+.tt-search.ant-input-search .ant-input-group:focus-within {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(102,126,234,0.18) !important;
+}
+.tt-search.ant-input-search .ant-input {
+  height: var(--tt-search-height) !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 6px 12px !important;
+  background: transparent !important;
+}
+.tt-search.ant-input-search .ant-input::placeholder {
+  color: #9aa0a6 !important;
+}
+.tt-search.ant-input-search .ant-input-group-addon {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+.tt-search.ant-input-search .ant-input-search-button {
+  height: var(--tt-search-height) !important;
+  width: 44px !important;
+  border: none !important;
+  background: transparent !important;
+  color: #fff !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+}
+.tt-search.ant-input-search .ant-input-search-button .anticon {
+  color: #fff !important;
+}
+
+/* User-specified selector to control left radius of the input part */
+.ant-input-search :where(.css-dev-only-do-not-override-1hfsdkp).ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+  border-radius: 8px 0 0 8px !important;
+}
+
+/* Tasks filters: left icon and uniform control heights */
+.tt-search-input.ant-input-affix-wrapper {
+  height: 36px !important;
+  border-radius: 8px !important;
+  border: 1px solid #d9d9d9 !important;
+  background: #fff !important;
+  padding: 0 12px !important;
+}
+.tt-search-input .ant-input-prefix {
+  margin-right: 8px !important;
+}
+.tt-search-input .ant-input-prefix .anticon {
+  color: #d9d9d9 !important; /* match border color */
+  font-size: 14px !important;
+}
+.tt-search-input input.ant-input {
+  height: 34px !important;
+}
+.tt-search-input.ant-input-affix-wrapper:focus,
+.tt-search-input.ant-input-affix-wrapper-focused,
+.tt-search-input.ant-input-affix-wrapper:focus-within {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 2px rgba(102,126,234,0.18) !important;
+}
+
+/* Uniform height across Select and DatePicker in Tasks filters */
+.tt-filters .ant-select-selector,
+.tt-filters .ant-picker {
+  height: 36px !important;
+  border-radius: 8px !important;
+}
+.tt-filters .ant-select-selector .ant-select-selection-search-input {
+  height: 34px !important;
+}
+.tt-filters .ant-select-selector .ant-select-selection-item,
+.tt-filters .ant-select-selector .ant-select-selection-placeholder {
+  line-height: 34px !important;
+  text-align: left !important;
+}
+.tt-filters .ant-select-selector { text-align: left !important; }
+.tt-filters .ant-select-selection-placeholder { text-align: left !important; }
+.tt-filters .ant-picker-input > input {
+  height: 34px !important;
+  text-align: left !important;
+}
+.tt-filters .ant-picker-input > input::placeholder { text-align: left !important; }
+.tt-search-input input::placeholder { text-align: left !important; }
+
+/* Uniform button height within filters rows */
+.tt-filters .ant-btn {
+  height: 36px !important;
+  border-radius: 8px !important;
+  padding: 0 12px !important;
+  line-height: 34px !important;
+}
+.tt-filters .ant-btn > span { line-height: 1 !important; }
+
+/* User Management row: ensure grid doesn't add extra vertical spacing */
+.user-management-page .user-filters { margin: 0 !important; padding: 0 !important; }
+.user-management-page .user-filters .ant-row { margin: 0 !important; }
+.user-management-page .user-filters .ant-col { display: flex; align-items: center; }

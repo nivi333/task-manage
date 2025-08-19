@@ -253,3 +253,37 @@
     padding: var(--spacing-lg);
   }
 }
+
+/* --- Task Form: Recurrence row alignment fixes --- */
+.recurrence-compact .ant-select .ant-select-selector {
+  height: 40px;
+  display: flex;
+  align-items: center;
+}
+
+.recurrence-compact .ant-input-number {
+  height: 40px;
+}
+
+.recurrence-compact .ant-input-number-input {
+  height: 40px;
+  line-height: 40px;
+}
+
+/* Ensure compact group items visually join without weird gaps */
+.recurrence-compact .ant-select .ant-select-selector,
+.recurrence-compact .ant-input-number {
+  border-radius: 8px;
+}
+
+.recurrence-compact > .ant-form-item:not(:first-child) .ant-select .ant-select-selector,
+.recurrence-compact > .ant-form-item:not(:first-child) .ant-input-number {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.recurrence-compact > .ant-form-item:not(:last-child) .ant-select .ant-select-selector,
+.recurrence-compact > .ant-form-item:not(:last-child) .ant-input-number {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}

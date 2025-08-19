@@ -4,13 +4,13 @@ import jakarta.validation.constraints.*;
 import java.util.*;
 
 public class TaskCreateDTO {
-    @NotBlank
+    @NotBlank(message = "title is required")
     @Size(max = 200)
     private String title;
     private String description;
-    @NotNull
+    @NotNull(message = "status is required")
     private String status;
-    @NotNull
+    @NotNull(message = "priority is required")
     private String priority;
     private Date dueDate;
     private Integer estimatedHours;

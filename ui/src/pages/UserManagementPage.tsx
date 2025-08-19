@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Space, Typography, Modal, message } from 'antd';
-import { PlusOutlined, ExclamationCircleOutlined, LogoutOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { Card, Space, Modal } from 'antd';
+import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import UserTable from '../components/admin/UserTable';
 import UserFilters from '../components/admin/UserFilters';
 import BulkActions from '../components/admin/BulkActions';
@@ -17,9 +16,7 @@ import {
   UserListResponse
 } from '../types/user';
 import { userService } from '../services/userService';
-import { authAPI } from '../services/authService';
-
-const { Title } = Typography;
+import AppLayout from '../components/layout/AppLayout';
 const { confirm } = Modal;
 
 const UserManagementPage: React.FC = () => {
@@ -40,7 +37,6 @@ const UserManagementPage: React.FC = () => {
     sortDirection: 'desc' as const,
   });
 
-  const navigate = useNavigate();
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
@@ -95,13 +91,7 @@ const UserManagementPage: React.FC = () => {
     setUserModalVisible(true);
   };
 
-  const handleLogout = async () => {
-    try {
-      await authAPI.logout();
-    } finally {
-      navigate('/login');
-    }
-  };
+  
 
   const handleEditUser = (user: User) => {
     setEditingUser(user);
@@ -178,39 +168,27 @@ const UserManagementPage: React.FC = () => {
   };
 
   return (
-    <div className="user-management-page" style={{ padding: '24px' }}>
-      <div style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-          <Title level={2} style={{ margin: 0 }}>
-            User Management
-          </Title>
-          <Space>
-            <Button
-              variant="secondary"
-              icon={<LogoutOutlined />}
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
-            <Button
-              variant="primary"
-              icon={<PlusOutlined />}
-              onClick={handleCreateUser}
-            >
-              Add User
-            </Button>
-          </Space>
-        </div>
-        
-        <Card>
-          <Space direction="vertical" size="large" style={{ width: '100%' }}>
+    <AppLayout title="User Management" contentPadding={24}>
+      <div className="user-management-page">
+        <div className="tt-filters" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
+          <div style={{ flex: 1 }}>
             <UserFilters
               filters={filters}
               onFiltersChange={handleFiltersChange}
               onClearFilters={handleClearFilters}
               loading={loading}
             />
-            
+          </div>
+          <Button
+            variant="primary"
+            icon={<PlusOutlined />}
+            onClick={handleCreateUser}
+          >
+            Add User
+          </Button>
+        </div>
+        <Card bordered={false} bodyStyle={{ padding: 5 }}>
+          <Space direction="vertical" size={8} style={{ width: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <BulkActions
                 selectedUserIds={selectedUserIds}
@@ -239,16 +217,15 @@ const UserManagementPage: React.FC = () => {
             />
           </Space>
         </Card>
+        <UserModal
+          visible={userModalVisible}
+          user={editingUser}
+          onCancel={() => setUserModalVisible(false)}
+          onSubmit={handleUserSubmit}
+          loading={loading}
+        />
       </div>
-
-      <UserModal
-        visible={userModalVisible}
-        user={editingUser}
-        onCancel={() => setUserModalVisible(false)}
-        onSubmit={handleUserSubmit}
-        loading={loading}
-      />
-    </div>
+    </AppLayout>
   );
 };
 

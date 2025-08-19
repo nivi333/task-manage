@@ -4,6 +4,7 @@ import { Task } from '../types/task';
 import { taskService } from '../services/taskService';
 import TaskBoard, { BoardStatus } from '../components/tasks/TaskBoard';
 import { notificationService } from '../services/notificationService';
+import AppLayout from '../components/layout/AppLayout';
 
 const TasksBoardPage: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -35,9 +36,11 @@ const TasksBoardPage: React.FC = () => {
   };
 
   return (
-    <Card loading={loading} style={{ margin: 16 }}>
-      <TaskBoard tasks={tasks} onStatusChange={handleChange} />
-    </Card>
+    <AppLayout title="Kanban Board" contentPadding={24}>
+      <Card loading={loading}>
+        <TaskBoard tasks={tasks} onStatusChange={handleChange} />
+      </Card>
+    </AppLayout>
   );
 };
 

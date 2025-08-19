@@ -139,17 +139,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         rememberMe: values.rememberMe,
       });
 
-      if ((response as any)?.data?.requires2FA) {
-        setTempLoginData(response.data);
+      // authAPI.login returns response.data already. Normalize shapes:
+      const root: any = response; // could be { success, message, data } or direct payload
+      const payload: any = root?.data ?? root;
+
+      if (payload?.requires2FA) {
+        setTempLoginData(payload);
         setTwoFactorVisible(true);
         console.log("[NOTIFICATION] LoginForm info");
         message.info("Please enter your 2FA code to complete login");
       } else {
-        // Store auth tokens (backend returns accessToken/refreshToken)
-        const accessToken = (response as any)?.data?.accessToken;
-        const refreshToken = (response as any)?.data?.refreshToken;
-        if (accessToken) {
-          localStorage.setItem("authToken", accessToken);
+        // Store auth tokens (support both flat and ApiResponse.data nested shapes)
+        const token = payload?.token || payload?.accessToken;
+        const refreshToken = payload?.refreshToken;
+        if (token) {
+          localStorage.setItem("authToken", token);
         }
         if (refreshToken) {
           localStorage.setItem("refreshToken", refreshToken);
@@ -163,10 +167,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         // Decode roles from JWT if present and pass to caller
         let roles: string[] = [];
         try {
-          if (accessToken) {
-            const payloadStr = atob(accessToken.split(".")[1] || "");
-            const payload = JSON.parse(payloadStr);
-            roles = Array.isArray(payload?.roles) ? payload.roles : [];
+          if (token) {
+            const payloadStr = atob(token.split(".")[1] || "");
+            const jwtPayload = JSON.parse(payloadStr);
+            roles = Array.isArray(jwtPayload?.roles) ? jwtPayload.roles : [];
           }
         } catch (e) {
           // ignore decoding errors
@@ -204,9 +208,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         code: twoFactorCode,
       });
 
-      // Store access token from backend
-      const accessToken = (response as any)?.data?.accessToken || (response as any)?.data?.token;
-      const refreshToken = (response as any)?.data?.refreshToken;
+      // authAPI.verify2FA also returns response.data. Normalize and extract tokens
+      const root: any = response;
+      const payload: any = root?.data ?? root;
+      const accessToken = payload?.accessToken || payload?.token;
+      const refreshToken = payload?.refreshToken;
       if (accessToken) {
         localStorage.setItem("authToken", accessToken);
       }
@@ -220,8 +226,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       try {
         if (accessToken) {
           const payloadStr = atob(accessToken.split(".")[1] || "");
-          const payload = JSON.parse(payloadStr);
-          roles = Array.isArray(payload?.roles) ? payload.roles : [];
+          const jwtPayload = JSON.parse(payloadStr);
+          roles = Array.isArray(jwtPayload?.roles) ? jwtPayload.roles : [];
         }
       } catch (e) {}
       onLoginSuccess({ roles });

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import logo from '../../logo.svg';
 
 interface AuthLayoutProps {
   imageUrl?: string;
@@ -14,7 +15,8 @@ const SplitContainer = styled.div`
   background: var(--color-background, #f6f6f6);
 `;
 
-const ImageSection = styled.div<{ imageUrl?: string }>`
+// Use transient prop to avoid passing to DOM
+const ImageSection = styled.div<{ $imageUrl?: string }>`
   flex: 1.2;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: #fff;
@@ -239,17 +241,9 @@ const FormSection = styled.div`
 
 const AuthLayout: React.FC<AuthLayoutProps> = ({ imageUrl, imageTitle, imageSubtitle, children }) => (
   <SplitContainer>
-    <ImageSection imageUrl={imageUrl}>
+    <ImageSection $imageUrl={imageUrl}>
       <BrandLogo>
-        <LogoIcon>
-          <FlowingShape />
-          <StarAccent />
-          <SecondaryAccent />
-        </LogoIcon>
-        <LogoText>
-          <LogoTitle>Task Tango</LogoTitle>
-          <LogoSubtitle>manage smarter, not harder</LogoSubtitle>
-        </LogoText>
+        <img src={logo} alt="Task Tango" style={{ height: 56, width: 'auto', display: 'block' }} />
       </BrandLogo>
       <TaskIcons />
       <Overlay />

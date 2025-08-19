@@ -22,6 +22,8 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/tasks_manage_dev
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_FLYWAY_ENABLED: "false"
+      SPRING_JPA_HIBERNATE_DDL_AUTO: "update"
     ports:
       - "8080:8080"
     restart: always

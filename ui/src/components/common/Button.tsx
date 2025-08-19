@@ -155,7 +155,7 @@ const StyledButton = styled(AntButton)<{ $variant: string; $size: string }>`
 
 const Button: React.FC<ButtonProps> = ({
   variant = "primary",
-  size = "md",
+  size = "sm",
   children,
   ...props
 }) => {

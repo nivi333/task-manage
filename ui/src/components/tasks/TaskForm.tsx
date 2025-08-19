@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, DatePicker, Form, Input, Select, Upload } from 'antd';
+import { Button, DatePicker, Form, Input, InputNumber, Select, Space, Upload } from 'antd';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { PlusOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
@@ -12,6 +14,7 @@ export type TaskFormValues = {
   title: string;
   description?: string;
   dueDate?: Dayjs;
+  status: string;
   priority?: TaskPriority;
   assignedTo?: UUID;
   projectId?: UUID;
@@ -29,11 +32,13 @@ interface TaskFormProps {
   mode: 'create' | 'edit';
   initialTask?: Task;
   onSubmit?: (task: Task) => void;
+  hideActions?: boolean;
+  registerSubmit?: (fn: () => void) => void;
 }
 
 const priorities: TaskPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
 
-const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit }) => {
+const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideActions = false, registerSubmit }) => {
   const [form] = Form.useForm<TaskFormValues>();
   const [saving, setSaving] = useState(false);
   const [assigneeOptions, setAssigneeOptions] = useState<{ label: string; value: UUID }[]>([]);
@@ -44,6 +49,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit }) => {
     title: initialTask?.title || '',
     description: initialTask?.description || '',
     dueDate: initialTask?.dueDate ? dayjs(initialTask.dueDate) : undefined,
+    status: initialTask?.status || 'OPEN',
     priority: initialTask?.priority as TaskPriority | undefined,
     assignedTo: initialTask?.assignedTo,
     projectId: initialTask?.projectId,
@@ -57,11 +63,29 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit }) => {
     form.setFieldsValue(initialValues);
   }, [initialValues, form]);
 
+  useEffect(() => {
+    if (registerSubmit) {
+      registerSubmit(submit);
+    }
+  }, [registerSubmit]);
+
   const handleSearchUsers = async (q: string) => {
-    const list = await userService.getUsers({ search: q, size: 10 } as any);
-    setAssigneeOptions(
-      (list.users || []).map(u => ({ label: `${u.firstName} ${u.lastName} (${u.email})`, value: u.id! }))
-    );
+    try {
+      const list = await userService.getUsers({ search: q, size: 10 } as any);
+      setAssigneeOptions(
+        (list.users || []).map(u => ({ label: `${u.firstName} ${u.lastName} (${u.email})`, value: u.id! }))
+      );
+    } catch (e: any) {
+      const code = e?.response?.status;
+      if (code === 401) {
+        notificationService.error('Your session expired. Please login again.');
+      } else if (code === 403) {
+        notificationService.info("You don't have permission to list users. Assigning is limited.");
+      } else {
+        notificationService.error('Failed to search users');
+      }
+      setAssigneeOptions([]);
+    }
   };
 
   const handleSearchTasks = async (q: string) => {
@@ -73,6 +97,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit }) => {
     title: v.title,
     description: v.description,
     dueDate: v.dueDate ? v.dueDate.toISOString() : undefined,
+    status: v.status,
     priority: v.priority,
     assignedTo: v.assignedTo,
     projectId: v.projectId,
@@ -109,21 +134,49 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit }) => {
   };
 
   return (
-    <Form form={form} layout="vertical" initialValues={initialValues}>
+    <Form form={form} layout="vertical" size="large" initialValues={initialValues}>
+      <div style={{ color: '#999', fontSize: 12, marginBottom: 8 }}>
+        * indicates required fields
+      </div>
       <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Title is required' }]}> 
-        <Input placeholder="Task title" maxLength={120} />
+        <Input size="large" placeholder="Task title" maxLength={120} />
       </Form.Item>
 
-      <Form.Item name="description" label="Description">
-        <Input.TextArea placeholder="Rich text editor placeholder" autoSize={{ minRows: 4, maxRows: 10 }} />
+      <Form.Item
+        name="description"
+        label="Description"
+        valuePropName="value"
+        getValueFromEvent={(content: string) => content}
+        rules={[
+          {
+            validator: (_, value) => {
+              if (!value) return Promise.resolve();
+              const plain = String(value).replace(/<[^>]*>/g, '').trim();
+              if (plain.length > 5000) {
+                return Promise.reject(new Error('Description must be 5000 characters or less.'));
+              }
+              return Promise.resolve();
+            },
+          },
+        ]}
+      >
+        <ReactQuill theme="snow" placeholder="Write a rich description..." />
       </Form.Item>
 
       <Form.Item name="dueDate" label="Due Date">
-        <DatePicker style={{ width: '100%' }} />
+        <DatePicker size="large" style={{ width: '100%' }} />
       </Form.Item>
 
-      <Form.Item name="priority" label="Priority">
-        <Select allowClear placeholder="Select priority">
+      <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Status is required' }]}> 
+        <Select size="large" allowClear placeholder="Select status" defaultValue={initialValues.status}>
+          <Select.Option value="OPEN">OPEN</Select.Option>
+          <Select.Option value="IN_PROGRESS">IN_PROGRESS</Select.Option>
+          <Select.Option value="DONE">DONE</Select.Option>
+        </Select>
+      </Form.Item>
+
+      <Form.Item name="priority" label="Priority" rules={[{ required: true, message: 'Priority is required' }]}> 
+        <Select size="large" allowClear placeholder="Select priority">
           {priorities.map(p => (
             <Select.Option key={p} value={p}>{p}</Select.Option>
           ))}
@@ -132,6 +185,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit }) => {
 
       <Form.Item name="assignedTo" label="Assignee">
         <Select
+          size="large"
           showSearch
           allowClear
           placeholder="Search users"
@@ -142,11 +196,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit }) => {
       </Form.Item>
 
       <Form.Item name="tags" label="Tags">
-        <Select mode="tags" placeholder="Add tags" tokenSeparators={[',']} />
+        <Select size="large" mode="tags" placeholder="Add tags" tokenSeparators={[',']} />
       </Form.Item>
 
       <Form.Item name="dependencies" label="Dependencies">
         <Select
+          size="large"
           mode="multiple"
           showSearch
           allowClear
@@ -175,9 +230,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit }) => {
       </Form.Item>
 
       <Form.Item label="Recurrence">
-        <Input.Group compact>
+        <Space.Compact block className="recurrence-compact">
           <Form.Item name={['recurrence','frequency']} noStyle>
-            <Select style={{ width: '40%' }} defaultValue={'NONE'}>
+            <Select size="large" defaultValue={'NONE'} style={{ flex: '0 0 40%' }}>
               <Select.Option value="NONE">None</Select.Option>
               <Select.Option value="DAILY">Daily</Select.Option>
               <Select.Option value="WEEKLY">Weekly</Select.Option>
@@ -185,19 +240,21 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit }) => {
             </Select>
           </Form.Item>
           <Form.Item name={['recurrence','interval']} noStyle>
-            <Input style={{ width: '30%' }} type="number" min={1} placeholder="Interval" />
+            <InputNumber size="large" min={1} placeholder="Interval" style={{ flex: '0 0 30%' }} />
           </Form.Item>
           <Form.Item name={['recurrence','count']} noStyle>
-            <Input style={{ width: '30%' }} type="number" min={1} placeholder="Count" />
+            <InputNumber size="large" min={1} placeholder="Count" style={{ flex: '0 0 30%' }} />
           </Form.Item>
-        </Input.Group>
+        </Space.Compact>
       </Form.Item>
 
-      <Form.Item>
-        <Button type="primary" onClick={submit} loading={saving}>
-          {mode === 'create' ? 'Create Task' : 'Update Task'}
-        </Button>
-      </Form.Item>
+      {!hideActions && (
+        <Form.Item>
+          <Button type="primary" onClick={submit} loading={saving}>
+            {mode === 'create' ? 'Create Task' : 'Update Task'}
+          </Button>
+        </Form.Item>
+      )}
     </Form>
   );
 };

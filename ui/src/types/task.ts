@@ -46,6 +46,7 @@ export interface TaskCreateRequest {
   title: string;
   description?: string;
   dueDate?: string; // ISO 8601
+  status: string;
   priority?: TaskPriority;
   assignedTo?: UUID;
   projectId?: UUID;

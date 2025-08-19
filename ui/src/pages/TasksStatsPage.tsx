@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Card, Col, DatePicker, Form, Row, Select, Spin, Typography, Divider, Space, Button } from 'antd';
+import { Card, Col, DatePicker, Form, Row, Select, Spin, Typography, Space, Button } from 'antd';
 import dayjs, { Dayjs } from 'dayjs';
 import { Pie, Column } from '@ant-design/plots';
 import { TaskListFilters, TaskPriority } from '../types/task';
 import { taskService } from '../services/taskService';
 import { useNavigate } from 'react-router-dom';
+import AppLayout from '../components/layout/AppLayout';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 const { RangePicker } = DatePicker;
 
 const STATUSES = [
@@ -132,16 +133,8 @@ export const TasksStatsPage: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: 24 }}>
-      <Space style={{ width: '100%', justifyContent: 'space-between', alignItems: 'center' }}>
-        <Title level={3} style={{ margin: 0 }}>Task Statistics</Title>
-        <Space>
-          <Button onClick={() => navigate('/tasks')}>View List</Button>
-          <Button onClick={() => navigate('/tasks/board')}>View Board</Button>
-        </Space>
-      </Space>
-
-      <Card style={{ marginTop: 16 }}>
+    <AppLayout title="Task Statistics" contentPadding={24}>
+      <Card style={{ marginBottom: 16 }}>
         <Form form={form} layout="inline" onFinish={onApplyFilters}>
           <Form.Item name="status" label="Status">
             <Select allowClear placeholder="All" style={{ width: 160 }} options={STATUSES} />
@@ -156,12 +149,12 @@ export const TasksStatsPage: React.FC = () => {
             <Space>
               <Button htmlType="submit" type="primary">Apply</Button>
               <Button onClick={onReset}>Reset</Button>
+              <Button onClick={() => navigate('/tasks')}>View List</Button>
+              <Button onClick={() => navigate('/tasks/board')}>View Board</Button>
             </Space>
           </Form.Item>
         </Form>
       </Card>
-
-      <Divider />
 
       <Spin spinning={loading}>
         <Row gutter={[16, 16]}>
@@ -208,7 +201,7 @@ export const TasksStatsPage: React.FC = () => {
           </Col>
         </Row>
       </Spin>
-    </div>
+    </AppLayout>
   );
 };
 

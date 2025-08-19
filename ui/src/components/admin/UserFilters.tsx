@@ -33,10 +33,11 @@ const UserFilters: React.FC<UserFiltersProps> = ({
   const hasActiveFilters = filters.search || filters.role || filters.status;
 
   return (
-    <div className="user-filters">
-      <Row gutter={[16, 16]} align="middle">
-        <Col xs={24} sm={12} md={8} lg={6}>
+    <div className="user-filters tt-filters">
+      <Row gutter={[12, 0]} align="middle" wrap={false}>
+        <Col xs={24} sm={12} md={8} lg={8}>
           <Input
+            className="tt-search-input"
             placeholder="Search users..."
             prefix={<SearchOutlined />}
             value={filters.search || ''}
@@ -46,7 +47,7 @@ const UserFilters: React.FC<UserFiltersProps> = ({
           />
         </Col>
         
-        <Col xs={12} sm={6} md={4} lg={3}>
+        <Col xs={12} sm={6} md={4} lg={4}>
           <Select
             placeholder="Role"
             value={filters.role}
@@ -61,7 +62,7 @@ const UserFilters: React.FC<UserFiltersProps> = ({
           </Select>
         </Col>
         
-        <Col xs={12} sm={6} md={4} lg={3}>
+        <Col xs={12} sm={6} md={4} lg={4}>
           <Select
             placeholder="Status"
             value={filters.status}
@@ -75,22 +76,16 @@ const UserFilters: React.FC<UserFiltersProps> = ({
             <Option value={UserStatus.SUSPENDED}>Suspended</Option>
           </Select>
         </Col>
+        <Col xs={12} sm={6} md={4} lg={4}>
+          <Button className="tt-filters__btn" icon={<FilterOutlined />} disabled={loading}>
+            Advanced Filters
+          </Button>
+        </Col>
         
-        <Col xs={24} sm={12} md={8} lg={6}>
+        <Col xs={24} sm={12} md={8} lg={4}>
           <Space>
-            <Button
-              icon={<FilterOutlined />}
-              disabled={loading}
-            >
-              Advanced Filters
-            </Button>
-            
             {hasActiveFilters && (
-              <Button
-                icon={<ClearOutlined />}
-                onClick={onClearFilters}
-                disabled={loading}
-              >
+              <Button className="tt-filters__btn" icon={<ClearOutlined />} onClick={onClearFilters} disabled={loading}>
                 Clear
               </Button>
             )}

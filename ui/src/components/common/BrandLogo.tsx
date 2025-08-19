@@ -4,6 +4,8 @@ import styled, { keyframes } from 'styled-components';
 interface BrandLogoProps {
   compact?: boolean; // emblem-only for tight spaces
   variant?: 'light' | 'dark'; // adapt colors for header (light) vs sider (dark)
+  showSubtitle?: boolean; // control showing the slogan
+  textColor?: string; // override title text color
 }
 
 const Wrapper = styled.div<{ compact?: boolean }>`
@@ -90,20 +92,22 @@ const TextBlock = styled.div`
   gap: 0;
 `;
 
-const Title = styled.span`
+const Title = styled.span<{ color?: string }>`
   font-size: 18px;
   font-weight: 600;
   letter-spacing: -0.2px;
+  color: ${(p) => p.color || 'inherit'};
 `;
 
-const Subtitle = styled.span`
+const Subtitle = styled.span<{ color?: string }>`
   font-size: 10px;
   letter-spacing: 2px;
   text-transform: lowercase;
   opacity: 0.6;
+  color: ${(p) => p.color || 'inherit'};
 `;
 
-const BrandLogo: React.FC<BrandLogoProps> = ({ compact, variant = 'light' }) => (
+const BrandLogo: React.FC<BrandLogoProps> = ({ compact, variant = 'light', showSubtitle = true, textColor }) => (
   <Wrapper compact={compact}>
     <LogoIcon compact={compact}>
       <FlowingShape variant={variant} />
@@ -112,8 +116,10 @@ const BrandLogo: React.FC<BrandLogoProps> = ({ compact, variant = 'light' }) => 
     </LogoIcon>
     {!compact && (
       <TextBlock>
-        <Title>Task Tango</Title>
-        <Subtitle>manage smarter, not harder</Subtitle>
+        <Title color={textColor}>Task Tango</Title>
+        {showSubtitle && (
+          <Subtitle color={textColor}>manage smarter, not harder</Subtitle>
+        )}
       </TextBlock>
     )}
   </Wrapper>

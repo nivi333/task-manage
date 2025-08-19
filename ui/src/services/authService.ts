@@ -1,26 +1,36 @@
-import axios from 'axios';
-import { notificationService } from './notificationService';
+import axios from "axios";
+import { notificationService } from "./notificationService";
 
 // Create axios instance with base configuration
 // Prefer environment variable for backend base URL. Example for CRA:
 //   REACT_APP_API_BASE_URL=https://your-api.example.com/api/v1
 // Falls back to localhost if not provided.
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080/api/v1';
+const API_BASE_URL =
+  process.env.REACT_APP_API_BASE_URL || "http://localhost:8080/api/v1";
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
+    }
+    // Debug: log auth header presence (toggle via env var)
+    if (process.env.REACT_APP_DEBUG_AUTH === "true") {
+      // Avoid logging full token
+      const hasAuth = !!config.headers.Authorization;
+      // eslint-disable-next-line no-console
+      console.log(
+        `[apiClient] ${config.method?.toUpperCase()} ${config.url} auth=${hasAuth}`
+      );
     }
     return config;
   },
@@ -34,7 +44,7 @@ apiClient.interceptors.response.use(
   (response) => {
     // Show notification popup for API success if message exists
     if (response.data && response.data.message) {
-      console.log('[NOTIFICATION] Success:', response.data.message);
+      console.log("[NOTIFICATION] Success:", response.data.message);
       notificationService.success(response.data.message);
     }
     return response;
@@ -42,12 +52,12 @@ apiClient.interceptors.response.use(
   (error) => {
     if (error.response?.status === 401) {
       // Token expired or invalid
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('rememberMe');
-      window.location.href = '/login';
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("rememberMe");
+      window.location.href = "/login";
     } else if (error.response?.data?.message) {
       // Show notification popup for API error if message exists
-      console.log('[NOTIFICATION] Error:', error.response.data.message);
+      console.log("[NOTIFICATION] Error:", error.response.data.message);
       notificationService.error(error.response.data.message);
     }
     return Promise.reject(error);
@@ -107,16 +117,16 @@ export interface ResetPasswordRequest {
 }
 
 // Auth service methods
-export const authAPI = {
+const authAPI = {
   // Login user
   login: async (data: LoginRequest): Promise<LoginResponse> => {
-    const response = await apiClient.post('/auth/login', data);
+    const response = await apiClient.post("/auth/login", data);
     return response.data;
   },
 
   // Verify 2FA code
   verify2FA: async (data: TwoFactorRequest): Promise<LoginResponse> => {
-    const response = await apiClient.post('/auth/2fa', data);
+    const response = await apiClient.post("/auth/2fa", data);
     return response.data;
   },
 
@@ -137,69 +147,78 @@ export const authAPI = {
       payload = formData;
       config = { headers: { "Content-Type": "multipart/form-data" } };
     }
-    const response = await apiClient.post('/auth/register', payload, config);
+    const response = await apiClient.post("/auth/register", payload, config);
     return response.data;
   },
 
   // Forgot password
   forgotPassword: async (data: ForgotPasswordRequest): Promise<any> => {
-    const response = await apiClient.post('/auth/forgot-password', data);
+    const response = await apiClient.post("/auth/forgot-password", data);
     return response.data;
   },
 
   // Reset password
   resetPassword: async (data: ResetPasswordRequest): Promise<any> => {
-    const response = await apiClient.post('/auth/reset-password', data);
+    const response = await apiClient.post("/auth/reset-password", data);
     return response.data;
   },
 
   // Logout user
   logout: async (): Promise<void> => {
     try {
-      await apiClient.post('/auth/logout');
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (refreshToken) {
+        // Backend expects refreshToken as a query param with @RequestParam
+        await apiClient.post(
+          `/auth/logout?refreshToken=${encodeURIComponent(refreshToken)}`
+        );
+      }
     } catch (error) {
-      console.error('Logout error:', error);
+      console.error("Logout error:", error);
     } finally {
       // Clear local storage regardless of API call success
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('rememberMe');
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("rememberMe");
+      localStorage.removeItem("refreshToken");
     }
   },
 
   // Get current user profile
   getCurrentUser: async (): Promise<any> => {
-    const response = await apiClient.get('/users/profile');
+    const response = await apiClient.get("/users/profile");
     return response.data;
   },
 
   // Check if user is authenticated
   isAuthenticated: (): boolean => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
     return !!token;
   },
 
   // Get auth token
   getToken: (): string | null => {
-    return localStorage.getItem('authToken');
+    return localStorage.getItem("authToken");
   },
 
   // Enable 2FA
   enable2FA: async (data: { code: string }): Promise<any> => {
-    const response = await apiClient.post('/auth/2fa/enable', data);
+    const response = await apiClient.post("/auth/2fa/enable", data);
     return response.data;
   },
 
   // Disable 2FA
   disable2FA: async (data: { password: string }): Promise<any> => {
-    const response = await apiClient.post('/auth/2fa/disable', data);
+    const response = await apiClient.post("/auth/2fa/disable", data);
     return response.data;
   },
 
   // Generate 2FA backup codes
   generateBackupCodes: async (): Promise<any> => {
-    const response = await apiClient.post('/auth/2fa/backup');
+    const response = await apiClient.post("/auth/2fa/backup");
     return response.data;
-  }
+  },
 };
 
+// Export the API client as default
+export { authAPI };
 export default apiClient;
