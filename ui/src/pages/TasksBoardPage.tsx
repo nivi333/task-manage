@@ -27,12 +27,21 @@ const TasksBoardPage: React.FC = () => {
 
   const handleChange = async (id: string, status: BoardStatus) => {
     try {
-      // Find the original task to get assignedTo
+      // Find the original task to get all required fields
       const original = tasks.find(t => t.id === id);
-      const assignedTo = original?.assignedTo;
-      const payload: any = { status };
-      // Only include assignedTo if present (backend requires it)
-      if (assignedTo) payload.assignedTo = assignedTo;
+      if (!original) throw new Error('Task not found');
+      const payload: any = {
+        title: original.title,
+        status,
+        priority: original.priority,
+        assignedTo: original.assignedTo,
+        projectId: original.project?.id,
+      };
+      if (original.description) payload.description = original.description;
+      if (original.dueDate) payload.dueDate = original.dueDate;
+      if (original.estimatedHours !== undefined) payload.estimatedHours = original.estimatedHours;
+      if (original.actualHours !== undefined) payload.actualHours = original.actualHours;
+      if (original.tags) payload.tags = original.tags;
       const updated = await taskService.update(id, payload);
       setTasks(prev => prev.map(t => (t.id === id ? { ...t, status: updated.status } : t)));
       notificationService.success('Status updated');
@@ -41,6 +50,7 @@ const TasksBoardPage: React.FC = () => {
       notificationService.error(msg);
     }
   };
+
 
 
   return (
