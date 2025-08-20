@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, Select, Row, Col, Avatar, Upload } from 'antd';
+import { Modal, Form, Input, Row, Col, Avatar, Upload } from 'antd';
 import { UserOutlined, UploadOutlined } from '@ant-design/icons';
 import { User, CreateUserRequest, UpdateUserRequest, UserRole, UserStatus } from '../../types/user';
-import Button from '../common/Button';
-
-const { Option } = Select;
+import { TTButton, TTSelect } from '../common';
 
 interface UserModalProps {
   visible: boolean;
@@ -65,22 +63,21 @@ const UserModal: React.FC<UserModalProps> = ({
       open={visible}
       onCancel={handleCancel}
       footer={[
-        <Button
+        <TTButton
           key="cancel"
-          variant="secondary"
           onClick={handleCancel}
           disabled={loading}
         >
           Cancel
-        </Button>,
-        <Button
+        </TTButton>,
+        <TTButton
           key="submit"
-          variant="primary"
+          type="primary"
           onClick={handleSubmit}
           loading={loading}
         >
           {isEditing ? 'Update User' : 'Create User'}
-        </Button>,
+        </TTButton>,
       ]}
       width={600}
       destroyOnClose
@@ -103,9 +100,9 @@ const UserModal: React.FC<UserModalProps> = ({
                   showUploadList={false}
                   beforeUpload={() => false}
                 >
-                  <Button variant="transparent" size="sm" icon={<UploadOutlined />}>
+                  <TTButton type="text" size="small" icon={<UploadOutlined />}>
                     Change Photo
-                  </Button>
+                  </TTButton>
                 </Upload>
               </div>
             </Col>
@@ -182,11 +179,14 @@ const UserModal: React.FC<UserModalProps> = ({
               name="role"
               rules={[{ required: true, message: 'Please select a role' }]}
             >
-              <Select placeholder="Select role">
-                <Option value={UserRole.USER}>User</Option>
-                <Option value={UserRole.MANAGER}>Manager</Option>
-                <Option value={UserRole.ADMIN}>Admin</Option>
-              </Select>
+              <TTSelect
+                placeholder="Select role"
+                options={[
+                  { label: 'User', value: UserRole.USER },
+                  { label: 'Manager', value: UserRole.MANAGER },
+                  { label: 'Admin', value: UserRole.ADMIN },
+                ]}
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -195,11 +195,14 @@ const UserModal: React.FC<UserModalProps> = ({
               name="status"
               rules={[{ required: true, message: 'Please select status' }]}
             >
-              <Select placeholder="Select status">
-                <Option value={UserStatus.ACTIVE}>Active</Option>
-                <Option value={UserStatus.INACTIVE}>Inactive</Option>
-                <Option value={UserStatus.SUSPENDED}>Suspended</Option>
-              </Select>
+              <TTSelect
+                placeholder="Select status"
+                options={[
+                  { label: 'Active', value: UserStatus.ACTIVE },
+                  { label: 'Inactive', value: UserStatus.INACTIVE },
+                  { label: 'Suspended', value: UserStatus.SUSPENDED },
+                ]}
+              />
             </Form.Item>
           </Col>
         </Row>

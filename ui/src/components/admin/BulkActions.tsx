@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dropdown, Space, Modal, Typography } from 'antd';
+import { Dropdown, Space, Modal, Typography } from 'antd';
 import { 
   DeleteOutlined, 
   CheckCircleOutlined, 
@@ -9,6 +9,7 @@ import {
   ExportOutlined
 } from '@ant-design/icons';
 import { BulkUserAction } from '../../types/user';
+import { TTButton } from '../common';
 
 const { Text } = Typography;
 const { confirm } = Modal;
@@ -105,20 +106,20 @@ const BulkActions: React.FC<BulkActionsProps> = ({
               disabled={loading}
               trigger={['click']}
             >
-              <Button>
+              <TTButton>
                 Bulk Actions <DownOutlined />
-              </Button>
+              </TTButton>
             </Dropdown>
           </>
         )}
         
-        <Button
+        <TTButton
           icon={<ExportOutlined />}
           onClick={onExport}
           disabled={loading}
         >
           Export CSV
-        </Button>
+        </TTButton>
       </Space>
     </div>
   );

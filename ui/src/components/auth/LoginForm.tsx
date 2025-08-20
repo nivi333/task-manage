@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Checkbox, message, Divider } from "antd";
-import Button from "../common/Button";
+import { TTButton } from "../common";
 // All notifications will use Ant Design's message API at the top by default.
 import {
   UserOutlined,
@@ -38,7 +38,7 @@ const SocialButtonsContainer = styled.div`
   margin-bottom: 20px;
 `;
 
-const SocialButton = styled(Button)`
+const SocialButton = styled(TTButton)`
   flex: 1;
   height: 45px;
   display: flex;
@@ -323,9 +323,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           </RememberMeContainer>
 
           <Form.Item>
-            <Button variant="primary" htmlType="submit" loading={loading} block>
+            <TTButton ttVariant="primary" htmlType="submit" loading={loading} block>
               {loading ? "Signing in..." : "Sign In"}
-            </Button>
+            </TTButton>
           </Form.Item>
         </StyledForm>
 

@@ -46,7 +46,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [
               mentionUsernames={mentionUsernames}
             />
           ) : (
-            <div style={{ whiteSpace: 'normal' }} dangerouslySetInnerHTML={{ __html: comment.content }} />
+            <Text style={{ whiteSpace: 'pre-wrap' }}>{comment.content}</Text>
           )
         }
       />

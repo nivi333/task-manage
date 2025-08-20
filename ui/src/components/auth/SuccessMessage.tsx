@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Result } from "antd";
 import { CheckCircleOutlined, MailOutlined } from "@ant-design/icons";
-import Button from "../common/Button";
+import { TTButton } from "../common";
 
 interface SuccessMessageProps {
   type: "forgot-password" | "reset-password";
@@ -47,9 +47,9 @@ const SuccessMessage: React.FC<SuccessMessageProps> = ({
           : "We've sent password reset instructions to your email. Please check your inbox and follow the link to reset your password.",
         extra: (
           <div>
-            <Button variant="primary" onClick={onBackToLogin}>
+            <TTButton ttVariant="primary" onClick={onBackToLogin}>
               Back to Login
-            </Button>
+            </TTButton>
             {autoRedirect && countdown > 0 && (
               <p className="countdown-text">
                 Redirecting to login in {countdown} seconds...
@@ -66,9 +66,9 @@ const SuccessMessage: React.FC<SuccessMessageProps> = ({
           "Your password has been successfully reset. You can now log in with your new password.",
         extra: (
           <div>
-            <Button variant="primary" onClick={onBackToLogin}>
+            <TTButton ttVariant="primary" onClick={onBackToLogin}>
               Continue to Login
-            </Button>
+            </TTButton>
             {autoRedirect && countdown > 0 && (
               <p className="countdown-text">
                 Redirecting to login in {countdown} seconds...

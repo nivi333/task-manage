@@ -1,7 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Button, DatePicker, Form, Input, InputNumber, Select, Space, Upload } from 'antd';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { DatePicker, Form, Input, InputNumber, Select, Space, Upload } from 'antd';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { PlusOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
@@ -9,6 +7,7 @@ import { Task, TaskCreateRequest, TaskPriority, TaskUpdateRequest, UUID } from '
 import { userService } from '../../services/userService';
 import { taskService } from '../../services/taskService';
 import { notificationService } from '../../services/notificationService';
+import { TTButton } from '../common';
 
 export type TaskFormValues = {
   title: string;
@@ -55,7 +54,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
     projectId: initialTask?.projectId,
     tags: initialTask?.tags || [],
     dependencies: [],
-    recurrence: null,
+    recurrence: { frequency: 'NONE', interval: undefined, count: undefined },
     attachments: [],
   }), [initialTask]);
 
@@ -145,14 +144,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
       <Form.Item
         name="description"
         label="Description"
-        valuePropName="value"
-        getValueFromEvent={(content: string) => content}
         rules={[
           {
             validator: (_, value) => {
-              if (!value) return Promise.resolve();
-              const plain = String(value).replace(/<[^>]*>/g, '').trim();
-              if (plain.length > 5000) {
+              const text = (value ?? '').toString();
+              if (!text) return Promise.resolve();
+              if (text.length > 5000) {
                 return Promise.reject(new Error('Description must be 5000 characters or less.'));
               }
               return Promise.resolve();
@@ -160,7 +157,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
           },
         ]}
       >
-        <ReactQuill theme="snow" placeholder="Write a rich description..." />
+        <Input.TextArea rows={6} placeholder="Write a description..." />
       </Form.Item>
 
       <Form.Item name="dueDate" label="Due Date">
@@ -168,7 +165,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
       </Form.Item>
 
       <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Status is required' }]}> 
-        <Select size="large" allowClear placeholder="Select status" defaultValue={initialValues.status}>
+        <Select size="large" allowClear placeholder="Select status">
           <Select.Option value="OPEN">OPEN</Select.Option>
           <Select.Option value="IN_PROGRESS">IN_PROGRESS</Select.Option>
           <Select.Option value="DONE">DONE</Select.Option>
@@ -232,7 +229,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
       <Form.Item label="Recurrence">
         <Space.Compact block className="recurrence-compact">
           <Form.Item name={['recurrence','frequency']} noStyle>
-            <Select size="large" defaultValue={'NONE'} style={{ flex: '0 0 40%' }}>
+            <Select size="large" style={{ flex: '0 0 40%' }}>
               <Select.Option value="NONE">None</Select.Option>
               <Select.Option value="DAILY">Daily</Select.Option>
               <Select.Option value="WEEKLY">Weekly</Select.Option>
@@ -250,9 +247,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
 
       {!hideActions && (
         <Form.Item>
-          <Button type="primary" onClick={submit} loading={saving}>
+          <TTButton type="primary" onClick={submit} loading={saving}>
             {mode === 'create' ? 'Create Task' : 'Update Task'}
-          </Button>
+          </TTButton>
         </Form.Item>
       )}
     </Form>

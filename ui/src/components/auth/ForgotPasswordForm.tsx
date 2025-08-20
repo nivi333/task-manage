@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Input, message } from "antd";
 import { MailOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import { authAPI } from "../../services/authService";
-import Button from "../common/Button";
+import { TTButton } from "../common";
 
 interface ForgotPasswordFormData {
   email: string;
@@ -102,17 +102,17 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
         </Form.Item>
 
         <Form.Item>
-          <Button variant="primary" htmlType="submit" loading={loading} block>
+          <TTButton ttVariant="primary" htmlType="submit" loading={loading} block>
             {loading ? "Sending..." : "Send Reset Instructions"}
-          </Button>
+          </TTButton>
         </Form.Item>
       </Form>
 
       <div className="back-to-login-container">
-        <Button variant="transparent" onClick={onBackToLogin}>
+        <TTButton ttVariant="transparent" onClick={onBackToLogin}>
           <ArrowLeftOutlined />
           Back to Login
-        </Button>
+        </TTButton>
       </div>
     </div>
   );

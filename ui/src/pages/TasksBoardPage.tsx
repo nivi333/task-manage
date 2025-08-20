@@ -5,6 +5,7 @@ import { taskService } from '../services/taskService';
 import TaskBoard, { BoardStatus } from '../components/tasks/TaskBoard';
 import { notificationService } from '../services/notificationService';
 import AppLayout from '../components/layout/AppLayout';
+import { HeaderTitle } from '../components/common';
 
 const TasksBoardPage: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -36,7 +37,7 @@ const TasksBoardPage: React.FC = () => {
   };
 
   return (
-    <AppLayout title="Kanban Board" contentPadding={24}>
+    <AppLayout title={<HeaderTitle level={3}>Kanban Board</HeaderTitle>} contentPadding={24}>
       <Card loading={loading}>
         <TaskBoard tasks={tasks} onStatusChange={handleChange} />
       </Card>

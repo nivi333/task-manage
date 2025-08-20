@@ -150,7 +150,16 @@ export class UserService {
   async getProfile(): Promise<UserProfile> {
     try {
       const { data } = await apiClient.get(`${this.baseURL}/profile`);
-      return data;
+      // Normalize backend field names (avatarUrl -> profilePicture)
+      const normalized: UserProfile = {
+        id: data.id,
+        username: data.username,
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        profilePicture: data.profilePicture || data.avatarUrl || undefined,
+      };
+      return normalized;
     } catch (error: any) {
       console.error('Error fetching profile:', error);
       notificationService.error('Failed to load profile');
@@ -162,7 +171,15 @@ export class UserService {
     try {
       const { data } = await apiClient.put(`${this.baseURL}/profile`, req);
       notificationService.success('Profile updated');
-      return data;
+      const normalized: UserProfile = {
+        id: data.id,
+        username: data.username,
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        profilePicture: data.profilePicture || data.avatarUrl || req.profilePicture,
+      };
+      return normalized;
     } catch (error: any) {
       console.error('Error updating profile:', error);
       const message = error.response?.data?.message || 'Failed to update profile';

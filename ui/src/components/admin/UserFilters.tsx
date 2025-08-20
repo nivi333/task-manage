@@ -1,9 +1,8 @@
 import React from 'react';
-import { Input, Select, Button, Space, Row, Col } from 'antd';
-import { SearchOutlined, FilterOutlined, ClearOutlined } from '@ant-design/icons';
+import { Space, Row, Col } from 'antd';
+import { FilterOutlined, ClearOutlined } from '@ant-design/icons';
 import { UserRole, UserStatus, UserFilters as UserFiltersType } from '../../types/user';
-
-const { Option } = Select;
+import { SearchBar, TTSelect, TTButton } from '../common';
 
 interface UserFiltersProps {
   filters: UserFiltersType;
@@ -36,58 +35,57 @@ const UserFilters: React.FC<UserFiltersProps> = ({
     <div className="user-filters tt-filters">
       <Row gutter={[12, 0]} align="middle" wrap={false}>
         <Col xs={24} sm={12} md={8} lg={8}>
-          <Input
-            className="tt-search-input"
+          <SearchBar
             placeholder="Search users..."
-            prefix={<SearchOutlined />}
             value={filters.search || ''}
-            onChange={(e) => handleSearchChange(e.target.value)}
+            onChange={(val) => handleSearchChange(val)}
             allowClear
-            disabled={loading}
           />
         </Col>
         
         <Col xs={12} sm={6} md={4} lg={4}>
-          <Select
+          <TTSelect
             placeholder="Role"
             value={filters.role}
             onChange={handleRoleChange}
             allowClear
             disabled={loading}
             style={{ width: '100%' }}
-          >
-            <Option value={UserRole.ADMIN}>Admin</Option>
-            <Option value={UserRole.MANAGER}>Manager</Option>
-            <Option value={UserRole.USER}>User</Option>
-          </Select>
+            options={[
+              { label: 'Admin', value: UserRole.ADMIN },
+              { label: 'Manager', value: UserRole.MANAGER },
+              { label: 'User', value: UserRole.USER },
+            ]}
+          />
         </Col>
         
         <Col xs={12} sm={6} md={4} lg={4}>
-          <Select
+          <TTSelect
             placeholder="Status"
             value={filters.status}
             onChange={handleStatusChange}
             allowClear
             disabled={loading}
             style={{ width: '100%' }}
-          >
-            <Option value={UserStatus.ACTIVE}>Active</Option>
-            <Option value={UserStatus.INACTIVE}>Inactive</Option>
-            <Option value={UserStatus.SUSPENDED}>Suspended</Option>
-          </Select>
+            options={[
+              { label: 'Active', value: UserStatus.ACTIVE },
+              { label: 'Inactive', value: UserStatus.INACTIVE },
+              { label: 'Suspended', value: UserStatus.SUSPENDED },
+            ]}
+          />
         </Col>
         <Col xs={12} sm={6} md={4} lg={4}>
-          <Button className="tt-filters__btn" icon={<FilterOutlined />} disabled={loading}>
+          <TTButton className="tt-filters__btn" icon={<FilterOutlined />} disabled={loading}>
             Advanced Filters
-          </Button>
+          </TTButton>
         </Col>
         
         <Col xs={24} sm={12} md={8} lg={4}>
           <Space>
             {hasActiveFilters && (
-              <Button className="tt-filters__btn" icon={<ClearOutlined />} onClick={onClearFilters} disabled={loading}>
+              <TTButton className="tt-filters__btn" icon={<ClearOutlined />} onClick={onClearFilters} disabled={loading}>
                 Clear
-              </Button>
+              </TTButton>
             )}
           </Space>
         </Col>

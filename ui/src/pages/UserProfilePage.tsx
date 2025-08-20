@@ -12,7 +12,6 @@ import {
   Typography,
   Divider,
   Modal,
-  Slider,
   message,
 } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
@@ -60,22 +59,7 @@ const UserProfilePage: React.FC = () => {
     size: number;
     type: string;
   } | null>(null);
-  // Cropper state (no external deps)
-  const [cropModalOpen, setCropModalOpen] = useState(false);
-  const [cropSrc, setCropSrc] = useState<string | null>(null);
-  const [cropScale, setCropScale] = useState(1);
-  const [cropOffset, setCropOffset] = useState<{ x: number; y: number }>({
-    x: 0,
-    y: 0,
-  });
-  const [isDragging, setIsDragging] = useState(false);
-  const dragRef = React.useRef<{
-    startX: number;
-    startY: number;
-    initX: number;
-    initY: number;
-  } | null>(null);
-  const imgRef = React.useRef<HTMLImageElement | null>(null);
+  // Removed image zoom/crop functionality for simplicity
 
   const load = async () => {
     setLoading(true);
@@ -188,16 +172,22 @@ const UserProfilePage: React.FC = () => {
                           message.error(errors.join(" "));
                           return Upload.LIST_IGNORE;
                         }
+                        // Directly set the selected image as profile picture (no zoom/crop)
                         const b64 = await getBase64(file as File);
-                        // open cropper modal instead of setting directly
-                        setCropSrc(b64);
-                        setCropScale(1);
-                        setCropOffset({ x: 0, y: 0 });
-                        setCropModalOpen(true);
+                        form.setFieldsValue({ profilePicture: b64 });
+                        setProfileImageList([
+                          {
+                            uid: "selected",
+                            name: file.name,
+                            status: "done",
+                            url: b64,
+                          } as UploadFile,
+                        ]);
                         setProfileImageMeta({
                           size: file.size ?? 0,
                           type: file.type,
                         });
+                        form.setFields([{ name: "profilePicture", errors: [] }]);
                         return Upload.LIST_IGNORE;
                       }}
                     >
@@ -485,117 +475,7 @@ const UserProfilePage: React.FC = () => {
           )}
         </Modal>
 
-        {/* Crop Image Modal */}
-        <Modal
-          title="Crop Image"
-          open={cropModalOpen}
-          onCancel={() => setCropModalOpen(false)}
-          footer={[
-            <Button key="cancel" onClick={() => setCropModalOpen(false)}>
-              Cancel
-            </Button>,
-            <Button
-              key="save"
-              type="primary"
-              onClick={async () => {
-                if (!cropSrc) return;
-                // Render to canvas 256x256 using current scale/offset
-                const img = new Image();
-                img.src = cropSrc;
-                await new Promise((res) => {
-                  img.onload = () => res(null);
-                });
-                const size = 256;
-                const canvas = document.createElement("canvas");
-                canvas.width = size;
-                canvas.height = size;
-                const ctx = canvas.getContext("2d")!;
-                ctx.fillStyle = "#fff";
-                ctx.fillRect(0, 0, size, size);
-                const drawW = img.width * cropScale;
-                const drawH = img.height * cropScale;
-                const dx = cropOffset.x + (size - drawW) / 2;
-                const dy = cropOffset.y + (size - drawH) / 2;
-                ctx.imageSmoothingEnabled = true;
-                ctx.imageSmoothingQuality = "high";
-                ctx.drawImage(img, dx, dy, drawW, drawH);
-                const b64 = canvas.toDataURL("image/png");
-                form.setFieldsValue({ profilePicture: b64 });
-                setProfileImageList([
-                  {
-                    uid: "cropped",
-                    name: "profile.png",
-                    status: "done",
-                    url: b64,
-                  },
-                ]);
-                form.setFields([{ name: "profilePicture", errors: [] }]);
-                setCropModalOpen(false);
-              }}
-            >
-              Save
-            </Button>,
-          ]}
-        >
-          {cropSrc && (
-            <div>
-              <div
-                className="cropper-frame"
-                onMouseDown={(e) => {
-                  setIsDragging(true);
-                  dragRef.current = {
-                    startX: e.clientX,
-                    startY: e.clientY,
-                    initX: cropOffset.x,
-                    initY: cropOffset.y,
-                  };
-                }}
-                onMouseMove={(e) => {
-                  if (!isDragging || !dragRef.current) return;
-                  const dx = e.clientX - dragRef.current.startX;
-                  const dy = e.clientY - dragRef.current.startY;
-                  setCropOffset({
-                    x: dragRef.current.initX + dx,
-                    y: dragRef.current.initY + dy,
-                  });
-                }}
-                onMouseUp={() => {
-                  setIsDragging(false);
-                  dragRef.current = null;
-                }}
-                onMouseLeave={() => {
-                  setIsDragging(false);
-                  dragRef.current = null;
-                }}
-              >
-                <img
-                  ref={imgRef}
-                  src={cropSrc}
-                  alt="crop"
-                  style={{
-                    position: "absolute",
-                    left: "50%",
-                    top: "50%",
-                    transform: `translate(calc(-50% + ${cropOffset.x}px), calc(-50% + ${cropOffset.y}px)) scale(${cropScale})`,
-                    transformOrigin: "center center",
-                    userSelect: "none",
-                    pointerEvents: "none",
-                  }}
-                />
-              </div>
-              <div style={{ marginTop: 16 }}>
-                <Text strong>Zoom</Text>
-                <Slider
-                  min={1}
-                  max={3}
-                  step={0.01}
-                  value={cropScale}
-                  onChange={(v) => setCropScale(v)}
-                />
-              </div>
-            </div>
-          )}
-        </Modal>
+        {/* Image crop/zoom removed intentionally */}
     </AppLayout>
   );
 };

@@ -284,19 +284,32 @@ body {
 }
 
 /* Global Input Field Styles */
+/* Global control heights: enforce consistent 36px across app */
 .ant-input,
 .ant-input-affix-wrapper {
-  height: 45px !important;
+  height: 36px !important;
   border-radius: var(--border-radius-md) !important;
   background-color: white !important;
   border-color: var(--color-border) !important;
   font-size: var(--font-size-md) !important;
+  line-height: 34px !important;
+}
+.ant-input {
+  padding: 0 12px !important;
 }
 
 .ant-input-affix-wrapper .ant-input {
   height: auto !important;
   background: transparent !important;
   border: none !important;
+}
+.ant-input-affix-wrapper {
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+}
+.ant-input-affix-wrapper .ant-input-prefix {
+  margin-right: 8px !important;
 }
 
 .ant-input::placeholder,
@@ -317,6 +330,85 @@ body {
   border-color: var(--color-primary) !important;
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
 }
+
+/* Input.Search: ensure affix wrapper uses global height */
+.ant-input-search .ant-input-group .ant-input-affix-wrapper,
+.ant-input-search .ant-input-group .ant-input {
+  height: 36px !important;
+}
+.ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+  border-radius: 8px 0 0 8px !important;
+}
+
+/* Select: single selector height + text vertical alignment */
+.ant-select-selector {
+  height: 36px !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+  border-color: var(--color-border) !important;
+}
+.ant-select-selection-search-input {
+  height: 34px !important;
+}
+.ant-select-selection-item,
+.ant-select-selection-placeholder {
+  line-height: 34px !important;
+}
+.ant-select-single .ant-select-selector .ant-select-selection-item,
+.ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+.ant-select-arrow {
+  display: flex !important;
+  align-items: center !important;
+}
+
+/* DatePicker and RangePicker */
+.ant-picker {
+  height: 36px !important;
+  border-radius: 8px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  padding: 0 12px !important;
+  border-color: var(--color-border) !important;
+}
+.ant-picker-input > input {
+  height: 34px !important;
+}
+.ant-picker-suffix,
+.ant-picker-clear {
+  display: inline-flex !important;
+  align-items: center !important;
+}
+
+/* Dropdown panel consistency */
+.ant-select-dropdown .ant-select-item {
+  min-height: 32px !important;
+  line-height: 32px !important;
+}
+
+/* Cards: remove default body padding globally */
+.ant-card-body {
+  padding: 0 !important;
+}
+
+/* Buttons: exact vertical centering */
+.ant-btn,
+.ant-btn-primary,
+.ant-btn-default {
+  line-height: 34px !important;
+}
+.ant-btn > span { line-height: 1 !important; }
+
+/* Make inline controls align perfectly */
+input.ant-input,
+.ant-input-affix-wrapper,
+.ant-select,
+.ant-picker,
+.ant-btn { vertical-align: middle !important; }
 
 /* Utility Classes */
 .text-center { text-align: center; }

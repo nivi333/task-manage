@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Form, Input, Checkbox, message, Modal } from "antd";
-import Button from "../common/Button";
+import { TTButton } from "../common";
 import styled from "styled-components";
 import RegistrationStepper from "./RegistrationStepper";
 import PasswordStrengthMeter from "./PasswordStrengthMeter";
@@ -58,12 +58,12 @@ const TermsModal = ({
     <p>
       By registering, you agree to our Terms and Conditions and Privacy Policy.
     </p>
-    <Button variant="primary" block onClick={onOk}>
+    <TTButton ttVariant="primary" block onClick={onOk}>
       Accept
-    </Button>
-    <Button variant="secondary" block onClick={onCancel} style={{ marginTop: 8 }}>
+    </TTButton>
+    <TTButton ttVariant="secondary" block onClick={onCancel} style={{ marginTop: 8 }}>
       Decline
-    </Button>
+    </TTButton>
   </Modal>
 );
 
@@ -211,12 +211,12 @@ const RegistrationForm: React.FC = () => {
               <Input prefix={<MailOutlined />} placeholder="Email" />
             </Form.Item>
             <Form.Item>
-              <Button variant="primary" block onClick={async () => {
+              <TTButton ttVariant="primary" block onClick={async () => {
                 try {
                   await form.validateFields(["firstName", "lastName", "username", "email"]);
                   setCurrentStep(1);
                 } catch {}
-              }}>Next</Button>
+              }}>Next</TTButton>
             </Form.Item>
           </>
         )}
@@ -268,9 +268,9 @@ const RegistrationForm: React.FC = () => {
               />
             </Form.Item>
             <Form.Item label="Profile Picture (optional)">
-              <Button icon={<UploadOutlined />} block onClick={() => setShowProfileCropper(true)}>
+              <TTButton icon={<UploadOutlined />} block onClick={() => setShowProfileCropper(true)}>
                 Upload Profile Picture (optional)
-              </Button>
+              </TTButton>
               {profileImageUrl && (
                 <div style={{ marginTop: 12, textAlign: 'center' }}>
                   <img src={profileImageUrl} alt="Profile Preview" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '1px solid #ddd' }} />
@@ -308,18 +308,18 @@ const RegistrationForm: React.FC = () => {
               </Checkbox>
             </Form.Item>
             <Form.Item>
-              <Button variant="primary" block onClick={async () => {
+              <TTButton ttVariant="primary" block onClick={async () => {
                 try {
                   await form.validateFields(["password", "confirmPassword", "acceptTerms"]);
                   // Submit before changing steps to avoid unmounting fields and losing values
                   form.submit();
                 } catch {}
-              }}>Register</Button>
+              }}>Register</TTButton>
             </Form.Item>
             <Form.Item>
-              <Button variant="secondary" block onClick={() => setCurrentStep(0)}>
+              <TTButton ttVariant="secondary" block onClick={() => setCurrentStep(0)}>
                 Back
-              </Button>
+              </TTButton>
             </Form.Item>
           </>
         )}
@@ -330,7 +330,9 @@ const RegistrationForm: React.FC = () => {
           </div>
         )}
         <Form.Item>
-          <Button variant="transparent" block onClick={() => navigate("/login")}> <ArrowLeftOutlined /> Back to Login</Button>
+          <TTButton ttVariant="transparent" block onClick={() => navigate("/login")}>
+            <ArrowLeftOutlined /> Back to Login
+          </TTButton>
         </Form.Item>
       </StyledForm>
       <TermsModal

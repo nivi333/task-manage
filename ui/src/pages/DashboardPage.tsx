@@ -3,6 +3,7 @@ import { Typography, Space, Row, Col, Card, Statistic } from 'antd';
 import { FundOutlined, BarChartOutlined } from '@ant-design/icons';
 import { Pie, Column } from '@ant-design/plots';
 import AppLayout from '../components/layout/AppLayout';
+import { HeaderTitle } from '../components/common';
 
 const { Text } = Typography;
 
@@ -34,7 +35,7 @@ const DashboardPage: React.FC = () => {
   ];
 
   return (
-    <AppLayout title="Dashboard" contentPadding={16}>
+    <AppLayout title={<HeaderTitle level={3}>Dashboard</HeaderTitle>} contentPadding={16}>
       <Space direction="vertical" size={16} style={{ width: '100%' }}>
             <Row gutter={[16, 16]}>
               {kpis.map((k) => (

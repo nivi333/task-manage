@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Form, Input, message } from "antd";
 import { LockOutlined, ArrowLeftOutlined, EyeInvisibleOutlined, EyeTwoTone } from "@ant-design/icons";
 import { authAPI } from "../../services/authService";
-import Button from "../common/Button";
+import { TTButton } from "../common";
 import PasswordStrengthMeter from "./PasswordStrengthMeter";
 
 interface ResetPasswordFormData {
@@ -145,17 +145,17 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
         </Form.Item>
 
         <Form.Item>
-          <Button variant="primary" htmlType="submit" loading={loading} block>
+          <TTButton ttVariant="primary" htmlType="submit" loading={loading} block>
             {loading ? "Resetting..." : "Reset Password"}
-          </Button>
+          </TTButton>
         </Form.Item>
       </Form>
 
       <div className="back-to-login-container">
-        <Button variant="transparent" onClick={onBackToLogin}>
+        <TTButton ttVariant="transparent" onClick={onBackToLogin}>
           <ArrowLeftOutlined />
           Back to Login
-        </Button>
+        </TTButton>
       </div>
     </div>
   );

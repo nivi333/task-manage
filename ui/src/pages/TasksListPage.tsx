@@ -10,12 +10,12 @@ import {
   Tag,
   Typography,
 } from "antd";
-import { Button as AntButton, Drawer, Space } from "antd";
+import { Drawer, Space } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Task, TaskListFilters } from "../types/task";
 import { taskService } from "../services/taskService";
-import Button from "../components/common/Button";
+import { TTButton } from "../components/common";
 import TaskForm from "../components/tasks/TaskForm";
 import dayjs from "dayjs";
 import { notificationService } from "../services/notificationService";
@@ -183,12 +183,12 @@ const TasksListPage: React.FC = () => {
   return (
     <AppLayout title="Tasks" contentPadding={24}>
         <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16, gap: 8 }}>
-          <Button variant="secondary" onClick={() => setQcOpen(true)}>
+          <TTButton onClick={() => setQcOpen(true)}>
             Quick Create
-          </Button>
-          <Button variant="primary" onClick={openCreate}>
+          </TTButton>
+          <TTButton type="primary" onClick={openCreate}>
             New Task
-          </Button>
+          </TTButton>
         </div>
 
         <Card style={{ marginBottom: 16 }}>
@@ -301,7 +301,7 @@ const TasksListPage: React.FC = () => {
               padding: "12px 0",
             },
             footer: { background: "transparent", borderTop: "none" },
-            body: { padding: 0 },
+            body: { padding: 0, paddingBottom: 80 },
           }}
           title={
             <div
@@ -317,7 +317,7 @@ const TasksListPage: React.FC = () => {
               }}
             >
               <Space align="center">
-                <AntButton
+                <TTButton
                   type="text"
                   icon={<ArrowLeftOutlined />}
                   onClick={closeCreate}
@@ -343,13 +343,12 @@ const TasksListPage: React.FC = () => {
                 gap: 8,
               }}
             >
-              <AntButton onClick={closeCreate}>Cancel</AntButton>
-              <AntButton type="primary" onClick={() => drawerSubmit?.()}>
+              <TTButton onClick={closeCreate}>Cancel</TTButton>
+              <TTButton type="primary" onClick={() => drawerSubmit?.()}>
                 Create
-              </AntButton>
+              </TTButton>
             </div>
           }
-          bodyStyle={{ paddingBottom: 80 }}
         >
           <div
             style={{

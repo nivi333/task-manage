@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Avatar, Tag, Space, Tooltip, Typography, Dropdown } from 'antd';
+import { Avatar, Tag, Space, Tooltip, Typography, Dropdown } from 'antd';
 import type { SortOrder } from 'antd/es/table/interface';
 import { 
   UserOutlined, 
@@ -11,7 +11,7 @@ import {
   ExclamationCircleOutlined
 } from '@ant-design/icons';
 import { User, UserRole, UserStatus, UserFilters } from '../../types/user';
-import Button from '../common/Button';
+import { TTButton, TTTable } from '../common';
 
 const { Text } = Typography;
 
@@ -224,14 +224,12 @@ const UserTable: React.FC<UserTableProps> = ({
       render: (_: any, record: User) => (
         <Space>
           <Tooltip title="Edit User">
-            <Button
-              variant="transparent"
-              size="sm"
+            <TTButton
+              type="text"
+              size="small"
               icon={<EditOutlined />}
               onClick={() => onEdit(record)}
-            >
-              {/* Icon only button */}
-            </Button>
+            />
           </Tooltip>
           
           <Dropdown
@@ -239,13 +237,11 @@ const UserTable: React.FC<UserTableProps> = ({
             trigger={['click']}
             placement="bottomRight"
           >
-            <Button
-              variant="transparent"
-              size="sm"
+            <TTButton
+              type="text"
+              size="small"
               icon={<MoreOutlined />}
-            >
-              {/* Icon only button */}
-            </Button>
+            />
           </Dropdown>
         </Space>
       ),
@@ -297,7 +293,7 @@ const UserTable: React.FC<UserTableProps> = ({
   };
 
   return (
-    <Table
+    <TTTable
       columns={columns}
       dataSource={users}
       rowKey="id"

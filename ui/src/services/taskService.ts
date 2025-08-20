@@ -21,8 +21,33 @@ const toQuery = (filters: TaskListFilters = {}): string => {
 export const taskService = {
   async list(filters: TaskListFilters = {}): Promise<PageResponse<Task>> {
     const q = toQuery(filters);
-    const { data } = await apiClient.get(`/tasks?${q}`);
-    return data;
+    try {
+      const { data } = await apiClient.get(`/tasks?${q}`);
+      return data;
+    } catch (e: any) {
+      // Similar to projects: some backends restrict `/tasks` globally; try a user-scoped endpoint.
+      if (e?.response?.status === 403) {
+        try {
+          const { data } = await apiClient.get(`/tasks/my?${q}`);
+          return data;
+        } catch (e2: any) {
+          const code = e2?.response?.status;
+          if (code === 403 || code === 404) {
+            // Return an empty page to avoid uncaught runtime errors in the UI.
+            return {
+              content: [],
+              totalElements: 0,
+              totalPages: 0,
+              size: Number(filters.size ?? 10),
+              number: Number(filters.page ?? 0),
+            };
+          }
+          // Otherwise rethrow original error
+          throw e;
+        }
+      }
+      throw e;
+    }
   },
   async get(id: UUID): Promise<Task> {
     const { data } = await apiClient.get(`/tasks/${id}`);

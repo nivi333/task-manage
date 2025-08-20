@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Button, Mentions } from 'antd';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import { Mentions, Input } from 'antd';
+import { TTButton } from '../common';
 
 export interface CommentFormProps {
   submitting?: boolean;
@@ -17,34 +16,30 @@ const CommentForm: React.FC<CommentFormProps> = ({ submitting, parentCommentId =
   const [mentionSearch, setMentionSearch] = useState('');
   const [options, setOptions] = useState<string[]>(mentionUsernames);
 
-  const modules = useMemo(() => ({
-    toolbar: [
-      [{ header: [1, 2, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'code-block'],
-      ['clean'],
-    ],
-  }), []);
+  // Note: React 19 removed findDOMNode, which breaks react-quill v2.0.0.
+  // Using a plain textarea fallback to avoid runtime errors.
 
   const handleSubmit = useCallback(async () => {
-    const html = value?.trim();
-    // Strip tags to validate non-empty content
-    const text = html.replace(/<[^>]*>/g, '').trim();
+    const text = value?.trim();
     if (!text) return;
-    await onSubmit(html, parentCommentId);
+    await onSubmit(text, parentCommentId);
     setValue('');
   }, [value, onSubmit, parentCommentId]);
 
   return (
     <div>
-      <ReactQuill theme="snow" value={value} onChange={setValue} modules={modules} />
+      <Input.TextArea
+        rows={4}
+        placeholder="Write a comment... (rich text temporarily disabled)"
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+      />
       <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
-        <Button type="primary" onClick={handleSubmit} loading={!!submitting} disabled={!!submitting}>
+        <TTButton type="primary" onClick={handleSubmit} loading={!!submitting} disabled={!!submitting}>
           {parentCommentId ? 'Reply' : 'Post Comment'}
-        </Button>
+        </TTButton>
         {onCancel && (
-          <Button onClick={onCancel} disabled={!!submitting}>Cancel</Button>
+          <TTButton onClick={onCancel} disabled={!!submitting}>Cancel</TTButton>
         )}
       </div>
       <div style={{ marginTop: 8 }}>

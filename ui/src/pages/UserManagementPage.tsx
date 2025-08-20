@@ -5,7 +5,7 @@ import UserTable from '../components/admin/UserTable';
 import UserFilters from '../components/admin/UserFilters';
 import BulkActions from '../components/admin/BulkActions';
 import UserModal from '../components/admin/UserModal';
-import Button from '../components/common/Button';
+import { TTButton, HeaderTitle } from '../components/common';
 import { 
   User, 
   UserFilters as UserFiltersType, 
@@ -168,7 +168,7 @@ const UserManagementPage: React.FC = () => {
   };
 
   return (
-    <AppLayout title="User Management" contentPadding={24}>
+    <AppLayout title={<HeaderTitle level={3}>User Management</HeaderTitle>} contentPadding={24}>
       <div className="user-management-page">
         <div className="tt-filters" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
           <div style={{ flex: 1 }}>
@@ -179,15 +179,15 @@ const UserManagementPage: React.FC = () => {
               loading={loading}
             />
           </div>
-          <Button
-            variant="primary"
+          <TTButton
+            type="primary"
             icon={<PlusOutlined />}
             onClick={handleCreateUser}
           >
             Add User
-          </Button>
+          </TTButton>
         </div>
-        <Card bordered={false} bodyStyle={{ padding: 5 }}>
+        <Card bordered={false}>
           <Space direction="vertical" size={8} style={{ width: '100%' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <BulkActions

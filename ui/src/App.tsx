@@ -13,6 +13,9 @@ import CreateTaskPage from './pages/CreateTaskPage';
 import EditTaskPage from './pages/EditTaskPage';
 import TasksStatsPage from './pages/TasksStatsPage';
 import UserProfilePage from './pages/UserProfilePage';
+import ProjectsListPage from './pages/ProjectsListPage';
+import ProjectDashboardPage from './pages/ProjectDashboardPage';
+import ProjectTeamPage from './pages/ProjectTeamPage';
 import DashboardPage from './pages/DashboardPage';
 import { authAPI } from './services/authService';
 import { initNotificationService } from './services/notificationService';
@@ -138,6 +141,30 @@ const AppContent: React.FC = () => {
                   <DashboardPage />
                 </ProtectedRoute>
               } 
+            />
+            <Route
+              path="/projects"
+              element={
+                <ProtectedRoute>
+                  <ProjectsListPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/projects/:id/dashboard"
+              element={
+                <ProtectedRoute>
+                  <ProjectDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/projects/:id/team"
+              element={
+                <ProtectedRoute>
+                  <ProjectTeamPage />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/profile"

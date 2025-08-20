@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Card, Descriptions, Space, Tag, Typography, Spin, Select, Divider, Input, Button as AntButton, Statistic, List, Avatar, Upload, Modal } from 'antd';
+import { Card, Descriptions, Space, Tag, Typography, Spin, Select, Divider, Input, Statistic, List, Avatar, Upload, Modal } from 'antd';
 import { useParams, Link } from 'react-router-dom';
 import { Task } from '../types/task';
 import { taskService } from '../services/taskService';
-import Button from '../components/common/Button';
+import { TTButton } from '../components/common';
 import { notificationService } from '../services/notificationService';
 import { commentService, CommentModel } from '../services/commentService';
 import { timeTrackingService } from '../services/timeTrackingService';
@@ -178,7 +178,7 @@ const TaskDetailPage: React.FC = () => {
   return (
     <AppLayout title={task.title || 'Task Details'} contentPadding={24}>
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 12 }}>
-        <Link to="/tasks"><Button>Back to Tasks</Button></Link>
+        <Link to="/tasks"><TTButton>Back to Tasks</TTButton></Link>
       </div>
 
       <Card style={{ marginBottom: 16 }} loading={saving}>
@@ -258,7 +258,7 @@ const TaskDetailPage: React.FC = () => {
             {trackingStart && (
               <Statistic title="Running" value={`${Math.floor(elapsedSeconds/3600)}h ${Math.floor((elapsedSeconds%3600)/60)}m ${elapsedSeconds%60}s`} />
             )}
-            <AntButton
+            <TTButton
               type={trackingStart ? 'default' : 'primary'}
               onClick={async () => {
                 if (!trackingStart) {
@@ -288,7 +288,7 @@ const TaskDetailPage: React.FC = () => {
               }}
             >
               {trackingStart ? 'Stop' : 'Start'}
-            </AntButton>
+            </TTButton>
           </Space>
         </Card>
 
@@ -396,7 +396,7 @@ const TaskDetailPage: React.FC = () => {
               }}
               showUploadList={false}
             >
-              <AntButton>Upload File</AntButton>
+              <TTButton>Upload File</TTButton>
             </Upload>
             <List
               dataSource={attachments}
@@ -404,8 +404,8 @@ const TaskDetailPage: React.FC = () => {
               renderItem={(f) => (
                 <List.Item
                   actions={[
-                    <AntButton key="download" type="link" href={f.url} target="_blank" rel="noreferrer">Download</AntButton>,
-                    <AntButton key="delete" type="link" onClick={async () => {
+                    <TTButton key="download" type="link" href={f.url} target="_blank" rel="noreferrer">Download</TTButton>,
+                    <TTButton key="delete" type="link" onClick={async () => {
                       try {
                         await attachmentService.remove(f.fileName);
                         setAttachments(prev => prev.filter(x => x.fileName !== f.fileName));
@@ -413,7 +413,7 @@ const TaskDetailPage: React.FC = () => {
                       } catch {
                         notificationService.error('Delete failed');
                       }
-                    }}>Delete</AntButton>,
+                    }}>Delete</TTButton>,
                   ]}
                 >
                   <List.Item.Meta
@@ -427,7 +427,7 @@ const TaskDetailPage: React.FC = () => {
         </Card>
 
         <Card title="Dependencies"
-          extra={<AntButton onClick={() => setAddDepVisible(true)}>Add Dependency</AntButton>}
+          extra={<TTButton onClick={() => setAddDepVisible(true)}>Add Dependency</TTButton>}
         >
           <List
             loading={depsLoading}
@@ -435,7 +435,7 @@ const TaskDetailPage: React.FC = () => {
             locale={{ emptyText: <Text type="secondary">No dependencies</Text> as any }}
             renderItem={(d) => (
               <List.Item actions={[
-                <AntButton key="remove" type="link" onClick={async () => {
+                <TTButton key="remove" type="link" onClick={async () => {
                   try {
                     await dependencyService.remove(d.id);
                     setDeps(prev => prev.filter(x => x.id !== d.id));
@@ -443,10 +443,10 @@ const TaskDetailPage: React.FC = () => {
                   } catch {
                     notificationService.error('Failed to remove');
                   }
-                }}>Remove</AntButton>,
+                }}>Remove</TTButton>,
               ]}>
                 <List.Item.Meta
-                  title={<>
+                  title={<> 
                     <Text strong>Depends on:</Text> <Link to={`/tasks/${d.dependsOn.id}`}>{d.dependsOn.title || d.dependsOn.id}</Link>
                   </>}
                 />
