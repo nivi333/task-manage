@@ -255,35 +255,170 @@
 }
 
 /* --- Task Form: Recurrence row alignment fixes --- */
+.recurrence-compact {
+  display: inline-flex; /* ensure horizontal alignment */
+  gap: 8px; /* a bit more gap so full border-radius is visible */
+}
 .recurrence-compact .ant-select .ant-select-selector {
-  height: 40px;
+  height: 40px; /* match AntD large size */
   display: flex;
   align-items: center;
+  box-sizing: border-box;
+  border-radius: 8px; /* full rounding on each field */
+}
+
+/* Center select text and arrow vertically */
+.recurrence-compact .ant-select .ant-select-selection-item,
+.recurrence-compact .ant-select .ant-select-selection-placeholder {
+  line-height: 40px;
+}
+
+.recurrence-compact .ant-select .ant-select-arrow {
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 .recurrence-compact .ant-input-number {
-  height: 40px;
+  height: 40px; /* match AntD large size */
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: 8px; /* full rounding on each field */
 }
 
 .recurrence-compact .ant-input-number-input {
   height: 40px;
   line-height: 40px;
+  padding: 0 11px;
 }
 
-/* Ensure compact group items visually join without weird gaps */
-.recurrence-compact .ant-select .ant-select-selector,
-.recurrence-compact .ant-input-number {
+/* Remove positional rounding overrides so all fields are fully rounded */
+/* Keep fallback spacing if Compact ignores gap */
+.recurrence-compact > .ant-form-item {
+  margin-right: 8px;
+}
+.recurrence-compact > .ant-form-item:last-child {
+  margin-right: 0;
+}
+
+/* --- Compact form spacing for task create/edit --- */
+.tt-form-compact .ant-form-item {
+  margin-bottom: 3px; /* tighter spacing as requested */
+}
+
+.tt-form-compact .ant-form-item-label {
+  padding-bottom: 0; /* no space between label and field */
+}
+
+/* Add padding to the form root */
+.tt-form-compact.ant-form {
+  padding: 15px;
+}
+
+/* Compact control heights (exclude textarea to avoid odd placeholder alignment) */
+.tt-form-compact .ant-input:not(textarea),
+.tt-form-compact .ant-input-affix-wrapper,
+.tt-form-compact .ant-select .ant-select-selector,
+.tt-form-compact .ant-picker,
+.tt-form-compact .ant-input-number {
+  min-height: 36px; /* slightly more compact controls */
+}
+
+.tt-form-compact .ant-input-number-input,
+.tt-form-compact .ant-input-affix-wrapper > input.ant-input {
+  height: 36px;
+}
+
+/* Textarea adjustments: padding and rounded corners for nicer placeholder positioning */
+.tt-form-compact .ant-input-textarea .ant-input {
+  border-radius: 8px;
+  padding-top: 12px; /* improve placeholder vertical positioning */
+  padding-bottom: 12px;
+  padding-left: 14px;
+  padding-right: 14px;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+/* Fine-tune textarea placeholder vertical rhythm */
+.tt-form-compact .ant-input-textarea .ant-input::placeholder {
+  line-height: 1.6;
+}
+
+/* Rounded corners for all control types in compact forms */
+.tt-form-compact .ant-input,
+.tt-form-compact .ant-input-affix-wrapper,
+.tt-form-compact .ant-select .ant-select-selector,
+.tt-form-compact .ant-picker,
+.tt-form-compact .ant-input-number {
   border-radius: 8px;
 }
 
-.recurrence-compact > .ant-form-item:not(:first-child) .ant-select .ant-select-selector,
-.recurrence-compact > .ant-form-item:not(:first-child) .ant-input-number {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
+/* Ensure dropdown arrow is vertically centered for all Selects in compact forms */
+.tt-form-compact .ant-select .ant-select-arrow {
+  top: 50%;
+  transform: translateY(-50%);
 }
 
-.recurrence-compact > .ant-form-item:not(:last-child) .ant-select .ant-select-selector,
-.recurrence-compact > .ant-form-item:not(:last-child) .ant-input-number {
-  border-top-right-radius: 0;
-  border-bottom-right-radius: 0;
+/* Remove unwanted vertical padding inside Select to keep text centered */
+.tt-form-compact .ant-select-single .ant-select-selector .ant-select-selection-item,
+.tt-form-compact .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+  line-height: 40px; /* large selects */
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Also center arrow with flex to avoid visual offset */
+.tt-form-compact .ant-select .ant-select-arrow {
+  height: 40px; /* center for large size */
+  display: flex;
+  align-items: center;
+}
+
+/* Global fix: center arrow and content for any Select (not only compact) */
+.ant-select-single .ant-select-arrow {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+}
+.ant-select-single .ant-select-selector {
+  display: flex;
+  align-items: center;
+}
+.ant-select-single .ant-select-selection-item,
+.ant-select-single .ant-select-selection-placeholder {
+  white-space: nowrap;
+}
+.ant-select-single.ant-select-lg .ant-select-selector,
+.ant-select-single.ant-select-lg .ant-select-selection-item,
+.ant-select-single.ant-select-lg .ant-select-selection-placeholder {
+  height: 40px;
+  line-height: 40px;
+}
+.ant-select-single.ant-select-lg .ant-select-selector {
+  display: flex;
+  align-items: center;
+}
+/* Default (middle) size: 32px */
+.ant-select-single:not(.ant-select-lg):not(.ant-select-sm) .ant-select-selector,
+.ant-select-single:not(.ant-select-lg):not(.ant-select-sm) .ant-select-selection-item,
+.ant-select-single:not(.ant-select-lg):not(.ant-select-sm) .ant-select-selection-placeholder {
+  height: 32px;
+  line-height: 32px;
+}
+/* Small size: 24px */
+.ant-select-single.ant-select-sm .ant-select-selector,
+.ant-select-single.ant-select-sm .ant-select-selection-item,
+.ant-select-single.ant-select-sm .ant-select-selection-placeholder {
+  height: 24px;
+  line-height: 24px;
+}
+
+/* Global: ensure InputNumber has rounded corners */
+.ant-input-number {
+  border-radius: 8px;
+}
+
+.tt-form-compact .ant-form-item-extra,
+.tt-form-compact .ant-form-item-explain {
+  margin-top: 4px; /* tighter help/validation spacing */
 }
