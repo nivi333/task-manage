@@ -93,3 +93,7 @@ uploads/
 
 # Husky
 .husky/_
+
+# Node (root and UI)
+node_modules/
+ui/node_modules/
