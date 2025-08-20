@@ -1,8 +1,12 @@
-import React from 'react';
-import { Space, Row, Col } from 'antd';
-import { FilterOutlined, ClearOutlined } from '@ant-design/icons';
-import { UserRole, UserStatus, UserFilters as UserFiltersType } from '../../types/user';
-import { SearchBar, TTSelect, TTButton } from '../common';
+import React from "react";
+import { Space, Row, Col } from "antd";
+import { FilterOutlined, ClearOutlined } from "@ant-design/icons";
+import {
+  UserRole,
+  UserStatus,
+  UserFilters as UserFiltersType,
+} from "../../types/user";
+import { SearchBar, TTSelect, TTButton } from "../common";
 
 interface UserFiltersProps {
   filters: UserFiltersType;
@@ -15,7 +19,7 @@ const UserFilters: React.FC<UserFiltersProps> = ({
   filters,
   onFiltersChange,
   onClearFilters,
-  loading = false
+  loading = false,
 }) => {
   const handleSearchChange = (value: string) => {
     onFiltersChange({ ...filters, search: value || undefined, page: 0 });
@@ -37,12 +41,12 @@ const UserFilters: React.FC<UserFiltersProps> = ({
         <Col xs={24} sm={12} md={8} lg={8}>
           <SearchBar
             placeholder="Search users..."
-            value={filters.search || ''}
+            value={filters.search || ""}
             onChange={(val) => handleSearchChange(val)}
             allowClear
           />
         </Col>
-        
+
         <Col xs={12} sm={6} md={4} lg={4}>
           <TTSelect
             placeholder="Role"
@@ -50,15 +54,15 @@ const UserFilters: React.FC<UserFiltersProps> = ({
             onChange={handleRoleChange}
             allowClear
             disabled={loading}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             options={[
-              { label: 'Admin', value: UserRole.ADMIN },
-              { label: 'Manager', value: UserRole.MANAGER },
-              { label: 'User', value: UserRole.USER },
+              { label: "Admin", value: UserRole.ADMIN },
+              { label: "Manager", value: UserRole.MANAGER },
+              { label: "User", value: UserRole.USER },
             ]}
           />
         </Col>
-        
+
         <Col xs={12} sm={6} md={4} lg={4}>
           <TTSelect
             placeholder="Status"
@@ -66,24 +70,33 @@ const UserFilters: React.FC<UserFiltersProps> = ({
             onChange={handleStatusChange}
             allowClear
             disabled={loading}
-            style={{ width: '100%' }}
+            style={{ width: "100%" }}
             options={[
-              { label: 'Active', value: UserStatus.ACTIVE },
-              { label: 'Inactive', value: UserStatus.INACTIVE },
-              { label: 'Suspended', value: UserStatus.SUSPENDED },
+              { label: "Active", value: UserStatus.ACTIVE },
+              { label: "Inactive", value: UserStatus.INACTIVE },
+              { label: "Suspended", value: UserStatus.SUSPENDED },
             ]}
           />
         </Col>
         <Col xs={12} sm={6} md={4} lg={4}>
-          <TTButton className="tt-filters__btn" icon={<FilterOutlined />} disabled={loading}>
+          <TTButton
+            className="tt-filters__btn"
+            icon={<FilterOutlined />}
+            disabled={loading}
+          >
             Advanced Filters
           </TTButton>
         </Col>
-        
+
         <Col xs={24} sm={12} md={8} lg={4}>
           <Space>
             {hasActiveFilters && (
-              <TTButton className="tt-filters__btn" icon={<ClearOutlined />} onClick={onClearFilters} disabled={loading}>
+              <TTButton
+                className="tt-filters__btn"
+                icon={<ClearOutlined />}
+                onClick={onClearFilters}
+                disabled={loading}
+              >
                 Clear
               </TTButton>
             )}

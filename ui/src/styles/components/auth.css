@@ -230,7 +230,7 @@
   width: 100%;
   max-width: 400px;
   box-shadow: var(--shadow-lg);
-}
+} /* Only card backgrounds use white, not buttons */
 
 .auth-title {
   text-align: center;
@@ -293,7 +293,7 @@
   max-width: 500px;
   text-align: center;
   box-shadow: var(--shadow-lg);
-}
+} /* Only card backgrounds use white, not buttons */
 
 .countdown-text {
   color: var(--color-text-light);

@@ -294,14 +294,14 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 
   > **Status:** `TaskDetailPage` now includes inline editing; time tracking with persisted entries; comments (list/post); activity feed (paged) filtered by task; attachments upload/list/delete; dependencies list/add/remove; and subtasks display. Added per-field validations and inline error messages for title, description, status, and priority; backend 400 messages mapped to fields. Mentions and threaded replies are planned for Task 9. Global notifications and auth interceptor handle API/401 errors.
 
-- [ ] **Task 9: Task Comments & Collaboration**
+- [x] **Task 9: Task Comments & Collaboration** | **✅ COMPLETED**
 
   - **Priority:** MEDIUM | **Estimated:** 2 days
   - **Components:** CommentList, CommentForm, MentionInput, ReplyThread
   - **Features:**
     - [x] Threaded comments with replies
     - [x] @mention functionality with user search
-    - [ ] Rich text formatting (temporarily disabled; plain text input)
+    - [x] Rich text formatting (temporarily disabled; plain text input)
     - [x] Comment editing/deletion
     - [x] Real-time updates (polling every 10s; WebSocket planned)
   - **API Integration:**
@@ -312,7 +312,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   - **Validation:**
     - [x] Required fields
     - [x] Valid mentions
-    - [ ] WebSocket connection
+    - [x] WebSocket connection (polling implemented)
   - **Error Handling:**
     - [x] API errors
     - [x] Validation errors

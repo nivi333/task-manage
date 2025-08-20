@@ -321,10 +321,17 @@ body {
 .ant-input-affix-wrapper {
   height: 36px !important;
   border-radius: var(--border-radius-md) !important;
-  background-color: white !important;
+  background-color: #fff !important;
   border-color: var(--color-border) !important;
   font-size: var(--font-size-md) !important;
   line-height: 34px !important;
+  box-shadow: none !important;
+}
+
+.ant-input:focus,
+.ant-input-affix-wrapper:focus,
+.ant-input-affix-wrapper-focused {
+  background-color: #fff !important;
 }
 .ant-input {
   padding: 0 12px !important;

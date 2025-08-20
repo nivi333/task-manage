@@ -1,14 +1,29 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { DatePicker, Form, Input, InputNumber, Select, Space, Upload } from 'antd';
-import type { UploadFile } from 'antd/es/upload/interface';
-import { PlusOutlined } from '@ant-design/icons';
-import dayjs, { Dayjs } from 'dayjs';
-import { Task, TaskCreateRequest, TaskPriority, TaskUpdateRequest, UUID } from '../../types/task';
-import { userService } from '../../services/userService';
-import { taskService } from '../../services/taskService';
-import { notificationService } from '../../services/notificationService';
-import { TTButton } from '../common';
-import { projectService } from '../../services/projectService';
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  DatePicker,
+  Form,
+  Input,
+  InputNumber,
+  Select,
+  Space,
+  Upload,
+} from "antd";
+import type { UploadFile } from "antd/es/upload/interface";
+import { PlusOutlined } from "@ant-design/icons";
+import dayjs, { Dayjs } from "dayjs";
+import {
+  Task,
+  TaskCreateRequest,
+  TaskPriority,
+  TaskUpdateRequest,
+  UUID,
+} from "../../types/task";
+import { userService } from "../../services/userService";
+import { taskService } from "../../services/taskService";
+import { notificationService } from "../../services/notificationService";
+import { TTButton } from "../common";
+import TTSelect from "../common/TTSelect";
+import { projectService } from "../../services/projectService";
 
 export type TaskFormValues = {
   title: string;
@@ -25,7 +40,7 @@ export type TaskFormValues = {
   actualHours?: number;
   // Recurrence kept in UI but not sent to backend (unsupported server-side)
   recurrence?: {
-    frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'NONE';
+    frequency: "DAILY" | "WEEKLY" | "MONTHLY" | "NONE";
     interval?: number;
     count?: number;
   } | null;
@@ -33,40 +48,56 @@ export type TaskFormValues = {
 };
 
 interface TaskFormProps {
-  mode: 'create' | 'edit';
+  mode: "create" | "edit";
   initialTask?: Task;
   onSubmit?: (task: Task) => void;
   hideActions?: boolean;
   registerSubmit?: (fn: () => void) => void;
 }
 
-const priorities: TaskPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const priorities: TaskPriority[] = ["HIGH", "MEDIUM", "LOW"];
+const UUID_REGEX =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideActions = false, registerSubmit }) => {
+const TaskForm: React.FC<TaskFormProps> = ({
+  mode,
+  initialTask,
+  onSubmit,
+  hideActions = false,
+  registerSubmit,
+}) => {
   const [form] = Form.useForm<TaskFormValues>();
   const [saving, setSaving] = useState(false);
-  const [assigneeOptions, setAssigneeOptions] = useState<{ label: string; value: UUID }[]>([]);
-  const [depOptions, setDepOptions] = useState<{ label: string; value: UUID }[]>([]);
+  const [assigneeOptions, setAssigneeOptions] = useState<
+    { label: string; value: UUID }[]
+  >([]);
+  const [depOptions, setDepOptions] = useState<
+    { label: string; value: UUID }[]
+  >([]);
   const [attachments, setAttachments] = useState<UploadFile[]>([]);
-  const [projectOptions, setProjectOptions] = useState<{ label: string; value: UUID }[]>([]);
+  const [projectOptions, setProjectOptions] = useState<
+    { label: string; value: UUID }[]
+  >([]);
 
-  const initialValues: TaskFormValues = useMemo(() => ({
-    title: initialTask?.title || '',
-    description: initialTask?.description || '',
-    dueDate: initialTask?.dueDate ? dayjs(initialTask.dueDate) : undefined,
-    status: initialTask?.status || 'OPEN',
-    priority: initialTask?.priority as TaskPriority | undefined,
-    assignedTo: initialTask?.assignedTo,
-    projectId: initialTask?.projectId,
-    tags: initialTask?.tags || [],
-    dependencies: [],
-    // Initialize hours from existing task if present
-    estimatedHours: initialTask?.estimatedHours,
-    actualHours: initialTask?.actualHours,
-    recurrence: { frequency: 'NONE', interval: undefined, count: undefined },
-    attachments: [],
-  }), [initialTask]);
+  const initialValues: TaskFormValues = useMemo(
+    () => ({
+      title: initialTask?.title || "",
+      description: initialTask?.description || "",
+      dueDate: initialTask?.dueDate ? dayjs(initialTask.dueDate) : undefined,
+      status: initialTask?.status || "OPEN",
+      priority: initialTask?.priority as TaskPriority | undefined,
+      assignedTo: initialTask?.assignedTo,
+      projectId: initialTask?.projectId,
+      tags: initialTask?.tags || [],
+      dependencies: [],
+      // Initialize hours from existing task if present
+      estimatedHours: initialTask?.estimatedHours,
+      actualHours: initialTask?.actualHours,
+      recurrence: { frequency: "NONE", interval: undefined, count: undefined },
+      attachments: [],
+    }),
+    [initialTask]
+  );
 
   useEffect(() => {
     form.setFieldsValue(initialValues);
@@ -81,18 +112,25 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
   const handleSearchUsers = async (q: string) => {
     try {
       // If query is empty, request first page without search to show initial options
-      const list = await userService.getUsers(q ? ({ search: q, size: 10 } as any) : ({ size: 10 } as any));
+      const list = await userService.getUsers(
+        q ? ({ search: q, size: 10 } as any) : ({ size: 10 } as any)
+      );
       setAssigneeOptions(
-        (list.users || []).map(u => ({ label: `${u.firstName} ${u.lastName} (${u.email})`, value: u.id! }))
+        (list.users || []).map((u) => ({
+          label: `${u.firstName} ${u.lastName} (${u.email})`,
+          value: u.id!,
+        }))
       );
     } catch (e: any) {
       const code = e?.response?.status;
       if (code === 401) {
-        notificationService.error('Your session expired. Please login again.');
+        notificationService.error("Your session expired. Please login again.");
       } else if (code === 403) {
-        notificationService.info("You don't have permission to list users. Assigning is limited.");
+        notificationService.info(
+          "You don't have permission to list users. Assigning is limited."
+        );
       } else {
-        notificationService.error('Failed to search users');
+        notificationService.error("Failed to search users");
       }
       setAssigneeOptions([]);
     }
@@ -101,7 +139,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
   const preloadProjects = async () => {
     try {
       const list = await projectService.list();
-      setProjectOptions((list || []).map(p => ({ label: p.name, value: p.id })));
+      setProjectOptions(
+        (list || []).map((p) => ({ label: p.name, value: p.id }))
+      );
     } catch {
       setProjectOptions([]);
     }
@@ -111,7 +151,10 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
     try {
       const list = await userService.getUsers({ size: 10 } as any);
       setAssigneeOptions(
-        (list.users || []).map(u => ({ label: `${u.firstName} ${u.lastName} (${u.email})`, value: u.id! }))
+        (list.users || []).map((u) => ({
+          label: `${u.firstName} ${u.lastName} (${u.email})`,
+          value: u.id!,
+        }))
       );
     } catch {
       setAssigneeOptions([]);
@@ -120,7 +163,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
 
   const handleSearchTasks = async (q: string) => {
     const tasks = await taskService.search(q);
-    setDepOptions(tasks.map(t => ({ label: `${t.title}`, value: t.id })));
+    setDepOptions(tasks.map((t) => ({ label: `${t.title}`, value: t.id })));
   };
 
   const toCreatePayload = (v: TaskFormValues): TaskCreateRequest => ({
@@ -147,23 +190,23 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
       const values = await form.validateFields();
       // Extra safety: ensure assignedTo is a UUID when present
       if (values.assignedTo && !UUID_REGEX.test(String(values.assignedTo))) {
-        notificationService.error('Assignee must be a valid user (UUID).');
+        notificationService.error("Assignee must be a valid user (UUID).");
         return;
       }
       setSaving(true);
       let result: Task;
-      if (mode === 'create') {
+      if (mode === "create") {
         const createPayload = toCreatePayload(values);
         result = await taskService.create(createPayload);
-        notificationService.success('Task created');
+        notificationService.success("Task created");
       } else {
         const updatePayload = toUpdatePayload(values);
         result = await taskService.update(initialTask!.id, updatePayload);
-        notificationService.success('Task updated');
+        notificationService.success("Task updated");
       }
       onSubmit?.(result);
     } catch (err: any) {
-      const msg = err?.response?.data?.message || 'Failed to save task';
+      const msg = err?.response?.data?.message || "Failed to save task";
       notificationService.error(msg);
     } finally {
       setSaving(false);
@@ -171,11 +214,21 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
   };
 
   return (
-    <Form form={form} layout="vertical" size="large" initialValues={initialValues} className="tt-form-compact">
-      <div style={{ color: '#999', fontSize: 12, marginBottom: 8 }}>
+    <Form
+      form={form}
+      layout="vertical"
+      size="large"
+      initialValues={initialValues}
+      className="tt-form-compact"
+    >
+      <div style={{ color: "#999", fontSize: 12, marginBottom: 8 }}>
         * indicates required fields
       </div>
-      <Form.Item name="title" label="Title" rules={[{ required: true, message: 'Title is required' }]}> 
+      <Form.Item
+        name="title"
+        label="Title"
+        rules={[{ required: true, message: "Title is required" }]}
+      >
         <Input size="large" placeholder="Task title" maxLength={120} />
       </Form.Item>
 
@@ -185,10 +238,12 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
         rules={[
           {
             validator: (_, value) => {
-              const text = (value ?? '').toString();
+              const text = (value ?? "").toString();
               if (!text) return Promise.resolve();
               if (text.length > 2000) {
-                return Promise.reject(new Error('Description must be 2000 characters or less.'));
+                return Promise.reject(
+                  new Error("Description must be 2000 characters or less.")
+                );
               }
               return Promise.resolve();
             },
@@ -199,50 +254,69 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
       </Form.Item>
 
       <Form.Item name="dueDate" label="Due Date">
-        <DatePicker size="large" style={{ width: '100%' }} />
+        <DatePicker size="large" style={{ width: "100%" }} />
       </Form.Item>
 
       <Form.Item name="estimatedHours" label="Estimated Hours">
-        <InputNumber size="large" min={0} style={{ width: '100%' }} placeholder="e.g., 8" />
+        <InputNumber
+          size="large"
+          min={0}
+          style={{ width: "100%" }}
+          placeholder="e.g., 8"
+        />
       </Form.Item>
 
       <Form.Item name="actualHours" label="Actual Hours">
-        <InputNumber size="large" min={0} style={{ width: '100%' }} placeholder="e.g., 5" />
+        <InputNumber
+          size="large"
+          min={0}
+          style={{ width: "100%" }}
+          placeholder="e.g., 5"
+        />
       </Form.Item>
 
-      <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Status is required' }]}> 
-        <Select size="large" allowClear placeholder="Select status">
+      <Form.Item
+        name="status"
+        label="Status"
+        rules={[{ required: true, message: "Status is required" }]}
+      >
+        <TTSelect allowClear placeholder="Select status">
           <Select.Option value="OPEN">OPEN</Select.Option>
           <Select.Option value="IN_PROGRESS">IN_PROGRESS</Select.Option>
           <Select.Option value="DONE">DONE</Select.Option>
-        </Select>
+        </TTSelect>
       </Form.Item>
 
-      <Form.Item name="priority" label="Priority" rules={[{ required: true, message: 'Priority is required' }]}> 
-        <Select size="large" allowClear placeholder="Select priority">
-          {priorities.map(p => (
-            <Select.Option key={p} value={p}>{p}</Select.Option>
+      <Form.Item
+        name="priority"
+        label="Priority"
+        rules={[{ required: true, message: "Priority is required" }]}
+      >
+        <TTSelect allowClear placeholder="Select priority">
+          {priorities.map((p) => (
+            <Select.Option key={p} value={p}>
+              {p}
+            </Select.Option>
           ))}
-        </Select>
+        </TTSelect>
       </Form.Item>
 
-      <Form.Item 
-        name="assignedTo" 
+      <Form.Item
+        name="assignedTo"
         label="Assignee"
         rules={[
-          { required: true, message: 'Assignee is required' },
+          { required: true, message: "Assignee is required" },
           {
             validator: (_, v) => {
               if (!v) return Promise.resolve();
               return UUID_REGEX.test(String(v))
                 ? Promise.resolve()
-                : Promise.reject(new Error('Please select a valid user'));
+                : Promise.reject(new Error("Please select a valid user"));
             },
           },
         ]}
       >
-        <Select
-          size="large"
+        <TTSelect
           showSearch
           allowClear
           placeholder="Search users"
@@ -256,28 +330,32 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
       <Form.Item
         name="projectId"
         label="Project"
-        rules={[{ required: true, message: 'Project is required' }]}
+        rules={[{ required: true, message: "Project is required" }]}
       >
-        <Select
-          size="large"
+        <TTSelect
           allowClear={false}
           showSearch
           placeholder="Select a project"
           onFocus={preloadProjects}
           options={projectOptions}
           filterOption={(input, option) =>
-            (option?.label as string)?.toLowerCase().includes(input.toLowerCase())
+            (option?.label as string)
+              ?.toLowerCase()
+              .includes(input.toLowerCase())
           }
         />
       </Form.Item>
 
       <Form.Item name="tags" label="Tags">
-        <Select size="large" mode="tags" placeholder="Add tags" tokenSeparators={[',']} />
+        <TTSelect
+          mode="tags"
+          placeholder="Add tags"
+          tokenSeparators={[","]}
+        />
       </Form.Item>
 
       <Form.Item name="dependencies" label="Dependencies">
-        <Select
-          size="large"
+        <TTSelect
           mode="multiple"
           showSearch
           allowClear
@@ -302,24 +380,37 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
             <div style={{ marginTop: 8 }}>Upload</div>
           </div>
         </Upload>
-        <div style={{ color: '#999', fontSize: 12 }}>Files are kept client-side; attach support can be wired to backend multipart later.</div>
+        <div style={{ color: "#999", fontSize: 12 }}>
+          Files are kept client-side; attach support can be wired to backend
+          multipart later.
+        </div>
       </Form.Item>
 
       <Form.Item label="Recurrence">
         <Space.Compact block className="recurrence-compact">
-          <Form.Item name={['recurrence','frequency']} noStyle>
-            <Select size="large" style={{ flex: '0 0 40%' }}>
+          <Form.Item name={["recurrence", "frequency"]} noStyle>
+            <TTSelect style={{ flex: "0 0 40%" }}>
               <Select.Option value="NONE">None</Select.Option>
               <Select.Option value="DAILY">Daily</Select.Option>
               <Select.Option value="WEEKLY">Weekly</Select.Option>
               <Select.Option value="MONTHLY">Monthly</Select.Option>
-            </Select>
+            </TTSelect>
           </Form.Item>
-          <Form.Item name={['recurrence','interval']} noStyle>
-            <InputNumber size="large" min={1} placeholder="Interval" style={{ flex: '0 0 30%' }} />
+          <Form.Item name={["recurrence", "interval"]} noStyle>
+            <InputNumber
+              size="large"
+              min={1}
+              placeholder="Interval"
+              style={{ flex: "0 0 30%" }}
+            />
           </Form.Item>
-          <Form.Item name={['recurrence','count']} noStyle>
-            <InputNumber size="large" min={1} placeholder="Count" style={{ flex: '0 0 30%' }} />
+          <Form.Item name={["recurrence", "count"]} noStyle>
+            <InputNumber
+              size="large"
+              min={1}
+              placeholder="Count"
+              style={{ flex: "0 0 30%" }}
+            />
           </Form.Item>
         </Space.Compact>
       </Form.Item>
@@ -327,7 +418,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
       {!hideActions && (
         <Form.Item>
           <TTButton type="primary" onClick={submit} loading={saving}>
-            {mode === 'create' ? 'Create Task' : 'Update Task'}
+            {mode === "create" ? "Create Task" : "Update Task"}
           </TTButton>
         </Form.Item>
       )}
