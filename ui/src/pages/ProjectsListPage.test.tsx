@@ -1,6 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
+import ProjectsListPage from './ProjectsListPage';
+import { projectService } from '../services/projectService';
+
 // Mock AppLayout to avoid router hooks from inside the layout
 jest.mock('../components/layout/AppLayout', () => ({ __esModule: true, default: ({ children }: any) => <div data-testid="layout">{children}</div> }));
 
@@ -42,9 +45,6 @@ jest.mock('../services/projectService', () => ({
     list: jest.fn(),
   },
 }));
-
-import ProjectsListPage from './ProjectsListPage';
-import { projectService } from '../services/projectService';
 
 describe('ProjectsListPage', () => {
   it('renders and lists projects with dashboard links', async () => {

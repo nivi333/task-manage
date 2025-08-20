@@ -1,29 +1,12 @@
+import type { ActivityLogItem } from "../services/activityService";
 import React, { useEffect, useMemo, useState } from "react";
-import {
-  Card,
-  Descriptions,
-  Space,
-  Tag,
-  Typography,
-  Spin,
-  Select,
-  Divider,
-  Input,
-  Statistic,
-  List,
-  Avatar,
-  Upload,
-  Modal,
-} from "antd";
-import { useParams, Link } from "react-router-dom";
+import { Card, Descriptions, Tag, Typography, Spin, Select } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
 import { Task } from "../types/task";
 import { taskService } from "../services/taskService";
 import { TTButton } from "../components/common";
 import { notificationService } from "../services/notificationService";
-import { commentService, CommentModel } from "../services/commentService";
-import { timeTrackingService } from "../services/timeTrackingService";
-import { activityService, ActivityLogItem } from "../services/activityService";
-import { attachmentService, Attachment } from "../services/attachmentService";
+import { activityService } from "../services/activityService";
 import {
   dependencyService,
   TaskDependency,
@@ -33,11 +16,20 @@ import CommentForm from "../components/comments/CommentForm";
 import CommentList from "../components/comments/CommentList";
 import TaskList from "../components/tasks/TaskList";
 import HeaderTitle from "../components/common/HeaderTitle";
-import { useNavigate } from "react-router-dom";
 import { userService } from "../services/userService";
+import { ArrowLeftOutlined } from "@ant-design/icons";
+import { CommentModel } from "../services/commentService";
+import { commentService } from "../services/commentService";
 import "../styles/pages/TaskDetail.css";
 
 const { Text } = Typography;
+
+// Define missing types to avoid TS errors
+interface Attachment {
+  id: string;
+  name: string;
+  url: string;
+}
 
 const TaskDetailPage: React.FC = () => {
   const { id } = useParams();
@@ -237,11 +229,9 @@ const TaskDetailPage: React.FC = () => {
         <div className="task-detail-sidebar">
           <div className="task-detail-sidebar-header">
             <TTButton
-              icon={<span className="anticon anticon-arrow-left" />}
-              ttVariant="transparent"
-              ttSize="md"
+              type="text"
+              icon={<ArrowLeftOutlined />}
               onClick={() => window.history.back()}
-              className="task-detail-back-button"
             />
             <HeaderTitle level={4} className="task-detail-sidebar-title">
               Tasks List
@@ -339,7 +329,40 @@ const TaskDetailPage: React.FC = () => {
               </Descriptions.Item>
             </Descriptions>
           </Card>
-          {/* ...rest of the main content (description, comments, etc.) goes here, all inside this div */}
+          {/* Activity Log */}
+          <Card
+            className="task-activity-log-card"
+            style={{ marginTop: 24 }}
+            title="Activity Log"
+          >
+            {activitiesLoading ? (
+              <Spin />
+            ) : activities.length === 0 ? (
+              <Text type="secondary">No activity yet.</Text>
+            ) : (
+              <ul className="task-activity-log-list">
+                {activities.map((activity) => (
+                  <li key={activity.id} style={{ marginBottom: 12 }}>
+                    <div>
+                      <Text strong>{activity.action}</Text>
+                      {activity.details && (
+                        <span style={{ marginLeft: 8 }}>
+                          <Text type="secondary">{activity.details}</Text>
+                        </span>
+                      )}
+                    </div>
+                    <div style={{ fontSize: 12, color: "#888" }}>
+                      {activity.user?.username ? (
+                        <span>{activity.user.username} &bull; </span>
+                      ) : null}
+                      {activity.timestamp &&
+                        new Date(activity.timestamp).toLocaleString()}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
         </div>
       </div>
     </AppLayout>
