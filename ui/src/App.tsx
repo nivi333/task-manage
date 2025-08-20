@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, Link } from 'react-router-dom';
 import { ConfigProvider, App as AntdApp, Button, Space, Typography, Card } from 'antd';
 import LoginPage from './pages/LoginPage';
@@ -15,6 +15,9 @@ import TasksStatsPage from './pages/TasksStatsPage';
 import UserProfilePage from './pages/UserProfilePage';
 import ProjectsListPage from './pages/ProjectsListPage';
 import ProjectDashboardPage from './pages/ProjectDashboardPage';
+import TeamDashboardPage from './pages/TeamDashboardPage';
+import TeamCreatePage from './pages/TeamCreatePage';
+import TeamSettingsPage from './pages/TeamSettingsPage';
 import ProjectTeamPage from './pages/ProjectTeamPage';
 import DashboardPage from './pages/DashboardPage';
 import { authAPI } from './services/authService';
@@ -115,12 +118,15 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 // Inner App component that uses the App context
 const AppContent: React.FC = () => {
   const { message } = AntdApp.useApp();
+  const initializedRef = useRef(false);
 
   useEffect(() => {
-    // Initialize the notification service with the message API from App context
+    if (initializedRef.current) return;
+    // Initialize the notification service with the message API from App context (once)
     initNotificationService(message);
+    initializedRef.current = true;
     console.log('[NOTIFICATION] Service initialized with App context');
-  }, [message]);
+  }, []);
 
   return (
     <ConfigProvider theme={theme}>
@@ -163,6 +169,30 @@ const AppContent: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <ProjectTeamPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teams/:id/dashboard"
+              element={
+                <ProtectedRoute>
+                  <TeamDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teams/new"
+              element={
+                <ProtectedRoute>
+                  <TeamCreatePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teams/:id/settings"
+              element={
+                <ProtectedRoute>
+                  <TeamSettingsPage />
                 </ProtectedRoute>
               }
             />

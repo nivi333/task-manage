@@ -48,6 +48,10 @@ const TasksListPage: React.FC = () => {
   }>();
   const [createOpen, setCreateOpen] = useState(false);
   const [drawerSubmit, setDrawerSubmit] = useState<(() => void) | null>(null);
+  const handleRegisterSubmit = useCallback((fn: () => void) => {
+    // Memoized to avoid changing identity each render which triggers child useEffect
+    setDrawerSubmit(() => fn);
+  }, []);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
 
@@ -294,25 +298,24 @@ const TasksListPage: React.FC = () => {
           mask={false}
           onClose={closeCreate}
           styles={{
-            content: { background: "transparent", boxShadow: "none" },
+            content: { background: "transparent", boxShadow: "none", borderRadius: 0 },
             header: {
               background: "transparent",
-              borderBottom: "none",
-              padding: "12px 0",
+              borderBottom: "1px solid #f0f0f0",
+              padding: 0,
+              borderRadius: 0,
             },
-            footer: { background: "transparent", borderTop: "none" },
-            body: { padding: 0, paddingBottom: 80 },
+            footer: { background: "transparent", borderTop: "1px solid #f0f0f0", padding: 0, borderRadius: 0 },
+            body: { padding: "0px" },
           }}
           title={
             <div
               style={{
                 background: "#fff",
-                borderTopLeftRadius: 12,
-                borderTopRightRadius: 12,
+                borderTopLeftRadius: 0,
+                borderTopRightRadius: 0,
                 padding: "12px 16px",
-                borderLeft: "1px solid #f0f0f0",
-                borderRight: "1px solid #f0f0f0",
-                borderTop: "1px solid #f0f0f0",
+                // borders handled by Drawer header/footer now
                 boxShadow: "0 2px 8px rgba(0,0,0,0.06)",
               }}
             >
@@ -332,12 +335,10 @@ const TasksListPage: React.FC = () => {
             <div
               style={{
                 background: "#fff",
-                borderBottomLeftRadius: 12,
-                borderBottomRightRadius: 12,
+                borderBottomLeftRadius: 0,
+                borderBottomRightRadius: 0,
                 padding: "12px 16px",
-                borderLeft: "1px solid #f0f0f0",
-                borderRight: "1px solid #f0f0f0",
-                borderBottom: "1px solid #f0f0f0",
+                // borders handled by Drawer header/footer now
                 display: "flex",
                 justifyContent: "flex-end",
                 gap: 8,
@@ -356,15 +357,15 @@ const TasksListPage: React.FC = () => {
               borderLeft: "1px solid #f0f0f0",
               borderRight: "1px solid #f0f0f0",
               boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-              padding: "16px",
-              borderBottomLeftRadius: 12,
-              borderBottomRightRadius: 12,
+              padding: 0,
+              borderBottomLeftRadius: 0,
+              borderBottomRightRadius: 0,
             }}
           >
             <TaskForm
               mode="create"
               hideActions
-              registerSubmit={(fn: () => void) => setDrawerSubmit(() => fn)}
+              registerSubmit={handleRegisterSubmit}
               onSubmit={(task: any) => {
                 closeCreate();
                 navigate(`/tasks/${task.id}`);

@@ -8,6 +8,7 @@ import { userService } from '../../services/userService';
 import { taskService } from '../../services/taskService';
 import { notificationService } from '../../services/notificationService';
 import { TTButton } from '../common';
+import { projectService } from '../../services/projectService';
 
 export type TaskFormValues = {
   title: string;
@@ -19,6 +20,10 @@ export type TaskFormValues = {
   projectId?: UUID;
   tags?: string[];
   dependencies?: { label: string; value: UUID }[];
+  // Hours supported by backend
+  estimatedHours?: number;
+  actualHours?: number;
+  // Recurrence kept in UI but not sent to backend (unsupported server-side)
   recurrence?: {
     frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'NONE';
     interval?: number;
@@ -36,6 +41,7 @@ interface TaskFormProps {
 }
 
 const priorities: TaskPriority[] = ['HIGH', 'MEDIUM', 'LOW'];
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideActions = false, registerSubmit }) => {
   const [form] = Form.useForm<TaskFormValues>();
@@ -43,6 +49,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
   const [assigneeOptions, setAssigneeOptions] = useState<{ label: string; value: UUID }[]>([]);
   const [depOptions, setDepOptions] = useState<{ label: string; value: UUID }[]>([]);
   const [attachments, setAttachments] = useState<UploadFile[]>([]);
+  const [projectOptions, setProjectOptions] = useState<{ label: string; value: UUID }[]>([]);
 
   const initialValues: TaskFormValues = useMemo(() => ({
     title: initialTask?.title || '',
@@ -54,6 +61,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
     projectId: initialTask?.projectId,
     tags: initialTask?.tags || [],
     dependencies: [],
+    // Initialize hours from existing task if present
+    estimatedHours: initialTask?.estimatedHours,
+    actualHours: initialTask?.actualHours,
     recurrence: { frequency: 'NONE', interval: undefined, count: undefined },
     attachments: [],
   }), [initialTask]);
@@ -70,7 +80,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
 
   const handleSearchUsers = async (q: string) => {
     try {
-      const list = await userService.getUsers({ search: q, size: 10 } as any);
+      // If query is empty, request first page without search to show initial options
+      const list = await userService.getUsers(q ? ({ search: q, size: 10 } as any) : ({ size: 10 } as any));
       setAssigneeOptions(
         (list.users || []).map(u => ({ label: `${u.firstName} ${u.lastName} (${u.email})`, value: u.id! }))
       );
@@ -83,6 +94,26 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
       } else {
         notificationService.error('Failed to search users');
       }
+      setAssigneeOptions([]);
+    }
+  };
+
+  const preloadProjects = async () => {
+    try {
+      const list = await projectService.list();
+      setProjectOptions((list || []).map(p => ({ label: p.name, value: p.id })));
+    } catch {
+      setProjectOptions([]);
+    }
+  };
+
+  const preloadUsers = async () => {
+    try {
+      const list = await userService.getUsers({ size: 10 } as any);
+      setAssigneeOptions(
+        (list.users || []).map(u => ({ label: `${u.firstName} ${u.lastName} (${u.email})`, value: u.id! }))
+      );
+    } catch {
       setAssigneeOptions([]);
     }
   };
@@ -101,8 +132,10 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
     assignedTo: v.assignedTo,
     projectId: v.projectId,
     tags: v.tags,
-    dependencyIds: (v.dependencies || []).map(d => d.value),
-    recurrence: v.recurrence || null,
+    // Hours now supported by backend DTO
+    estimatedHours: v.estimatedHours,
+    actualHours: v.actualHours,
+    // Note: dependencyIds and recurrence intentionally not sent to backend to avoid unknown fields
   });
 
   const toUpdatePayload = (v: TaskFormValues): TaskUpdateRequest => ({
@@ -112,6 +145,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
   const submit = async () => {
     try {
       const values = await form.validateFields();
+      // Extra safety: ensure assignedTo is a UUID when present
+      if (values.assignedTo && !UUID_REGEX.test(String(values.assignedTo))) {
+        notificationService.error('Assignee must be a valid user (UUID).');
+        return;
+      }
       setSaving(true);
       let result: Task;
       if (mode === 'create') {
@@ -133,7 +171,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
   };
 
   return (
-    <Form form={form} layout="vertical" size="large" initialValues={initialValues}>
+    <Form form={form} layout="vertical" size="large" initialValues={initialValues} className="tt-form-compact">
       <div style={{ color: '#999', fontSize: 12, marginBottom: 8 }}>
         * indicates required fields
       </div>
@@ -149,8 +187,8 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
             validator: (_, value) => {
               const text = (value ?? '').toString();
               if (!text) return Promise.resolve();
-              if (text.length > 5000) {
-                return Promise.reject(new Error('Description must be 5000 characters or less.'));
+              if (text.length > 2000) {
+                return Promise.reject(new Error('Description must be 2000 characters or less.'));
               }
               return Promise.resolve();
             },
@@ -162,6 +200,14 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
 
       <Form.Item name="dueDate" label="Due Date">
         <DatePicker size="large" style={{ width: '100%' }} />
+      </Form.Item>
+
+      <Form.Item name="estimatedHours" label="Estimated Hours">
+        <InputNumber size="large" min={0} style={{ width: '100%' }} placeholder="e.g., 8" />
+      </Form.Item>
+
+      <Form.Item name="actualHours" label="Actual Hours">
+        <InputNumber size="large" min={0} style={{ width: '100%' }} placeholder="e.g., 5" />
       </Form.Item>
 
       <Form.Item name="status" label="Status" rules={[{ required: true, message: 'Status is required' }]}> 
@@ -180,15 +226,48 @@ const TaskForm: React.FC<TaskFormProps> = ({ mode, initialTask, onSubmit, hideAc
         </Select>
       </Form.Item>
 
-      <Form.Item name="assignedTo" label="Assignee">
+      <Form.Item 
+        name="assignedTo" 
+        label="Assignee"
+        rules={[
+          { required: true, message: 'Assignee is required' },
+          {
+            validator: (_, v) => {
+              if (!v) return Promise.resolve();
+              return UUID_REGEX.test(String(v))
+                ? Promise.resolve()
+                : Promise.reject(new Error('Please select a valid user'));
+            },
+          },
+        ]}
+      >
         <Select
           size="large"
           showSearch
           allowClear
           placeholder="Search users"
+          onFocus={preloadUsers}
           onSearch={handleSearchUsers}
           filterOption={false}
           options={assigneeOptions}
+        />
+      </Form.Item>
+
+      <Form.Item
+        name="projectId"
+        label="Project"
+        rules={[{ required: true, message: 'Project is required' }]}
+      >
+        <Select
+          size="large"
+          allowClear={false}
+          showSearch
+          placeholder="Select a project"
+          onFocus={preloadProjects}
+          options={projectOptions}
+          filterOption={(input, option) =>
+            (option?.label as string)?.toLowerCase().includes(input.toLowerCase())
+          }
         />
       </Form.Item>
 

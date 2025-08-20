@@ -51,6 +51,9 @@ export interface TaskCreateRequest {
   assignedTo?: UUID;
   projectId?: UUID;
   tags?: string[];
+  // Hours supported by backend DTO
+  estimatedHours?: number;
+  actualHours?: number;
   dependencyIds?: UUID[];
   recurrence?: {
     frequency: 'DAILY' | 'WEEKLY' | 'MONTHLY' | 'NONE';

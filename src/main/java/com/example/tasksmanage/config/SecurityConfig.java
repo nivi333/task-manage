@@ -60,9 +60,23 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000"));
+        // Allow common local dev origins. Can be overridden by env var CORS_ALLOWED_ORIGINS (comma-separated)
+        String originsEnv = System.getenv("CORS_ALLOWED_ORIGINS");
+        List<String> defaultOrigins = List.of(
+                "http://localhost:3000",
+                "http://127.0.0.1:3000",
+                "http://localhost:5173",
+                "http://127.0.0.1:5173"
+        );
+        List<String> allowedOrigins = originsEnv != null && !originsEnv.isBlank()
+                ? java.util.Arrays.stream(originsEnv.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .toList()
+                : defaultOrigins;
+        config.setAllowedOrigins(allowedOrigins);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With"));
+        config.setAllowedHeaders(List.of("Authorization", "Content-Type", "X-Requested-With", "X-API-KEY"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 

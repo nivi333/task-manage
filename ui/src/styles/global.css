@@ -171,15 +171,33 @@ body {
 
 .btn-primary:hover:not(:disabled) {
   background: linear-gradient(135deg, #7a8ef0 0%, #8a5fb8 100%);
-  box-shadow: var(--shadow-md);
-  transform: translateY(-1px);
-  transition: all 0.2s ease;
+  /* Very light hover elevation */
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:active:not(:disabled) {
   background: linear-gradient(135deg, #5a6ee8 0%, #6a4fa0 100%);
   transform: translateY(0px);
   box-shadow: var(--shadow-sm);
+}
+
+/* Enforce the same gradient style for all Ant Design primary buttons */
+.ant-btn-primary {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+.ant-btn-primary:hover,
+.ant-btn-primary:focus {
+  background: linear-gradient(135deg, #7a8ef0 0%, #8a5fb8 100%) !important;
+  /* Very light hover elevation */
+  box-shadow: var(--shadow-sm) !important;
+}
+.ant-btn-primary:active {
+  background: linear-gradient(135deg, #5a6ee8 0%, #6a4fa0 100%) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transform: translateY(0);
 }
 
 /* Secondary Button */
@@ -198,6 +216,20 @@ body {
 .btn-secondary:active:not(:disabled) {
   background-color: var(--color-secondary);
   border-color: var(--color-secondary);
+}
+
+/* Ensure AntD button + secondary class keeps proper colors and contrast */
+.ant-btn.btn-secondary {
+  background-color: transparent !important;
+  color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+}
+.ant-btn.btn-secondary:hover,
+.ant-btn.btn-secondary:focus {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+  border-color: var(--color-primary) !important;
+  box-shadow: var(--shadow-sm) !important;
 }
 
 /* Transparent Button */
@@ -467,6 +499,15 @@ input.ant-input,
   padding: 4px 8px !important;
   font-size: var(--font-size-sm) !important;
   border-radius: var(--border-radius-md) !important;
+}
+
+/* Link utility */
+.link-primary {
+  color: var(--color-primary) !important;
+}
+.link-primary:hover {
+  color: var(--color-secondary) !important;
+  text-decoration: underline;
 }
 
 /* Tasks: rectangular search bar with dark right block */

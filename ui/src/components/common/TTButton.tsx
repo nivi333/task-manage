@@ -5,7 +5,6 @@ export type TTButtonVariant = 'primary' | 'secondary' | 'transparent';
 export type TTButtonSize = 'sm' | 'md' | 'lg';
 
 export type TTButtonProps = ButtonProps & {
-  width?: number | string;
   ttVariant?: TTButtonVariant;
   ttSize?: TTButtonSize;
   // Allow custom design-system props without TS errors in consumers
@@ -13,7 +12,6 @@ export type TTButtonProps = ButtonProps & {
 };
 
 const TTButton: React.FC<TTButtonProps> = ({
-  width,
   ttVariant,
   ttSize,
   className,
@@ -41,7 +39,7 @@ const TTButton: React.FC<TTButtonProps> = ({
   const mergedClassName = [className, ...classes].filter(Boolean).join(' ');
 
   return (
-    <Button {...rest} className={mergedClassName} style={{ width, ...(rest.style || {}) }}>
+    <Button {...rest} className={mergedClassName}>
       {children}
     </Button>
   );

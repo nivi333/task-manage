@@ -229,7 +229,43 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 
   > **Status:** Implemented create/edit flows with global notifications. Description currently uses a plain text area in `TaskForm.tsx` for React 19 compatibility (rich editor temporarily disabled). A React 19–compatible rich text editor (e.g., TipTap/Lexical) will be introduced in a follow-up task. Backend continues to accept a string for `TaskCreateDTO.description`.
 
-- [ ] **Task 8: Task Detail View**
+  #### Create Task API Payload Mapping (FE ↔ BE) — FINAL
+
+  - **Endpoint:** `POST /api/v1/tasks`
+  - **Frontend source:** `ui/src/components/tasks/TaskForm.tsx` → `toCreatePayload()`
+  - **Backend DTO:** `src/main/java/com/example/tasksmanage/dto/TaskCreateDTO.java`
+
+  - **Fields sent and accepted:**
+    - `title: string` (required; FE max 120; BE max 200)
+    - `description?: string` (optional; FE validator ≤ 2000; BE validated ≤ 2000)
+    - `status: string` (required; FE uses OPEN | IN_PROGRESS | DONE)
+    - `priority: string` (required; FE uses HIGH | MEDIUM | LOW)
+    - `dueDate?: string` (ISO-8601)
+    - `estimatedHours?: number`
+    - `actualHours?: number`
+    - `assignedTo?: UUID`
+    - `projectId?: UUID`
+    - `tags?: string[]`
+
+  - **Removed/unsupported fields (not sent):** `dependencyIds`, `recurrence`
+
+  - **Example request body:**
+  ```json
+  {
+    "title": "Design login page",
+    "description": "Implement UI with validation and tests",
+    "status": "OPEN",
+    "priority": "HIGH",
+    "dueDate": "2025-08-25T17:00:00Z",
+    "estimatedHours": 8,
+    "actualHours": 0,
+    "assignedTo": "2c9d2b7a-7f6a-4d0f-bb3f-2e3b5b5f4b11",
+    "projectId": "9bfb9e45-3a2e-45b6-bb7c-0e6b4e7a1c22",
+    "tags": ["frontend", "auth"]
+  }
+  ```
+
+- [x] **Task 8: Task Detail View** | **✅ COMPLETED**
 
   - **Priority:** HIGH | **Estimated:** 4 days
   - **Components:** TaskHeader, TaskDescription, CommentSection, ActivityTimeline, TimeTracker
@@ -354,50 +390,50 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access
 
-- [ ] **Task 13: Team Dashboard**
+- [x] **Task 13: Team Dashboard** | **✅ COMPLETED**
 
   - **Priority:** MEDIUM | **Estimated:** 3 days
   - **Components:** TeamHeader, MemberGrid, TeamStats, RecentActivity
   - **Features:**
-    - [ ] Team overview with member count
-    - [ ] Member cards with contact info
-    - [ ] Team performance metrics
-    - [ ] Recent team activity
-    - [ ] Team calendar integration
+    - [x] Team overview with member count
+    - [x] Member cards with contact info
+    - [x] Team performance metrics
+    - [x] Recent team activity
+    - [x] Team calendar integration
   - **API Integration:**
-    - [ ] `GET /api/v1/teams/{id}`
-    - [ ] `GET /api/v1/teams/{id}/members`
+    - [x] `GET /api/v1/teams/{id}`
+    - [x] `GET /api/v1/teams/{id}/members`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid team id
-    - [ ] Valid member data
+    - [x] Required fields
+    - [x] Valid team id
+    - [x] Valid member data
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors
+    - [x] Validation errors
+    - [x] Unauthorized access
 
-- [ ] **Task 14: Team Creation & Management**
+- [x] **Task 14: Team Creation & Management** | **✅ COMPLETED**
 
   - **Priority:** LOW | **Estimated:** 2 days
   - **Components:** TeamForm, MemberSelector, TeamSettings
   - **Features:**
-    - [ ] Team creation form
-    - [ ] Add/remove team members
-    - [ ] Team settings configuration
-    - [ ] Team deletion with confirmation
+    - [x] Team creation form
+    - [x] Add/remove team members
+    - [x] Team settings configuration
+    - [x] Team deletion with confirmation
   - **API Integration:**
-    - [ ] `POST /api/v1/teams`
-    - [ ] `PUT /api/v1/teams/{id}`
-    - [ ] `POST /api/v1/teams/{id}/members`
-    - [ ] `DELETE /api/v1/teams/{id}/members`
+    - [x] `POST /api/v1/teams`
+    - [x] `PUT /api/v1/teams/{id}`
+    - [x] `POST /api/v1/teams/{id}/members`
+    - [x] `DELETE /api/v1/teams/{id}/members`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid team name
-    - [ ] Unique team name
+    - [x] Required fields
+    - [x] Valid team name
+    - [x] Unique team name (backend enforced; frontend name min length check)
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors
+    - [x] Validation errors
+    - [x] Unauthorized access
 
 - [ ] **Task 15: Notification Center**
 

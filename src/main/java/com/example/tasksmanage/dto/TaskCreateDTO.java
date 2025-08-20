@@ -1,8 +1,10 @@
 package com.example.tasksmanage.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.validation.constraints.*;
 import java.util.*;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskCreateDTO {
     @NotBlank(message = "title is required")
     @Size(max = 200)
@@ -14,7 +16,9 @@ public class TaskCreateDTO {
     private String priority;
     private Date dueDate;
     private Integer estimatedHours;
+    @NotNull(message = "assignedTo is required")
     private UUID assignedTo;
+    @NotNull(message = "projectId is required")
     private UUID projectId;
     private Set<String> tags;
     private Integer actualHours;

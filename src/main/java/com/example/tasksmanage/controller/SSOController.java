@@ -21,15 +21,4 @@ public class SSOController {
         ssoService.handleSamlResponse(samlResponse);
         return ResponseEntity.ok("SAML response handled");
     }
-
-    @GetMapping("/oauth2/authorize/{provider}")
-    public ResponseEntity<String> getOAuth2AuthorizationUrl(@PathVariable String provider) {
-        return ResponseEntity.ok(ssoService.getOAuth2AuthorizationUrl(provider));
-    }
-
-    @GetMapping("/oauth2/callback/{provider}")
-    public ResponseEntity<String> handleOAuth2Callback(@PathVariable String provider, @RequestParam String code) {
-        ssoService.handleOAuth2Callback(provider, code);
-        return ResponseEntity.ok("OAuth2 SSO callback handled for " + provider);
-    }
 }

@@ -61,7 +61,7 @@ const TermsModal = ({
     <TTButton ttVariant="primary" block onClick={onOk}>
       Accept
     </TTButton>
-    <TTButton ttVariant="secondary" block onClick={onCancel} style={{ marginTop: 8 }}>
+    <TTButton ttVariant="secondary" block onClick={onCancel} className="mt-sm">
       Decline
     </TTButton>
   </Modal>

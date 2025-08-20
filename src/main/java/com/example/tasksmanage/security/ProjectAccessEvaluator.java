@@ -2,6 +2,7 @@ package com.example.tasksmanage.security;
 
 import com.example.tasksmanage.model.ProjectMemberRole;
 import com.example.tasksmanage.service.ProjectMemberService;
+import com.example.tasksmanage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,8 @@ import java.util.UUID;
 public class ProjectAccessEvaluator {
     @Autowired
     private ProjectMemberService projectMemberService;
+    @Autowired
+    private UserRepository userRepository;
 
     public boolean isMember(Authentication authentication, UUID projectId) {
         if (authentication == null || !authentication.isAuthenticated()) return false;
@@ -29,18 +32,28 @@ public class ProjectAccessEvaluator {
     }
 
     private UUID getUserId(Authentication authentication) {
-        // Assumes principal is user ID as String or a UserDetails with getId()
+        // Prefer extracting UUID, otherwise resolve username/email to UUID via UserRepository
         Object principal = authentication.getPrincipal();
         if (principal instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
             try {
                 java.lang.reflect.Method getId = userDetails.getClass().getMethod("getId");
                 Object id = getId.invoke(userDetails);
                 if (id instanceof UUID) return (UUID) id;
-                if (id instanceof String) return UUID.fromString((String) id);
+                if (id instanceof String s) {
+                    try { return UUID.fromString(s); } catch (Exception ignored) {}
+                    return userRepository.findByUsername(s)
+                            .or(() -> userRepository.findByEmail(s))
+                            .map(com.example.tasksmanage.model.User::getId)
+                            .orElse(null);
+                }
             } catch (Exception ignored) {}
         }
         if (principal instanceof String s) {
             try { return UUID.fromString(s); } catch (Exception ignored) {}
+            return userRepository.findByUsername(s)
+                    .or(() -> userRepository.findByEmail(s))
+                    .map(com.example.tasksmanage.model.User::getId)
+                    .orElse(null);
         }
         return null;
     }

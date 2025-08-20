@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Checkbox, message, Divider } from "antd";
+import { Form, Input, Checkbox, message } from "antd";
 import { TTButton } from "../common";
 // All notifications will use Ant Design's message API at the top by default.
 import {
@@ -7,102 +7,10 @@ import {
   LockOutlined,
   EyeInvisibleOutlined,
   EyeTwoTone,
-  GoogleOutlined,
-  GithubOutlined,
 } from "@ant-design/icons";
-import styled from "styled-components";
 import { authAPI } from "../../services/authService";
 import TwoFactorModal from "./TwoFactorModal";
 import LoadingSpinner from "../common/LoadingSpinner";
-
-const LoginCard = styled.div`
-  background: white;
-  padding: 40px;
-  border-radius: 12px;
-  /* Removed box-shadow for a flat, non-popping look */
-  width: 100%;
-  max-width: 400px;
-`;
-
-const LoginTitle = styled.h1`
-  text-align: center;
-  margin-bottom: 30px;
-  color: #333;
-  font-size: 28px;
-  font-weight: 600;
-`;
-
-const SocialButtonsContainer = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-`;
-
-const SocialButton = styled(TTButton)`
-  flex: 1;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  border-radius: 8px;
-  font-weight: 500;
-
-  &.google {
-    border-color: #db4437;
-    color: #db4437;
-
-    &:hover {
-      background-color: #db4437;
-      color: white;
-    }
-  }
-
-  &.github {
-    border-color: #333;
-    color: #333;
-
-    &:hover {
-      background-color: #333;
-      color: white;
-    }
-  }
-`;
-
-const StyledForm = styled(Form)`
-  .ant-form-item {
-    margin-bottom: 20px;
-  }
-
-  .ant-input-affix-wrapper {
-    height: 45px;
-    border-radius: 8px;
-  }
-
-  .ant-btn-primary {
-    height: 45px;
-    border-radius: 8px;
-    font-weight: 500;
-    font-size: 16px;
-  }
-`;
-
-const RememberMeContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-`;
-
-const ForgotPasswordLink = styled.a`
-  color: #667eea;
-  text-decoration: none;
-
-  &:hover {
-    color: #764ba2;
-    text-decoration: underline;
-  }
-`;
 
 interface LoginFormData {
   usernameOrEmail: string;
@@ -250,15 +158,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
   return (
     <>
-      <LoginCard>
-        <LoginTitle>Login</LoginTitle>
+      <div className="auth-card">
+        <h1 className="auth-title">Login</h1>
 
-        <StyledForm
+        <Form
           form={form}
           name="login"
           onFinish={(values) => handleLogin(values as LoginFormData)}
           autoComplete="off"
           size="large"
+          className="auth-form"
         >
           <Form.Item
             name="usernameOrEmail"
@@ -313,29 +222,26 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
             />
           </Form.Item>
 
-          <RememberMeContainer>
+          <div className="remember-me-container">
             <Form.Item name="rememberMe" valuePropName="checked" noStyle>
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
-            <ForgotPasswordLink href="/forgot-password">
+            <a className="link-primary" href="/forgot-password">
               Forgot password?
-            </ForgotPasswordLink>
-          </RememberMeContainer>
+            </a>
+          </div>
 
           <Form.Item>
             <TTButton ttVariant="primary" htmlType="submit" loading={loading} block>
               {loading ? "Signing in..." : "Sign In"}
             </TTButton>
           </Form.Item>
-        </StyledForm>
+        </Form>
 
-        <div style={{ textAlign: "center", marginTop: "20px" }}>
-          Don't have an account?{" "}
-          <a href="/register" style={{ color: "#667eea" }}>
-            Sign up
-          </a>
+        <div className="back-to-login-container">
+          Don't have an account? <a className="link-primary" href="/register">Sign up</a>
         </div>
-      </LoginCard>
+      </div>
 
       {/* 2FA Modal */}
       <TwoFactorModal

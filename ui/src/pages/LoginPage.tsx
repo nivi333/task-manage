@@ -10,11 +10,8 @@ const LoginPage: React.FC = () => {
   const handleLoginSuccess = (user: any) => {
     console.log('Login successful:', user);
     const roles: string[] = user?.roles || [];
-    if (roles.includes('ADMIN')) {
-      navigate('/admin/users');
-    } else {
-      navigate('/dashboard');
-    }
+    // Navigate to Dashboard for all roles, including ADMIN
+    navigate('/dashboard');
   };
 
   return (
