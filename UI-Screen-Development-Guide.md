@@ -273,7 +273,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Full task information display
     - [x] Inline editing capabilities
     - [ ] Comment system with mentions
-    - [x] Activity/audit log
+    - [x] Activity/audit log with canonical ActivityLogItem fields (action, details, timestamp, user)
     - [x] Time tracking start/stop
     - [x] File attachment viewer
     - [x] Task dependency visualization
@@ -744,36 +744,52 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 
 ## 👥 TEAM MANAGEMENT MODULE
 
-### Task 13: Team Dashboard
+### Task 13: Team Dashboard | **✅ COMPLETED**
 
 **Priority: MEDIUM** | **Estimated: 3 days**
 
 - **Components**: TeamHeader, MemberGrid, TeamStats, RecentActivity
 - **Features**:
-  - Team overview with member count
-  - Member cards with contact info
-  - Team performance metrics
-  - Recent team activity
-  - Team calendar integration
+  - [x] Team overview with member count
+  - [x] Member cards with contact info
+  - [x] Team performance metrics
+  - [x] Recent team activity
+  - [x] Team calendar integration
 - **API Integration**:
-  - `GET /api/v1/teams/{id}`
-  - `GET /api/v1/teams/{id}/members`
+  - [x] `GET /api/v1/teams/{id}`
+  - [x] `GET /api/v1/teams/{id}/members`
+- **Validation**:
+  - [x] Required fields
+  - [x] Valid team id
+  - [x] Valid member data
+- **Error Handling**:
+  - [x] API errors
+  - [x] Validation errors
+  - [x] Unauthorized access
 
-### Task 14: Team Creation & Management
+### Task 14: Team Creation & Management | **✅ COMPLETED**
 
 **Priority: LOW** | **Estimated: 2 days**
 
 - **Components**: TeamForm, MemberSelector, TeamSettings
 - **Features**:
-  - Team creation form
-  - Add/remove team members
-  - Team settings configuration
-  - Team deletion with confirmation
+  - [x] Team creation form
+  - [x] Add/remove team members
+  - [x] Team settings configuration
+  - [x] Team deletion with confirmation
 - **API Integration**:
-  - `POST /api/v1/teams`
-  - `PUT /api/v1/teams/{id}`
-  - `POST /api/v1/teams/{id}/members`
-  - `DELETE /api/v1/teams/{id}/members`
+  - [x] `POST /api/v1/teams`
+  - [x] `PUT /api/v1/teams/{id}`
+  - [x] `POST /api/v1/teams/{id}/members`
+  - [x] `DELETE /api/v1/teams/{id}/members`
+- **Validation**:
+  - [x] Required fields
+  - [x] Valid team name
+  - [x] Unique team name (backend enforced; frontend name min length check)
+- **Error Handling**:
+  - [x] API errors
+  - [x] Validation errors
+  - [x] Unauthorized access
 
 ---
 

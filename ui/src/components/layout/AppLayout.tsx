@@ -41,6 +41,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title, contentPadding =
     { key: '/tasks', icon: <UnorderedListOutlined />, label: <Link to="/tasks">Task List</Link> },
     { key: '/tasks/board', icon: <ProfileOutlined />, label: <Link to="/tasks/board">Kanban Board</Link> },
     { key: '/tasks/stats', icon: <FundOutlined />, label: <Link to="/tasks/stats">Statistics</Link> },
+    { key: '/teams', icon: <TeamOutlined />, label: <Link to="/teams">Team Dashboard</Link> },
     // Show Users only for admins
     ...(isAdmin ? [{ key: '/admin/users', icon: <TeamOutlined />, label: <Link to="/admin/users">Users</Link> }] : []),
     { key: '/profile', icon: <UserOutlined />, label: <Link to="/profile">My Profile</Link> },

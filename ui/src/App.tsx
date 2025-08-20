@@ -173,10 +173,26 @@ const AppContent: React.FC = () => {
               }
             />
             <Route
+              path="/teams"
+              element={
+                <ProtectedRoute>
+                  <TeamDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
               path="/teams/:id/dashboard"
               element={
                 <ProtectedRoute>
                   <TeamDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teams/create"
+              element={
+                <ProtectedRoute>
+                  <TeamCreatePage />
                 </ProtectedRoute>
               }
             />

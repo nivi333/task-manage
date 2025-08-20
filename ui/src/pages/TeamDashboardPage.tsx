@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Alert, Col, Result, Row, Skeleton, Space } from 'antd';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Alert, Col, Result, Row, Skeleton, Space, Button } from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 import AppLayout from '../components/layout/AppLayout';
 import { HeaderTitle } from '../components/common';
 import TeamHeader from '../components/team/TeamHeader';
@@ -20,6 +21,7 @@ function isValidId(id?: string) {
 
 const TeamDashboardPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [team, setTeam] = useState<Team | null>(null);
@@ -98,7 +100,16 @@ const TeamDashboardPage: React.FC = () => {
 
     return (
       <Space direction="vertical" size={16} style={{ width: '100%' }}>
-        <TeamHeader team={team} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <TeamHeader team={team} />
+          <Button 
+            type="primary" 
+            icon={<PlusOutlined />} 
+            onClick={() => navigate('/teams/create')}
+          >
+            Team Creation & Management
+          </Button>
+        </div>
         <TeamStats stats={stats} />
         <Row gutter={[16, 16]}>
           <Col xs={24} lg={14}>
