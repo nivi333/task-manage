@@ -13,7 +13,7 @@ public class TaskResponseDTO {
     private Integer actualHours;
     private UUID createdBy;
     private UUID assignedTo;
-    private UUID projectId;
+    private ProjectDTO project;
     private Set<String> tags;
     private Date createdAt;
     private Date updatedAt;
@@ -38,8 +38,8 @@ public class TaskResponseDTO {
     public void setCreatedBy(UUID createdBy) { this.createdBy = createdBy; }
     public UUID getAssignedTo() { return assignedTo; }
     public void setAssignedTo(UUID assignedTo) { this.assignedTo = assignedTo; }
-    public UUID getProjectId() { return projectId; }
-    public void setProjectId(UUID projectId) { this.projectId = projectId; }
+    public ProjectDTO getProject() { return project; }
+    public void setProject(ProjectDTO project) { this.project = project; }
     public Set<String> getTags() { return tags; }
     public void setTags(Set<String> tags) { this.tags = tags; }
     public Date getCreatedAt() { return createdAt; }

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Tag, Typography } from 'antd';
 import { Task } from '../../types/task';
 import dayjs from 'dayjs';
+import './TaskCard.css';
 
 const { Text } = Typography;
 
@@ -17,15 +18,19 @@ interface TaskCardProps {
 
 const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
   return (
-    <Card size="small" hoverable style={{ marginBottom: 8 }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <div style={{ fontWeight: 600 }}>{task.title}</div>
-        {task.priority && <Tag color={priorityColor[task.priority] || 'default'}>{task.priority}</Tag>}
-      </div>
-      <div style={{ marginTop: 4 }}>
-        <Text type="secondary" style={{ fontSize: 12 }}>
-          {task.dueDate ? `Due: ${dayjs(task.dueDate).format('MMM D, YYYY')}` : 'No due date'}
-        </Text>
+    <Card size="small" hoverable className="task-card">
+      <div className="task-card-header">
+        <span className="task-card-title">{task.title}</span>
+        {task.priority && (
+          <Tag color={priorityColor[task.priority] || 'default'} className="task-card-badge">
+            {task.priority}
+          </Tag>
+        )}
+        <div className="task-card-due">
+          <Text type="secondary">
+            {task.dueDate ? `Due: ${dayjs(task.dueDate).format('MMM D, YYYY')}` : 'No due date'}
+          </Text>
+        </div>
       </div>
     </Card>
   );

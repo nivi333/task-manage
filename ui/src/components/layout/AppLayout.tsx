@@ -68,7 +68,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title, contentPadding =
             </div>
             <Space>
               <Button icon={<BarChartOutlined />} onClick={() => navigate('/tasks/stats')}>Stats</Button>
-              <Button danger icon={<LogoutOutlined />} onClick={() => { authAPI.logout(); window.location.href = '/login'; }}>Logout</Button>
+              <Button danger icon={<LogoutOutlined />} onClick={() => { authAPI.logout(); window.location.href = '/login'; }} style={{ border: '1.5px solid #ff4d4f' }}>Logout</Button>
             </Space>
           </div>
         </Header>

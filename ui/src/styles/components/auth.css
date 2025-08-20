@@ -2,8 +2,10 @@
 .auth-layout {
   display: flex;
   min-height: 100vh;
+  align-items: center;
+  justify-content: center;
   background: var(--color-background);
-}
+} /* Center the card vertically and horizontally */
 
 .auth-image-section {
   flex: 1.2;
@@ -229,8 +231,12 @@
   border-radius: var(--border-radius-lg);
   width: 100%;
   max-width: 400px;
+  margin: 0 auto;
   box-shadow: var(--shadow-lg);
-} /* Only card backgrounds use white, not buttons */
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+} /* Center card, stretch children */
 
 .auth-title {
   text-align: center;
@@ -238,7 +244,9 @@
   color: var(--color-text-primary);
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
-}
+  width: 100%;
+  display: block;
+} /* Always centered */
 
 .auth-subtitle {
   text-align: center;
@@ -251,21 +259,45 @@
 /* Form Styles */
 .auth-form .ant-form-item {
   margin-bottom: var(--spacing-lg);
+  width: 100%;
 }
+.auth-form .ant-input-affix-wrapper,
+.auth-form .ant-input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-left: 8px !important;
+  padding-right: 8px !important;
+}
+.auth-form .ant-input-prefix {
+  display: flex;
+  align-items: center;
+  height: 100%;
+} /* Make input icons always vertically centered */
 
 /* Remember Me Container */
 .remember-me-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: baseline;
+  gap: 8px;
   margin-bottom: var(--spacing-lg);
 }
+.remember-me-container .ant-checkbox-wrapper {
+  align-items: baseline;
+  display: flex;
+}
+.remember-me-container .link-primary {
+  margin-left: auto;
+  white-space: nowrap;
+} /* Baseline align and space link to right */
 
 /* Back to Login */
 .back-to-login-container {
   text-align: center;
   margin-top: var(--spacing-lg);
-}
+  width: 100%;
+  display: block;
+} /* Always centered */
 
 /* Registration Steps */
 .ant-steps .ant-steps-item-title {
@@ -306,25 +338,33 @@
 @media (max-width: 768px) {
   .auth-layout {
     flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: 100vh;
+    padding: var(--spacing-lg) 0;
   }
-
-  .auth-left {
-    min-height: 200px;
-  }
-
-  .auth-right {
-    padding: var(--spacing-lg);
-  }
-
   .auth-card {
     padding: var(--spacing-lg);
+    max-width: 95vw;
+    margin: 24px auto;
   }
-
   .auth-title {
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-lg);
   }
-
   .success-card {
     max-width: 100%;
   }
+  .remember-me-container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  .back-to-login-container {
+    margin-top: var(--spacing-md);
+  }
+}
+
+/* Add extra spacing below Sign In button */
+.auth-form .ant-form-item:last-child {
+  margin-bottom: 0;
 }

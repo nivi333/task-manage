@@ -1,0 +1,80 @@
+/* TaskList component styles */
+.task-list-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+:where(.css-dev-only-do-not-override-1hfsdkp).ant-list .ant-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0;
+    color: rgba(0, 0, 0, 0.88);
+}
+
+.task-list-item {
+  background: #fff;
+  border-left: none;
+  padding: 0;
+  margin: 0;
+  border-bottom: none;
+}
+
+.task-list-item-content {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  padding: 8px;
+  background: none;
+  border-radius: 0;
+  transition: color 0.2s;
+  border-bottom: none;
+  min-height: 36px;
+}
+
+.task-list-item-content.selected {
+  font-weight: 600;
+  color: var(--color-primary, #667eea);
+}
+
+.task-list-item-content:not(.selected) {
+  font-weight: 400;
+  color: var(--color-text-primary, #333);
+}
+
+.task-list-title {
+  flex: 2;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-list-project {
+  flex: 2;
+  text-align: center;
+  color: #888;
+  font-size: 13px;
+}
+
+.task-list-priority-badge {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #ffe58f;
+  color: #ad6800;
+  border-radius: 4px;
+  font-size: 12px;
+  padding: 2px 8px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  min-width: 60px;
+  max-width: 90px;
+  margin-left: 8px;
+  text-align: center;
+}

@@ -1,0 +1,43 @@
+/* TaskCard styles for Kanban alignment */
+.task-card {
+  background: var(--color-card-background);
+  border-radius: 12px;
+  box-shadow: none !important;
+  margin-bottom: 12px;
+  padding: 16px 20px 12px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.task-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  background: #fff;
+  border-radius: 6px;
+  margin-bottom: 4px;
+}
+
+.task-card-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #222;
+  line-height: 1.2;
+}
+
+.task-card-badge {
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  height: 24px;
+}
+
+.task-card-due {
+  font-size: 13px;
+  color: #999;
+  margin-top: 2px;
+  margin-left: 0;
+}

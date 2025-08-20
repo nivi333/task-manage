@@ -11,7 +11,18 @@ export interface Task {
   actualHours?: number;
   createdBy?: UUID;
   assignedTo?: UUID;
-  projectId?: UUID;
+  project: {
+    id: UUID;
+    name: string;
+    description?: string;
+    status?: string;
+    startDate?: string;
+    endDate?: string;
+    ownerId?: UUID;
+    teamMemberIds?: UUID[];
+    createdAt?: string;
+    updatedAt?: string;
+  };
   tags?: string[];
   createdAt?: string;
   updatedAt?: string;

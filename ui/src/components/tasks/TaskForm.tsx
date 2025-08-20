@@ -4,7 +4,6 @@ import {
   Form,
   Input,
   InputNumber,
-  Select,
   Space,
   Upload,
 } from "antd";
@@ -32,7 +31,7 @@ export type TaskFormValues = {
   status: string;
   priority?: TaskPriority;
   assignedTo?: UUID;
-  projectId?: UUID;
+  project?: { id: UUID };
   tags?: string[];
   dependencies?: { label: string; value: UUID }[];
   // Hours supported by backend
@@ -87,7 +86,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
       status: initialTask?.status || "OPEN",
       priority: initialTask?.priority as TaskPriority | undefined,
       assignedTo: initialTask?.assignedTo,
-      projectId: initialTask?.projectId,
+      project: initialTask?.project ? { id: initialTask.project.id } : undefined,
       tags: initialTask?.tags || [],
       dependencies: [],
       // Initialize hours from existing task if present
@@ -140,7 +139,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
     try {
       const list = await projectService.list();
       setProjectOptions(
-        (list || []).map((p) => ({ label: p.name, value: p.id }))
+        (list || []).filter(Boolean).filter(p => p && p.id && p.name).map((p) => ({ label: p.name, value: p.id }))
       );
     } catch {
       setProjectOptions([]);
@@ -173,7 +172,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
     status: v.status,
     priority: v.priority,
     assignedTo: v.assignedTo,
-    projectId: v.projectId,
+    projectId: v.project?.id,
     tags: v.tags,
     // Hours now supported by backend DTO
     estimatedHours: v.estimatedHours,
@@ -280,11 +279,11 @@ const TaskForm: React.FC<TaskFormProps> = ({
         label="Status"
         rules={[{ required: true, message: "Status is required" }]}
       >
-        <TTSelect allowClear placeholder="Select status">
-          <Select.Option value="OPEN">OPEN</Select.Option>
-          <Select.Option value="IN_PROGRESS">IN_PROGRESS</Select.Option>
-          <Select.Option value="DONE">DONE</Select.Option>
-        </TTSelect>
+        <TTSelect allowClear placeholder="Select status" options={[
+          { label: 'OPEN', value: 'OPEN' },
+          { label: 'IN_PROGRESS', value: 'IN_PROGRESS' },
+          { label: 'DONE', value: 'DONE' },
+        ]} />
       </Form.Item>
 
       <Form.Item
@@ -292,13 +291,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
         label="Priority"
         rules={[{ required: true, message: "Priority is required" }]}
       >
-        <TTSelect allowClear placeholder="Select priority">
-          {priorities.map((p) => (
-            <Select.Option key={p} value={p}>
-              {p}
-            </Select.Option>
-          ))}
-        </TTSelect>
+        <TTSelect allowClear placeholder="Select priority" options={priorities.map(p => ({ label: p, value: p }))} />
       </Form.Item>
 
       <Form.Item
@@ -328,7 +321,7 @@ const TaskForm: React.FC<TaskFormProps> = ({
       </Form.Item>
 
       <Form.Item
-        name="projectId"
+        name={["project", "id"]}
         label="Project"
         rules={[{ required: true, message: "Project is required" }]}
       >
@@ -337,7 +330,9 @@ const TaskForm: React.FC<TaskFormProps> = ({
           showSearch
           placeholder="Select a project"
           onFocus={preloadProjects}
-          options={projectOptions}
+          options={(projectOptions || []).filter(
+            (opt) => opt && typeof opt.label === 'string' && typeof opt.value === 'string'
+          )}
           filterOption={(input, option) =>
             (option?.label as string)
               ?.toLowerCase()
@@ -389,12 +384,15 @@ const TaskForm: React.FC<TaskFormProps> = ({
       <Form.Item label="Recurrence">
         <Space.Compact block className="recurrence-compact">
           <Form.Item name={["recurrence", "frequency"]} noStyle>
-            <TTSelect style={{ flex: "0 0 40%" }}>
-              <Select.Option value="NONE">None</Select.Option>
-              <Select.Option value="DAILY">Daily</Select.Option>
-              <Select.Option value="WEEKLY">Weekly</Select.Option>
-              <Select.Option value="MONTHLY">Monthly</Select.Option>
-            </TTSelect>
+            <TTSelect
+              style={{ flex: "0 0 40%" }}
+              options={[
+                { label: "None", value: "NONE" },
+                { label: "Daily", value: "DAILY" },
+                { label: "Weekly", value: "WEEKLY" },
+                { label: "Monthly", value: "MONTHLY" },
+              ]}
+            />
           </Form.Item>
           <Form.Item name={["recurrence", "interval"]} noStyle>
             <InputNumber

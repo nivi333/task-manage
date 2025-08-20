@@ -38,10 +38,34 @@ public class TaskService {
         dto.setActualHours(task.getActualHours());
         dto.setCreatedBy(task.getCreatedBy() != null ? task.getCreatedBy().getId() : null);
         dto.setAssignedTo(task.getAssignedTo() != null ? task.getAssignedTo().getId() : null);
-        dto.setProjectId(task.getProject() != null ? task.getProject().getId() : null);
+        dto.setProject(task.getProject() != null ? projectToDTO(task.getProject()) : null);
         dto.setTags(task.getTags());
         dto.setCreatedAt(task.getCreatedAt());
         dto.setUpdatedAt(task.getUpdatedAt());
+        return dto;
+    }
+
+    private ProjectDTO projectToDTO(Project project) {
+        if (project == null) return null;
+        ProjectDTO dto = new ProjectDTO();
+        dto.setId(project.getId());
+        dto.setName(project.getName());
+        dto.setDescription(project.getDescription());
+        dto.setStatus(project.getStatus());
+        dto.setStartDate(project.getStartDate());
+        dto.setEndDate(project.getEndDate());
+        dto.setOwnerId(project.getOwner() != null ? project.getOwner().getId() : null);
+        if (project.getTeamMembers() != null) {
+            Set<UUID> memberIds = new HashSet<>();
+            for (User user : project.getTeamMembers()) {
+                if (user != null && user.getId() != null) {
+                    memberIds.add(user.getId());
+                }
+            }
+            dto.setTeamMemberIds(memberIds);
+        }
+        dto.setCreatedAt(project.getCreatedAt());
+        dto.setUpdatedAt(project.getUpdatedAt());
         return dto;
     }
 

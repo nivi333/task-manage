@@ -3,18 +3,19 @@
   --color-primary: #667eea;
   --color-secondary: #8b5cf6;
   --color-accent: #f093fb;
-  --color-background: #f6f6f6;
-  --color-surface: #ffffff;
+  --color-background: #fff;
+  --color-surface: #fff;
+  --color-card-background: #f7f7f7;
   --color-text-primary: #333333;
   --color-text-secondary: #666666;
   --color-text-light: #999999;
-  --color-border: #d9d9d9;
+  --color-border: #c7c7c7;
   --color-border-hover: #4096ff;
   --color-success: #52c41a;
   --color-warning: #faad14;
   --color-error: #ff4d4f;
   --color-info: #1890ff;
-  
+
   /* Spacing */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -22,22 +23,23 @@
   --spacing-lg: 24px;
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
-  
+
   /* Border Radius */
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 12px;
   --border-radius-xl: 16px;
-  
+
   /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.15);
-  
+
   /* Typography */
-  --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-  --font-family-serif: 'Georgia', 'Times New Roman', serif;
+  --font-family-primary: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    system-ui, sans-serif;
+  --font-family-serif: "Georgia", "Times New Roman", serif;
   --font-size-xs: 12px;
   --font-size-sm: 14px;
   --font-size-md: 16px;
@@ -55,11 +57,18 @@
   position: relative;
 }
 .app-header::after {
-  content: '';
+  content: "";
   position: absolute;
-  left: 0; right: 0; bottom: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--color-primary, #735cff), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-primary, #735cff),
+    transparent
+  );
   opacity: 0.7;
 }
 
@@ -69,15 +78,22 @@
   align-items: center;
   justify-content: space-between;
   padding: 4px 0 12px 0; /* reduce top spacing */
-  margin-bottom: 12px;   /* tighter to content */
+  margin-bottom: 12px; /* tighter to content */
   position: relative;
 }
 .page-header::after {
-  content: '';
+  content: "";
   position: absolute;
-  left: 0; right: 0; bottom: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, var(--color-primary), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--color-primary),
+    transparent
+  );
   opacity: 0.6;
 }
 
@@ -111,7 +127,8 @@
   overflow: hidden;
   border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: repeating-conic-gradient(#f5f5f5 0% 25%, #fff 0% 50%) 50% / 20px 20px;
+  background: repeating-conic-gradient(#f5f5f5 0% 25%, #fff 0% 50%) 50% / 20px
+    20px;
 }
 
 /* Global Reset */
@@ -131,6 +148,11 @@ body {
 }
 
 /* Global Button Base Styles */
+.btn-base,
+.ant-btn {
+  border: 1.5px solid var(--color-border, #d9d9d9) !important;
+}
+
 .btn-base {
   display: inline-flex;
   align-items: center;
@@ -163,9 +185,13 @@ body {
 
 /* Primary Button - Gradient */
 .btn-primary {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  );
   color: white;
-  border: none;
+  border: none !important;
   box-shadow: var(--shadow-sm);
 }
 
@@ -183,7 +209,11 @@ body {
 
 /* Enforce the same gradient style for all Ant Design primary buttons */
 .ant-btn-primary {
-  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%) !important;
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  ) !important;
   border: none !important;
   color: #fff !important;
   box-shadow: var(--shadow-sm) !important;
@@ -300,7 +330,7 @@ body {
 }
 
 .btn-loading::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 16px;
   height: 16px;
@@ -311,11 +341,19 @@ body {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Global Input Field Styles */
+textarea::placeholder {
+  padding-top: 4px;
+}
+
 /* Global control heights: enforce consistent 36px across app */
 .ant-input,
 .ant-input-affix-wrapper {
@@ -326,6 +364,8 @@ body {
   font-size: var(--font-size-md) !important;
   line-height: 34px !important;
   box-shadow: none !important;
+  padding-left: 12px !important;
+  padding-right: 12px !important;
 }
 
 .ant-input:focus,
@@ -380,6 +420,17 @@ body {
 }
 
 /* Select: single selector height + text vertical alignment */
+.ant-select-single .ant-select-arrow {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  padding-top: 10px;
+}
+
+.ant-select-single.ant-select-sm {
+  font-size: 14px;
+  height: 100%;
+}
+
 .ant-select-selector {
   height: 36px !important;
   border-radius: 8px !important;
@@ -429,6 +480,10 @@ body {
   line-height: 32px !important;
 }
 
+.ant-table-row {
+  background: #fff !important;
+}
+
 /* Cards: remove default body padding globally */
 .ant-card-body {
   padding: 0 !important;
@@ -440,44 +495,117 @@ body {
 .ant-btn-default {
   line-height: 34px !important;
 }
-.ant-btn > span { line-height: 1 !important; }
+.ant-btn > span {
+  line-height: 1 !important;
+}
 
 /* Make inline controls align perfectly */
 input.ant-input,
 .ant-input-affix-wrapper,
 .ant-select,
 .ant-picker,
-.ant-btn { vertical-align: middle !important; }
+.ant-btn {
+  vertical-align: middle !important;
+}
+
+/* Task List Card Styles (scoped for Task List context) */
+.task-list-panel .ant-list-items {
+  border-radius: 6px;
+}
+.task-list-panel .ant-list-item {
+  width: 100%;
+  background: var(--color-card-background);
+  cursor: pointer;
+  border-left: 4px solid #a68fff;
+  padding: 0px;
+  border-radius: 6px;
+}
+:where(.css-dev-only-do-not-override-1hfsdkp).ant-card {
+  box-sizing: border-box;
+  margin: 0 !important;
+  padding: 0;
+  color: rgba(0, 0, 0, 0.88);
+  font-size: 14px;
+  line-height: 1.5714285714285714;
+  list-style: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  position: relative;
+  border-radius: 10px;
+}
+.ant-card-bordered {
+  border: none !important;
+}
+.task-list-panel .ant-card.ant-card-bordered.ant-card-hoverable.ant-card-small {
+  margin: 0;
+  width: 100%;
+}
+.task-list-panel .ant-card-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
 
 /* Utility Classes */
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
+.text-center {
+  text-align: center;
+}
+.text-left {
+  text-align: left;
+}
+.text-right {
+  text-align: right;
+}
 
-.mb-xs { margin-bottom: var(--spacing-xs); }
-.mb-sm { margin-bottom: var(--spacing-sm); }
-.mb-md { margin-bottom: var(--spacing-md); }
-.mb-lg { margin-bottom: var(--spacing-lg); }
-.mb-xl { margin-bottom: var(--spacing-xl); }
+.mb-xs {
+  margin-bottom: var(--spacing-xs);
+}
+.mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+.mb-lg {
+  margin-bottom: var(--spacing-lg);
+}
+.mb-xl {
+  margin-bottom: var(--spacing-xl);
+}
 
-.mt-xs { margin-top: var(--spacing-xs); }
-.mt-sm { margin-top: var(--spacing-sm); }
-.mt-md { margin-top: var(--spacing-md); }
-.mt-lg { margin-top: var(--spacing-lg); }
-.mt-xl { margin-top: var(--spacing-xl); }
+.mt-xs {
+  margin-top: var(--spacing-xs);
+}
+.mt-sm {
+  margin-top: var(--spacing-sm);
+}
+.mt-md {
+  margin-top: var(--spacing-md);
+}
+.mt-lg {
+  margin-top: var(--spacing-lg);
+}
+.mt-xl {
+  margin-top: var(--spacing-xl);
+}
 
 /* User Management: neutralize sorted-column background ONLY for body cells (keep header highlight) */
-.user-management-page .ant-table-wrapper .ant-table-tbody td.ant-table-column-sort {
+.user-management-page
+  .ant-table-wrapper
+  .ant-table-tbody
+  td.ant-table-column-sort {
   background: transparent !important;
 }
 
 /* Ensure hover/striped states remain subtle and consistent */
 .user-management-page .ant-table-wrapper .ant-table-tbody > tr:hover > td {
-  background: rgba(0,0,0,0.02) !important;
+  background: rgba(0, 0, 0, 0.02) !important;
 }
 
 /* User Management: remove Card borders completely */
 .user-management-page .ant-card {
+  background: var(--color-card-background) !important;
   border: none !important;
   box-shadow: none !important;
 }
@@ -489,7 +617,11 @@ input.ant-input,
 .user-management-page .ant-table-wrapper .ant-table-thead > tr > th {
   background: #fff !important;
 }
-.user-management-page .ant-table-wrapper .ant-table-thead > tr > th.ant-table-column-sort {
+.user-management-page
+  .ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > th.ant-table-column-sort {
   background: #fff !important; /* ensure Created matches others */
 }
 
@@ -535,12 +667,14 @@ input.ant-input,
   background: transparent !important;
   border-radius: 0 !important;
 }
-.tt-search.ant-input-search .ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+.tt-search.ant-input-search
+  .ant-input-group
+  .ant-input-affix-wrapper:not(:last-child) {
   border-radius: 8px 0 0 8px !important;
 }
 .tt-search.ant-input-search .ant-input-group:focus-within {
   border-color: var(--color-primary) !important;
-  box-shadow: 0 0 0 2px rgba(102,126,234,0.18) !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.18) !important;
 }
 .tt-search.ant-input-search .ant-input {
   height: var(--tt-search-height) !important;
@@ -571,7 +705,9 @@ input.ant-input,
 }
 
 /* User-specified selector to control left radius of the input part */
-.ant-input-search :where(.css-dev-only-do-not-override-1hfsdkp).ant-input-group .ant-input-affix-wrapper:not(:last-child) {
+.ant-input-search
+  :where(.css-dev-only-do-not-override-1hfsdkp).ant-input-group
+  .ant-input-affix-wrapper:not(:last-child) {
   border-radius: 8px 0 0 8px !important;
 }
 
@@ -597,7 +733,7 @@ input.ant-input,
 .tt-search-input.ant-input-affix-wrapper-focused,
 .tt-search-input.ant-input-affix-wrapper:focus-within {
   border-color: var(--color-primary) !important;
-  box-shadow: 0 0 0 2px rgba(102,126,234,0.18) !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.18) !important;
 }
 
 /* Uniform height across Select and DatePicker in Tasks filters */
@@ -614,14 +750,22 @@ input.ant-input,
   line-height: 34px !important;
   text-align: left !important;
 }
-.tt-filters .ant-select-selector { text-align: left !important; }
-.tt-filters .ant-select-selection-placeholder { text-align: left !important; }
+.tt-filters .ant-select-selector {
+  text-align: left !important;
+}
+.tt-filters .ant-select-selection-placeholder {
+  text-align: left !important;
+}
 .tt-filters .ant-picker-input > input {
   height: 34px !important;
   text-align: left !important;
 }
-.tt-filters .ant-picker-input > input::placeholder { text-align: left !important; }
-.tt-search-input input::placeholder { text-align: left !important; }
+.tt-filters .ant-picker-input > input::placeholder {
+  text-align: left !important;
+}
+.tt-search-input input::placeholder {
+  text-align: left !important;
+}
 
 /* Uniform button height within filters rows */
 .tt-filters .ant-btn {
@@ -630,9 +774,19 @@ input.ant-input,
   padding: 0 12px !important;
   line-height: 34px !important;
 }
-.tt-filters .ant-btn > span { line-height: 1 !important; }
+.tt-filters .ant-btn > span {
+  line-height: 1 !important;
+}
 
 /* User Management row: ensure grid doesn't add extra vertical spacing */
-.user-management-page .user-filters { margin: 0 !important; padding: 0 !important; }
-.user-management-page .user-filters .ant-row { margin: 0 !important; }
-.user-management-page .user-filters .ant-col { display: flex; align-items: center; }
+.user-management-page .user-filters {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+.user-management-page .user-filters .ant-row {
+  margin: 0 !important;
+}
+.user-management-page .user-filters .ant-col {
+  display: flex;
+  align-items: center;
+}

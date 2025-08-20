@@ -23,7 +23,7 @@ const TTButton: React.FC<TTButtonProps> = ({
   if (ttVariant) {
     if (ttVariant === 'primary') classes.push('btn-primary');
     if (ttVariant === 'secondary') classes.push('btn-secondary');
-    if (ttVariant === 'transparent') classes.push('btn-transparent');
+    // Remove 'btn-transparent' from classes; let .ant-btn handle transparent style
   }
 
   if (ttSize) {

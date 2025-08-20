@@ -27,7 +27,13 @@ const TasksBoardPage: React.FC = () => {
 
   const handleChange = async (id: string, status: BoardStatus) => {
     try {
-      const updated = await taskService.update(id, { status });
+      // Find the original task to get assignedTo
+      const original = tasks.find(t => t.id === id);
+      const assignedTo = original?.assignedTo;
+      const payload: any = { status };
+      // Only include assignedTo if present (backend requires it)
+      if (assignedTo) payload.assignedTo = assignedTo;
+      const updated = await taskService.update(id, payload);
       setTasks(prev => prev.map(t => (t.id === id ? { ...t, status: updated.status } : t)));
       notificationService.success('Status updated');
     } catch (e: any) {
@@ -35,6 +41,7 @@ const TasksBoardPage: React.FC = () => {
       notificationService.error(msg);
     }
   };
+
 
   return (
     <AppLayout title={<HeaderTitle level={3}>Kanban Board</HeaderTitle>} contentPadding={24}>

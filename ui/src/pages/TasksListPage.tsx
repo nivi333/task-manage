@@ -5,11 +5,11 @@ import {
   Form,
   Input,
   Modal,
-  Select,
   Table,
   Tag,
   Typography,
 } from "antd";
+import TTSelect from "../components/common/TTSelect";
 import { Drawer, Space } from "antd";
 import type { ColumnsType, TablePaginationConfig } from "antd/es/table";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
@@ -127,7 +127,7 @@ const TasksListPage: React.FC = () => {
       dataIndex: "status",
       key: "status",
       render: (_, record) => (
-        <Select
+        <TTSelect
           size="small"
           value={record.status}
           style={{ minWidth: 140 }}
@@ -213,7 +213,7 @@ const TasksListPage: React.FC = () => {
               }
               style={{ width: 320 }}
             />
-            <Select
+            <TTSelect
               allowClear
               placeholder="Status"
               style={{ width: 160 }}
@@ -226,7 +226,7 @@ const TasksListPage: React.FC = () => {
                 { label: "Done", value: "DONE" },
               ]}
             />
-            <Select
+            <TTSelect
               allowClear
               placeholder="Priority"
               style={{ width: 160 }}
@@ -239,7 +239,7 @@ const TasksListPage: React.FC = () => {
                 { label: "High", value: "HIGH" },
               ]}
             />
-            <Select
+            <TTSelect
               allowClear
               showSearch
               placeholder="Assignee"
@@ -368,7 +368,9 @@ const TasksListPage: React.FC = () => {
               registerSubmit={handleRegisterSubmit}
               onSubmit={(task: any) => {
                 closeCreate();
-                navigate(`/tasks/${task.id}`);
+                fetchTasks(); // Refresh the table
+                // Do NOT navigate to the detail page after creation
+
               }}
             />
           </div>
@@ -406,7 +408,7 @@ const TasksListPage: React.FC = () => {
               <Input placeholder="Task title" />
             </Form.Item>
             <Form.Item name="priority" label="Priority">
-              <Select
+              <TTSelect
                 allowClear
                 options={[
                   { label: "Low", value: "LOW" },
