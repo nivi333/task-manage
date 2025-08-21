@@ -1,4 +1,4 @@
-import apiClient from './apiClient';
+import apiClient from './authService';
 import { Task, TaskCreateDTO, TaskUpdateDTO } from '../types/task';
 import { notificationService } from './notificationService';
 

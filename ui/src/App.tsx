@@ -8,8 +8,6 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import UserManagementPage from './pages/UserManagementPage';
 import TasksListPage from './pages/TasksListPage';
 import TaskDetailPage from './pages/TaskDetailPage';
-import CreateTaskPage from './pages/CreateTaskPage';
-import EditTaskPage from './pages/EditTaskPage';
 import UserProfilePage from './pages/UserProfilePage';
 import ProjectsListPage from './pages/ProjectsListPage';
 import ProjectDashboardPage from './pages/ProjectDashboardPage';
@@ -209,26 +207,10 @@ const AppContent: React.FC = () => {
               }
             />
             <Route
-              path="/tasks/new"
-              element={
-                <ProtectedRoute>
-                  <CreateTaskPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/tasks/:id"
               element={
                 <ProtectedRoute>
                   <TaskDetailPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/tasks/:id/edit"
-              element={
-                <ProtectedRoute>
-                  <EditTaskPage />
                 </ProtectedRoute>
               }
             />

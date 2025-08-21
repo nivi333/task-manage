@@ -1,11 +1,14 @@
 import React from 'react';
-import { Table, Tag } from 'antd';
+import { Table, Tag, Button, Space, Tooltip, Popconfirm } from 'antd';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 import { Task } from '../../types/task';
 import { ColumnsType } from 'antd/es/table';
 
 interface TaskListProps {
   tasks: Task[];
   loading: boolean;
+  onEdit: (task: Task) => void;
 }
 
 const getPriorityColor = (priority: 'HIGH' | 'MEDIUM' | 'LOW') => {
@@ -34,13 +37,14 @@ const getStatusColor = (status: 'OPEN' | 'IN_PROGRESS' | 'DONE') => {
   }
 };
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, loading }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, loading, onEdit }) => {
+  const navigate = useNavigate();
   const columns: ColumnsType<Task> = [
     {
       title: 'Title',
       dataIndex: 'title',
       key: 'title',
-      render: (text, record) => <a href={`/tasks/${record.id}`}>{text}</a>,
+      render: (text, record) => <a onClick={() => navigate(`/tasks/${record.id}`)}>{text}</a>,
     },
     {
       title: 'Priority',
@@ -68,7 +72,38 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, loading }) => {
       title: 'Assigned To',
       dataIndex: 'assignedTo',
       key: 'assignedTo',
-      render: (assignedTo) => (assignedTo ? assignedTo.name : 'Unassigned'),
+      render: (assignedTo) => (assignedTo ? `${assignedTo.firstName} ${assignedTo.lastName}` : 'Unassigned'),
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (_, record) => (
+        <Space size="middle">
+          <Tooltip title="Edit">
+            <Button 
+              type="text" 
+              icon={<EditOutlined style={{ color: 'black' }} />} 
+              onClick={() => onEdit(record)} 
+              style={{ border: 'none' }}
+            />
+          </Tooltip>
+          <Tooltip title="Delete">
+            <Popconfirm
+              title="Are you sure you want to delete this task?"
+              onConfirm={() => console.log('Task deleted', record.id)} // Placeholder for delete logic
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button 
+                type="text" 
+                danger 
+                icon={<DeleteOutlined />} 
+                style={{ border: 'none' }}
+              />
+            </Popconfirm>
+          </Tooltip>
+        </Space>
+      ),
     },
   ];
 
