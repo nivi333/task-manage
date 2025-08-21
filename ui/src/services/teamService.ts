@@ -3,6 +3,19 @@ import { UUID } from '../types/task';
 import { Team, TeamMemberBrief, TeamStatsSummary, TeamActivityItem } from '../types/team';
 
 export const teamService = {
+  async list(): Promise<Team[]> {
+    try {
+      const { data } = await apiClient.get('/teams');
+      return data;
+    } catch (e: any) {
+      // If forbidden or not found, return empty list to avoid uncaught runtime errors
+      const code = e?.response?.status;
+      if (code === 403 || code === 404) {
+        return [];
+      }
+      throw e;
+    }
+  },
   async getTeam(id: UUID): Promise<Team> {
     const { data } = await apiClient.get(`/teams/${id}`);
     return data;

@@ -11,7 +11,6 @@ import com.example.tasksmanage.service.ProjectMemberService;
 import com.example.tasksmanage.service.ProjectInvitationService;
 import com.example.tasksmanage.dto.ProjectInvitationRequest;
 import com.example.tasksmanage.dto.ProjectInvitationDTO;
-import com.example.tasksmanage.dto.ProjectMemberDTO;
 import com.example.tasksmanage.model.ProjectAuditLog;
 import com.example.tasksmanage.repository.ProjectAuditLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,13 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { Avatar, Button, List, Popconfirm, Space, Typography } from 'antd';
-import { CommentModel } from '../../services/commentService';
+import { Comment } from '../../types/comment';
 import CommentForm from './CommentForm';
 
 const { Text } = Typography;
 
 export interface CommentItemProps {
-  comment: CommentModel;
-  childrenComments?: CommentModel[];
+  comment: Comment;
+  childrenComments?: Comment[];
   onReply: (content: string, parentId: string) => Promise<void>;
   onEdit: (commentId: string, content: string) => Promise<void>;
   onDelete: (commentId: string) => Promise<void>;
@@ -31,9 +31,9 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [
       ]}
     >
       <List.Item.Meta
-        avatar={<Avatar>{(comment.authorId || 'U').toString().slice(0, 1)}</Avatar>}
+        avatar={<Avatar>{(comment.author?.username || 'U').slice(0, 1).toUpperCase()}</Avatar>}
         title={<Space>
-          <Text strong>Comment</Text>
+          <Text strong>{comment.author ? `${comment.author.firstName} ${comment.author.lastName}` : 'Anonymous'}</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>{createdAtStr}</Text>
         </Space>}
         description={

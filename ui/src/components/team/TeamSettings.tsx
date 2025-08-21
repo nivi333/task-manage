@@ -6,30 +6,40 @@ import { Team } from '../../types/team';
 import { UUID } from '../../types/task';
 import { notificationService } from '../../services/notificationService';
 
-const TeamSettings: React.FC = () => {
+interface TeamSettingsProps {
+  cardless?: boolean;
+  team?: Team;
+}
+
+const TeamSettings: React.FC<TeamSettingsProps> = ({ cardless = false, team }) => {
   const { id } = useParams();
-  const teamId = (id as UUID);
+  const teamId = team?.id || (id as UUID);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const navigate = useNavigate();
 
-  const load = async () => {
-    setLoading(true);
-    try {
-      const team = await teamService.getTeam(teamId);
-      form.setFieldsValue({ name: team.name, description: team.description });
-    } catch (e) {
-      notificationService.error('Failed to load team');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // If a team prop is provided, set form values directly.
   useEffect(() => {
-    if (teamId) load();
+    if (team) {
+      form.setFieldsValue({ name: team.name, description: team.description });
+      setLoading(false);
+    } else if (teamId) {
+      const load = async () => {
+        setLoading(true);
+        try {
+          const fetchedTeam = await teamService.getTeam(teamId);
+          form.setFieldsValue({ name: fetchedTeam.name, description: fetchedTeam.description });
+        } catch (e) {
+          notificationService.error('Failed to load team');
+        } finally {
+          setLoading(false);
+        }
+      };
+      load();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [teamId]);
+  }, [team, teamId]);
 
   const onSave = async (values: { name: string; description?: string }) => {
     setSaving(true);
@@ -43,6 +53,7 @@ const TeamSettings: React.FC = () => {
       setSaving(false);
     }
   };
+
 
   const onDelete = async () => {
     Modal.confirm({
@@ -62,24 +73,28 @@ const TeamSettings: React.FC = () => {
     });
   };
 
-  return (
+  const content = (
+    <Form form={form} layout="vertical" onFinish={onSave}>
+      <Form.Item
+        label="Team Name"
+        name="name"
+        rules={[{ required: true, message: 'Team name is required' }, { min: 3, message: 'Minimum 3 characters' }]}
+      >
+        <Input placeholder="Team name" />
+      </Form.Item>
+      <Form.Item label="Description" name="description">
+        <Input.TextArea rows={4} placeholder="Optional description" />
+      </Form.Item>
+      <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
+        <Button htmlType="submit" type="primary" className="btn-base btn-primary" loading={saving}>Save Changes</Button>
+        <Button onClick={onDelete} danger className="btn-base">Delete Team</Button>
+      </div>
+    </Form>
+  );
+
+  return cardless ? content : (
     <Card title="Team Settings" className="card" loading={loading}>
-      <Form form={form} layout="vertical" onFinish={onSave}>
-        <Form.Item
-          label="Team Name"
-          name="name"
-          rules={[{ required: true, message: 'Team name is required' }, { min: 3, message: 'Minimum 3 characters' }]}
-        >
-          <Input placeholder="Team name" />
-        </Form.Item>
-        <Form.Item label="Description" name="description">
-          <Input.TextArea rows={4} placeholder="Optional description" />
-        </Form.Item>
-        <div className="flex gap-12">
-          <Button htmlType="submit" type="primary" className="btn-base btn-primary" loading={saving}>Save Changes</Button>
-          <Button onClick={onDelete} danger className="btn-base">Delete Team</Button>
-        </div>
-      </Form>
+      {content}
     </Card>
   );
 };

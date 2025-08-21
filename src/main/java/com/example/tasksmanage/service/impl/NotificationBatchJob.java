@@ -5,17 +5,13 @@ import com.example.tasksmanage.model.NotificationPreferences;
 import com.example.tasksmanage.model.User;
 import com.example.tasksmanage.repository.NotificationRepository;
 import com.example.tasksmanage.repository.NotificationPreferencesRepository;
-import com.example.tasksmanage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,8 +20,6 @@ public class NotificationBatchJob {
     private NotificationRepository notificationRepository;
     @Autowired
     private NotificationPreferencesRepository preferencesRepository;
-    @Autowired
-    private UserRepository userRepository;
     @Autowired(required = false)
     private JavaMailSender mailSender;
 

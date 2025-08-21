@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Card, List, Avatar, Tag, Typography, Space, Empty, Skeleton, Checkbox, Row, Col, Popconfirm } from 'antd';
+import { Card, Avatar, Tag, Typography, Space, Empty, Skeleton, Checkbox, Row, Col, Popconfirm } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { UserOutlined, UnorderedListOutlined, AppstoreOutlined as GridIcon, PlusOutlined, DeleteOutlined } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 import AppLayout from '../components/layout/AppLayout';
+import '../styles/components/project-card.css';
 import { Project } from '../types/project';
 import { projectService } from '../services/projectService';
 import { notificationService } from '../services/notificationService';
@@ -11,7 +12,7 @@ import CreateProjectModal from '../components/projects/CreateProjectModal';
 import dayjs, { Dayjs } from 'dayjs';
 import { SearchBar, TTSelect, TTDateRangePicker, TTButton, HeaderTitle, TTTable } from '../components/common';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 type ViewMode = 'list' | 'grid';
 
@@ -173,6 +174,7 @@ const ProjectsListPage: React.FC = () => {
                 {filtered.map(project => (
                   <Col xs={24} sm={12} md={8} lg={6} key={project.id}>
                     <Card
+                      className="project-grid-card"
                       title={
                         <Space>
                           <Checkbox

@@ -169,6 +169,12 @@ public class UserController {
         return userService.getUserStats();
     }
 
+    // Get users available for team assignment (authenticated users only)
+    @GetMapping("/for-teams")
+    public ResponseEntity<java.util.List<com.example.tasksmanage.dto.UserSummaryDTO>> getUsersForTeamAssignment() {
+        return ResponseEntity.ok(userService.getUsersForTeamAssignment());
+    }
+
     // ADMIN: Delete user by id
     @DeleteMapping("/{id}")
     @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")

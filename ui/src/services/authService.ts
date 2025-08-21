@@ -54,7 +54,7 @@ apiClient.interceptors.response.use(
       // Token expired or invalid
       localStorage.removeItem("authToken");
       localStorage.removeItem("rememberMe");
-      window.location.href = "/login";
+      // DO NOT redirect to login here. Let the app handle navigation if needed.
     } else if (error.response?.data?.message) {
       // Show notification popup for API error if message exists
       console.log("[NOTIFICATION] Error:", error.response.data.message);
@@ -193,6 +193,18 @@ const authAPI = {
   isAuthenticated: (): boolean => {
     const token = localStorage.getItem("authToken");
     return !!token;
+  },
+
+  // Get user roles from JWT token
+  getUserRoles: (): string[] => {
+    const token = localStorage.getItem("authToken");
+    if (!token) return [];
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1] || ''));
+      return payload?.roles || [];
+    } catch {
+      return [];
+    }
   },
 
   // Get auth token

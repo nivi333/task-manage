@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Mentions, Input } from 'antd';
+import { Mentions, Input, Form, Button } from 'antd';
 import { TTButton } from '../common';
 
 export interface CommentFormProps {
@@ -9,40 +9,33 @@ export interface CommentFormProps {
   onCancel?: () => void;
   mentionUsernames?: string[]; // initial suggestion list
   onMentionSearch?: (query: string) => Promise<string[]> | string[]; // async search hook
+  initialValue?: string;
 }
 
-const CommentForm: React.FC<CommentFormProps> = ({ submitting, parentCommentId = null, onSubmit, onCancel, mentionUsernames = [], onMentionSearch }) => {
-  const [value, setValue] = useState('');
+const CommentForm: React.FC<CommentFormProps> = ({ submitting, parentCommentId = null, onSubmit, onCancel, mentionUsernames = [], onMentionSearch, initialValue }) => {
+  const [form] = Form.useForm();
+  const [comment, setComment] = useState(initialValue || '');
   const [mentionSearch, setMentionSearch] = useState('');
   const [options, setOptions] = useState<string[]>(mentionUsernames);
 
   // Note: React 19 removed findDOMNode, which breaks react-quill v2.0.0.
   // Using a plain textarea fallback to avoid runtime errors.
 
-  const handleSubmit = useCallback(async () => {
-    const text = value?.trim();
-    if (!text) return;
-    await onSubmit(text, parentCommentId);
-    setValue('');
-  }, [value, onSubmit, parentCommentId]);
+  const handleSubmit = (values: { comment: string }) => {
+    if (values.comment.trim()) {
+      onSubmit(values.comment.trim(), parentCommentId);
+      form.resetFields();
+      setComment('');
+    }
+  };
 
   return (
-    <div>
-      <Input.TextArea
-        rows={4}
-        placeholder="Write a comment... (rich text temporarily disabled)"
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-      />
-      <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
-        <TTButton type="primary" onClick={handleSubmit} loading={!!submitting} disabled={!!submitting}>
-          {parentCommentId ? 'Reply' : 'Post Comment'}
-        </TTButton>
-        {onCancel && (
-          <TTButton onClick={onCancel} disabled={!!submitting}>Cancel</TTButton>
-        )}
-      </div>
-      <div style={{ marginTop: 8 }}>
+    <Form form={form} onFinish={handleSubmit} initialValues={{ comment: initialValue || '' }}>
+      <Form.Item
+        name="comment"
+        rules={[{ required: true, message: 'Please enter a comment.' }]}
+        style={{ marginBottom: 8 }}
+      >
         <Mentions
           prefix="@"
           onSearch={async (val) => {
@@ -56,19 +49,26 @@ const CommentForm: React.FC<CommentFormProps> = ({ submitting, parentCommentId =
               }
             }
           }}
-          onSelect={(opt) => {
-            // Insert selected mention into editor as plain text
-            setValue((prev) => `${prev} @${opt.value} `);
-          }}
           placeholder="Type @ to mention users"
           options={(options || [])
             .filter(u => !mentionSearch || u.toLowerCase().includes(mentionSearch.toLowerCase()))
             .slice(0, 8)
             .map(u => ({ value: u, label: u }))}
           style={{ width: '100%' }}
+          rows={3}
         />
-      </div>
-    </div>
+      </Form.Item>
+      <Form.Item style={{ marginBottom: 0 }}>
+        <TTButton type="primary" htmlType="submit" loading={submitting}>
+          Submit
+        </TTButton>
+        {onCancel && (
+          <TTButton onClick={onCancel} style={{ marginLeft: 8 }}>
+            Cancel
+          </TTButton>
+        )}
+      </Form.Item>
+    </Form>
   );
 };
 

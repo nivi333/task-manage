@@ -226,7 +226,7 @@
 }
 
 .form-loading::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -244,11 +244,11 @@
   .form-actions {
     flex-direction: column;
   }
-  
+
   .input-group {
     flex-direction: column;
   }
-  
+
   .auth-card {
     padding: var(--spacing-lg);
   }
@@ -361,8 +361,14 @@
 }
 
 /* Remove unwanted vertical padding inside Select to keep text centered */
-.tt-form-compact .ant-select-single .ant-select-selector .ant-select-selection-item,
-.tt-form-compact .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
+.tt-form-compact
+  .ant-select-single
+  .ant-select-selector
+  .ant-select-selection-item,
+.tt-form-compact
+  .ant-select-single
+  .ant-select-selector
+  .ant-select-selection-placeholder {
   line-height: 40px; /* large selects */
   padding-top: 0 !important;
   padding-bottom: 0 !important;
@@ -377,8 +383,14 @@
 
 /* Global fix: center arrow and content for any Select (not only compact) */
 .ant-select-single .ant-select-arrow {
-  top: 50% !important;
-  transform: translateY(-50%) !important;
+  top: calc(50% - 6px) !important;
+  transform: none !important;
+  right: 8px !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  position: absolute !important;
+  height: 12px !important;
+  line-height: 12px !important;
 }
 .ant-select-single .ant-select-selector {
   display: flex;
@@ -400,8 +412,10 @@
 }
 /* Default (middle) size: 32px */
 .ant-select-single:not(.ant-select-lg):not(.ant-select-sm) .ant-select-selector,
-.ant-select-single:not(.ant-select-lg):not(.ant-select-sm) .ant-select-selection-item,
-.ant-select-single:not(.ant-select-lg):not(.ant-select-sm) .ant-select-selection-placeholder {
+.ant-select-single:not(.ant-select-lg):not(.ant-select-sm)
+  .ant-select-selection-item,
+.ant-select-single:not(.ant-select-lg):not(.ant-select-sm)
+  .ant-select-selection-placeholder {
   height: 32px;
   line-height: 32px;
 }

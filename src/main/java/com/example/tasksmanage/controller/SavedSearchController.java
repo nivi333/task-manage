@@ -3,7 +3,6 @@ package com.example.tasksmanage.controller;
 import com.example.tasksmanage.model.SavedSearch;
 import com.example.tasksmanage.model.User;
 import com.example.tasksmanage.service.SavedSearchService;
-import com.example.tasksmanage.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,8 +17,6 @@ import java.util.UUID;
 public class SavedSearchController {
     @Autowired
     private SavedSearchService savedSearchService;
-    @Autowired
-    private UserService userService;
 
     @GetMapping
     public ResponseEntity<List<SavedSearch>> getSavedSearches(@AuthenticationPrincipal User user) {

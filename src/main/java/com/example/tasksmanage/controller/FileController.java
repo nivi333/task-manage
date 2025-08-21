@@ -5,9 +5,8 @@ import com.example.tasksmanage.repository.AttachmentRepository;
 import com.example.tasksmanage.model.Task;
 import com.example.tasksmanage.repository.TaskRepository;
 import com.example.tasksmanage.model.User;
-import com.example.tasksmanage.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.example.tasksmanage.service.AttachmentService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -32,8 +31,6 @@ public class FileController {
     private AttachmentRepository attachmentRepository;
     @Autowired
     private TaskRepository taskRepository;
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private AttachmentService attachmentService;
 

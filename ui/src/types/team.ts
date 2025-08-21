@@ -1,4 +1,4 @@
-import { UUID } from './task';
+import { UUID } from 'types/task';
 
 export interface Team {
   id: UUID;
@@ -13,6 +13,8 @@ export interface TeamMemberBrief {
   email: string;
   role: 'OWNER' | 'MANAGER' | 'MEMBER';
   avatarUrl?: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 export interface TeamStatsSummary {

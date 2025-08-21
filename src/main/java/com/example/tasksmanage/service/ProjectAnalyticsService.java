@@ -20,12 +20,15 @@ public class ProjectAnalyticsService {
     private TaskRepository taskRepository;
 
     public Map<String, Object> getDashboard(UUID projectId) {
-        Project project = projectRepository.findById(projectId).orElseThrow();
+        Optional<Project> projectOpt = projectRepository.findById(projectId);
+        if (projectOpt.isEmpty()) {
+            throw new NoSuchElementException("Project not found");
+        }
         List<Task> tasks = taskRepository.findByProjectId(projectId);
-        long totalTasks = tasks.size();
-        long completed = tasks.stream().filter(t -> t.getStatus() != null && t.getStatus().equals("COMPLETED")).count();
-        long inProgress = tasks.stream().filter(t -> t.getStatus() != null && t.getStatus().equals("IN_PROGRESS")).count();
-        long overdue = tasks.stream().filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && (t.getStatus() == null || !t.getStatus().equals("COMPLETED"))).count();
+        long totalTasks = tasks != null ? tasks.size() : 0;
+        long completed = tasks != null ? tasks.stream().filter(t -> "COMPLETED".equals(t.getStatus())).count() : 0;
+        long inProgress = tasks != null ? tasks.stream().filter(t -> "IN_PROGRESS".equals(t.getStatus())).count() : 0;
+        long overdue = tasks != null ? tasks.stream().filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && (t.getStatus() == null || !"COMPLETED".equals(t.getStatus()))).count() : 0;
         Map<String, Object> metrics = new LinkedHashMap<>();
         metrics.put("totalTasks", totalTasks);
         metrics.put("completedTasks", completed);

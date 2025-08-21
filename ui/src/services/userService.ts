@@ -212,6 +212,35 @@ export class UserService {
       throw error;
     }
   }
+
+  async getUsersForTeams(): Promise<User[]> {
+    try {
+      const response = await apiClient.get(`${this.baseURL}/for-teams`);
+      const users: User[] = (response.data || []).map((u: any) => {
+        const primaryRole = Array.isArray(u.roles)
+          ? (u.roles[0]?.name || u.roles[0] || 'USER')
+          : u.role || 'USER';
+        return {
+          id: u.id,
+          username: u.username,
+          email: u.email,
+          firstName: u.firstName,
+          lastName: u.lastName,
+          role: primaryRole,
+          status: u.status,
+          createdAt: u.createdAt,
+          updatedAt: u.updatedAt,
+          lastLogin: u.lastLogin,
+          profilePicture: u.avatarUrl,
+        } as User;
+      });
+      return users;
+    } catch (error: any) {
+      console.error('Error fetching users for teams:', error);
+      notificationService.error('Failed to fetch users for team assignment');
+      throw error;
+    }
+  }
 }
 
 export const userService = new UserService();

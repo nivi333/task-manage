@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Menu, Button, Typography, Space, theme } from 'antd';
-import { BarChartOutlined, FundOutlined, ProfileOutlined, UnorderedListOutlined, TeamOutlined, AppstoreOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { AppstoreOutlined, TeamOutlined, UserOutlined, UnorderedListOutlined, LogoutOutlined, BarChartOutlined } from '@ant-design/icons';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { authAPI } from '../../services/authService';
 import logo from '../../logo.svg';
@@ -22,26 +22,15 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title, contentPadding =
     token: { colorBgContainer }
   } = theme.useToken();
 
-  // Determine admin from JWT roles similar to AdminRoute
-  const isAdmin = React.useMemo(() => {
-    const token = authAPI.getToken();
-    try {
-      if (token) {
-        const payload = JSON.parse(atob(token.split('.')[1] || ''));
-        const roles: string[] = payload?.roles || [];
-        return roles.includes('ADMIN');
-      }
-    } catch {}
-    return false;
-  }, []);
+
+  const roles = authAPI.getUserRoles();
+  const isAdmin = roles.includes('ADMIN');
 
   const menuItems = [
     { key: '/dashboard', icon: <AppstoreOutlined />, label: <Link to="/dashboard">Dashboard</Link> },
     { key: '/projects', icon: <AppstoreOutlined />, label: <Link to="/projects">Projects</Link> },
-    { key: '/tasks', icon: <UnorderedListOutlined />, label: <Link to="/tasks">Task List</Link> },
-    { key: '/tasks/board', icon: <ProfileOutlined />, label: <Link to="/tasks/board">Kanban Board</Link> },
-    { key: '/tasks/stats', icon: <FundOutlined />, label: <Link to="/tasks/stats">Statistics</Link> },
-    { key: '/teams', icon: <TeamOutlined />, label: <Link to="/teams">Team Dashboard</Link> },
+    { key: '/tasks', icon: <UnorderedListOutlined />, label: <Link to="/tasks">Tasks</Link> },
+    { key: '/teams', icon: <TeamOutlined />, label: <Link to="/teams">Team Creation & Management</Link> },
     // Show Users only for admins
     ...(isAdmin ? [{ key: '/admin/users', icon: <TeamOutlined />, label: <Link to="/admin/users">Users</Link> }] : []),
     { key: '/profile', icon: <UserOutlined />, label: <Link to="/profile">My Profile</Link> },

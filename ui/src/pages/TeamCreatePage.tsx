@@ -1,15 +1,11 @@
 import React from 'react';
-import { Card } from 'antd';
 import TeamForm from '../components/team/TeamForm';
 
-const TeamCreatePage: React.FC = () => {
+// Team creation form for modal usage
+const TeamCreateForm: React.FC<{ onSuccess: () => void; onCancel: () => void }> = ({ onSuccess, onCancel }) => {
   return (
-    <div className="container py-24">
-      <Card className="card">
-        <TeamForm />
-      </Card>
-    </div>
+    <TeamForm />
   );
 };
 
-export default TeamCreatePage;
+export default TeamCreateForm;

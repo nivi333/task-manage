@@ -1,6 +1,5 @@
 package com.example.tasksmanage.security;
 
-import com.example.tasksmanage.model.ProjectMemberRole;
 import com.example.tasksmanage.service.ProjectMemberService;
 import com.example.tasksmanage.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

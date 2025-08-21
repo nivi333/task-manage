@@ -1,0 +1,44 @@
+.project-grid-card {
+  background: #fff;
+  border: 1.5px solid #d1d5db;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(30, 41, 59, 0.06);
+  transition: box-shadow 0.2s, border-color 0.2s;
+  margin: 8px 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.project-grid-card:hover {
+  border-color: #8a8a8a;
+  box-shadow: 0 8px 32px rgba(30, 41, 59, 0.12);
+}
+.project-grid-card .ant-card-body {
+  padding: 0 !important;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.project-grid-card .ant-avatar {
+  margin-right: 10px;
+}
+.project-grid-card .ant-typography {
+  margin-bottom: 0;
+}
+.project-grid-card .ant-tag {
+  font-size: 15px;
+  padding: 2px 14px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+.project-grid-card .ant-checkbox-wrapper {
+  margin-right: 8px;
+}
+.project-grid-card .ant-typography-secondary {
+  margin-bottom: 8px;
+  color: #888 !important;
+}
+.project-grid-card a {
+  font-weight: 500;
+}

@@ -12,6 +12,7 @@ public interface TeamService {
     Team getTeam(UUID teamId);
     List<Team> getAllTeams();
     Team addMember(UUID teamId, User user, String role);
+    Team addMemberById(UUID teamId, UUID userId, String role);
     Team removeMember(UUID teamId, UUID userId);
     List<User> getTeamMembers(UUID teamId);
     // Add more methods for hierarchy, permissions, activity feed as needed

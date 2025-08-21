@@ -188,6 +188,10 @@ public class User {
         return id;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public void setCreatedAt(java.util.Date createdAt) {
         this.createdAt = createdAt;
     }

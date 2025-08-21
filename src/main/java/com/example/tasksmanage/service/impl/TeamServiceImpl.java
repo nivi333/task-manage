@@ -49,22 +49,46 @@ public class TeamServiceImpl implements TeamService {
         return teamRepository.findAll();
     }
 
+    @Autowired
+    private com.example.tasksmanage.repository.UserRepository userRepository;
+
     @Override
     public Team addMember(UUID teamId, User user, String role) {
         Team team = getTeam(teamId);
-        team.getMembers().add(user);
+        // Fetch user by ID or username
+        User actualUser = null;
+        if (user.getId() != null) {
+            actualUser = userRepository.findById(user.getId()).orElse(null);
+        } else if (user.getUsername() != null) {
+            actualUser = userRepository.findByUsername(user.getUsername()).orElse(null);
+        } else if (user.getEmail() != null) {
+            actualUser = userRepository.findByEmail(user.getEmail()).orElse(null);
+        }
+        if (actualUser == null) {
+            throw new RuntimeException("User not found");
+        }
+        team.getUsers().add(actualUser);
         return teamRepository.save(team);
     }
 
     @Override
     public Team removeMember(UUID teamId, UUID userId) {
         Team team = getTeam(teamId);
-        team.getMembers().removeIf(u -> u.getId().equals(userId));
+        team.getUsers().removeIf(u -> u.getId().equals(userId));
+        return teamRepository.save(team);
+    }
+
+    @Override
+    public Team addMemberById(UUID teamId, UUID userId, String role) {
+        Team team = getTeam(teamId);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        team.getUsers().add(user);
         return teamRepository.save(team);
     }
 
     @Override
     public List<User> getTeamMembers(UUID teamId) {
-        return List.copyOf(getTeam(teamId).getMembers());
+        return List.copyOf(getTeam(teamId).getUsers());
     }
 }

@@ -25,8 +25,6 @@ public class ProjectInvitationService {
     private ProjectMemberService memberService;
     @Autowired
     private ProjectAuditLogRepository auditLogRepository;
-    @Autowired
-    private EmailService emailService; // Assuming EmailService is defined elsewhere
 
     private ProjectInvitationDTO toDTO(ProjectInvitation inv) {
         ProjectInvitationDTO dto = new ProjectInvitationDTO();
@@ -79,7 +77,7 @@ public class ProjectInvitationService {
         if (inv.getExpiresAt().before(new Date())) {
             throw new IllegalStateException("Invitation expired");
         }
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
         // Prevent duplicate member addition
         boolean alreadyMember = memberService.listMembers(projectId).stream()

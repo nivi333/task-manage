@@ -15,8 +15,13 @@ public class Team {
 
     private String description;
 
-    @ManyToMany(mappedBy = "teams")
-    private Set<User> members = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "team_members",
+        joinColumns = @JoinColumn(name = "team_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> users = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "parent_team_id")
@@ -49,12 +54,12 @@ public class Team {
         this.description = description;
     }
 
-    public Set<User> getMembers() {
-        return members;
+    public Set<User> getUsers() {
+        return users;
     }
 
-    public void setMembers(Set<User> members) {
-        this.members = members;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
     public Team getParentTeam() {

@@ -421,9 +421,34 @@ textarea::placeholder {
 
 /* Select: single selector height + text vertical alignment */
 .ant-select-single .ant-select-arrow {
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  padding-top: 10px;
+  top: calc(50% - 6px) !important;
+  transform: none !important;
+  right: 8px !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  position: absolute !important;
+  height: 12px !important;
+  line-height: 12px !important;
+}
+
+/* Add gap between select and members list - only for member selector */
+.member-selector-select {
+  margin-bottom: 16px !important;
+  height: 48px !important;
+}
+
+.member-selector-select .ant-select-selector {
+  height: 48px !important;
+  padding: 8px 12px !important;
+}
+
+.member-selector-select .ant-select-selection-search-input {
+  height: 46px !important;
+}
+
+.member-selector-select .ant-select-selection-item,
+.member-selector-select .ant-select-selection-placeholder {
+  line-height: 46px !important;
 }
 
 .ant-select-single.ant-select-sm {
@@ -432,19 +457,10 @@ textarea::placeholder {
 }
 
 .ant-select-selector {
-  height: 36px !important;
   border-radius: 8px !important;
   display: inline-flex !important;
   align-items: center !important;
-  padding: 0 12px !important;
   border-color: var(--color-border) !important;
-}
-.ant-select-selection-search-input {
-  height: 34px !important;
-}
-.ant-select-selection-item,
-.ant-select-selection-placeholder {
-  line-height: 34px !important;
 }
 .ant-select-single .ant-select-selector .ant-select-selection-item,
 .ant-select-single .ant-select-selector .ant-select-selection-placeholder {

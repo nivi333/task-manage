@@ -1,64 +1,46 @@
 import React from 'react';
-import { Card, Typography } from 'antd';
+import { Row, Col, Card, Typography } from 'antd';
 import { Task } from '../../types/task';
 import TaskCard from './TaskCard';
+import './TaskBoard.css';
 
 const { Title } = Typography;
 
-export type BoardStatus = 'OPEN' | 'IN_PROGRESS' | 'DONE';
-
-const columns: { key: BoardStatus; title: string }[] = [
-  { key: 'OPEN', title: 'To Do' },
-  { key: 'IN_PROGRESS', title: 'In Progress' },
-  { key: 'DONE', title: 'Done' },
-];
-
 interface TaskBoardProps {
   tasks: Task[];
-  onStatusChange: (id: string, status: BoardStatus) => void;
 }
 
-export const TaskBoard: React.FC<TaskBoardProps> = ({ tasks, onStatusChange }) => {
-  const grouped: Record<BoardStatus, Task[]> = {
-    OPEN: [],
-    IN_PROGRESS: [],
-    DONE: [],
+const TaskBoard: React.FC<TaskBoardProps> = ({ tasks }) => {
+  const columns = {
+    OPEN: tasks.filter(task => task.status === 'OPEN'),
+    IN_PROGRESS: tasks.filter(task => task.status === 'IN_PROGRESS'),
+    DONE: tasks.filter(task => task.status === 'DONE'),
   };
-  for (const t of tasks) {
-    const key = (t.status as BoardStatus) || 'OPEN';
-    if (grouped[key]) grouped[key].push(t);
-    else grouped.OPEN.push(t);
-  }
 
   return (
-    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16 }}>
-      {columns.map(col => (
-        <Card key={col.key} title={<Title level={4} style={{ margin: 0 }}>{col.title}</Title>}>
-          <div
-            id={col.key}
-            style={{ minHeight: 200, background: '#fafafa', padding: 8, borderRadius: 8 }}
-            onDragOver={(e) => e.preventDefault()}
-            onDrop={(e) => {
-              const draggedId = e.dataTransfer.getData('text/plain');
-              if (draggedId) onStatusChange(draggedId, col.key);
-            }}
-          >
-            {grouped[col.key].map(t => (
-              <div
-                key={t.id}
-                id={String(t.id)}
-                draggable
-                onDragStart={(e) => {
-                  e.dataTransfer.setData('text/plain', String(t.id));
-                }}
-              >
-                <TaskCard task={t} />
-              </div>
-            ))}
-          </div>
+    <Row gutter={16}>
+      <Col span={8}>
+        <Card title="Open" className="task-board-column">
+          {columns.OPEN.map(task => (
+            <TaskCard key={task.id} task={task} />
+          ))}
         </Card>
-      ))}
-    </div>
+      </Col>
+      <Col span={8}>
+        <Card title="In Progress" className="task-board-column">
+          {columns.IN_PROGRESS.map(task => (
+            <TaskCard key={task.id} task={task} />
+          ))}
+        </Card>
+      </Col>
+      <Col span={8}>
+        <Card title="Done" className="task-board-column">
+          {columns.DONE.map(task => (
+            <TaskCard key={task.id} task={task} />
+          ))}
+        </Card>
+      </Col>
+    </Row>
   );
 };
 

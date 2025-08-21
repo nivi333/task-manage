@@ -2,10 +2,8 @@ package com.example.tasksmanage.service.impl;
 
 import com.example.tasksmanage.model.Comment;
 import com.example.tasksmanage.model.Task;
-import com.example.tasksmanage.model.User;
 import com.example.tasksmanage.repository.CommentRepository;
 import com.example.tasksmanage.repository.TaskRepository;
-import com.example.tasksmanage.repository.UserRepository;
 import com.example.tasksmanage.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,8 +19,6 @@ public class CommentServiceImpl implements CommentService {
     private CommentRepository commentRepository;
     @Autowired
     private TaskRepository taskRepository;
-    @Autowired
-    private UserRepository userRepository;
 
     @Override
     @Transactional
@@ -34,7 +30,7 @@ public class CommentServiceImpl implements CommentService {
             comment.setParentComment(parent);
         }
         // Mentions parsing
-        Set<String> mentionedUsernames = parseMentions(comment.getContent());
+        parseMentions(comment.getContent());
         // TODO: Notify mentioned users if needed
         return commentRepository.save(comment);
     }
@@ -50,7 +46,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() -> new RuntimeException("Comment not found"));
         comment.setContent(content);
         // Mentions parsing
-        Set<String> mentionedUsernames = parseMentions(content);
+        parseMentions(content);
         // TODO: Notify mentioned users if needed
         return commentRepository.save(comment);
     }

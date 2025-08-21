@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { List } from 'antd';
-import { CommentModel } from '../../services/commentService';
+import { Comment } from 'types/comment';
 import CommentItem from './CommentItem';
 
 export interface CommentListProps {
-  comments: CommentModel[];
+  comments: Comment[];
   onReply: (content: string, parentId: string) => Promise<void>;
   onEdit: (commentId: string, content: string) => Promise<void>;
   onDelete: (commentId: string) => Promise<void>;
@@ -13,8 +13,8 @@ export interface CommentListProps {
 
 const CommentList: React.FC<CommentListProps> = ({ comments, onReply, onEdit, onDelete, mentionUsernames = [] }) => {
   const tree = useMemo(() => {
-    const byParent: Record<string, CommentModel[]> = {};
-    const roots: CommentModel[] = [];
+    const byParent: Record<string, Comment[]> = {};
+    const roots: Comment[] = [];
     for (const c of comments) {
       const parent = c.parentCommentId || null;
       if (!parent) {

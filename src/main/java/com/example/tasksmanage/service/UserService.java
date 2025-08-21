@@ -8,7 +8,6 @@ import com.example.tasksmanage.repository.UserRepository;
 import com.example.tasksmanage.repository.EmailVerificationTokenRepository;
 import com.example.tasksmanage.repository.RefreshTokenRepository;
 import com.example.tasksmanage.model.RefreshToken;
-import com.example.tasksmanage.service.EmailService;
 import com.example.tasksmanage.util.JwtUtil;
 import com.example.tasksmanage.model.PasswordResetToken;
 import com.example.tasksmanage.repository.PasswordResetTokenRepository;
@@ -479,5 +478,18 @@ public class UserService {
 
     public User save(User user) {
         return userRepository.save(user);
+    }
+
+    // Get users available for team assignment (authenticated users only)
+    public java.util.List<com.example.tasksmanage.dto.UserSummaryDTO> getUsersForTeamAssignment() {
+        List<User> users = userRepository.findAll();
+        return users.stream()
+                .map(user -> new com.example.tasksmanage.dto.UserSummaryDTO(
+                        user.getId(),
+                        user.getUsername(),
+                        user.getFirstName(),
+                        user.getLastName(),
+                        user.getEmail()))
+                .collect(java.util.stream.Collectors.toList());
     }
 }

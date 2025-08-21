@@ -1,79 +1,45 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Card } from "antd";
-import { Task } from "../types/task";
-import { taskService } from "../services/taskService";
-import TaskBoard, { BoardStatus } from "../components/tasks/TaskBoard";
-import { notificationService } from "../services/notificationService";
-import AppLayout from "../components/layout/AppLayout";
-import { HeaderTitle } from "../components/common";
+import React, { useEffect, useState } from 'react';
+import { Layout, Spin, Typography } from 'antd';
+import taskService from '../services/taskService';
+import { Task } from '../types/task';
+import TaskBoard from '../components/tasks/TaskBoard';
+
+const { Content } = Layout;
+const { Title } = Typography;
 
 const TasksBoardPage: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [loading, setLoading] = useState(false);
-
-  const fetchAll = useCallback(async () => {
-    setLoading(true);
-    try {
-      const page = await taskService.list({
-        size: 100,
-        sortBy: "updatedAt",
-        sortDir: "desc",
-      });
-      // Map each task to add projectId at the top level
-      const mapped = page.content.map((t: any) => ({
-        ...t,
-        projectId: t.project?.id || t.projectId || undefined,
-      }));
-      setTasks(mapped);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    fetchAll();
-  }, [fetchAll]);
+    const fetchTasks = async () => {
+      setLoading(true);
+      try {
+        const fetchedTasks = await taskService.getTasks();
+        setTasks(fetchedTasks);
+      } catch (error) {
+        // Error handling is in the service
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleChange = async (id: string, status: BoardStatus) => {
-    try {
-      // Find the original task to get all required fields
-      const original = tasks.find((t) => t.id === id);
-      if (!original) throw new Error("Task not found");
-      const payload: any = {
-        title: original.title,
-        status,
-        priority: original.priority,
-        assignedTo: original.assignedTo,
-        projectId: (original as any).projectId,
-      };
-      payload.description = original.description ?? "";
-      if (original.dueDate) payload.dueDate = original.dueDate;
-      if (original.estimatedHours !== undefined)
-        payload.estimatedHours = original.estimatedHours;
-      if (original.actualHours !== undefined)
-        payload.actualHours = original.actualHours;
-      if (original.tags) payload.tags = original.tags;
-      console.log("Task update payload:", payload);
-      const updated = await taskService.update(id, payload);
-      setTasks((prev) =>
-        prev.map((t) => (t.id === id ? { ...t, status: updated.status } : t))
-      );
-      notificationService.success("Status updated");
-    } catch (e: any) {
-      const msg = e?.response?.data?.message || "Failed to update status";
-      notificationService.error(msg);
-    }
-  };
+    fetchTasks();
+  }, []);
 
   return (
-    <AppLayout
-      title={<HeaderTitle level={3}>Kanban Board</HeaderTitle>}
-      contentPadding={24}
-    >
-      <Card loading={loading}>
-        <TaskBoard tasks={tasks} onStatusChange={handleChange} />
-      </Card>
-    </AppLayout>
+    <Layout style={{ minHeight: '100vh' }}>
+      <Content style={{ padding: '24px' }}>
+        <Title level={2}>Task Board</Title>
+        {loading ? (
+          <div style={{ textAlign: 'center', marginTop: '50px' }}>
+            <Spin size="large" />
+          </div>
+        ) : (
+          <TaskBoard tasks={tasks} />
+        )}
+      </Content>
+    </Layout>
   );
 };
 

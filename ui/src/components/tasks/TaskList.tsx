@@ -1,37 +1,84 @@
 import React from 'react';
-import { List } from 'antd';
+import { Table, Tag } from 'antd';
 import { Task } from '../../types/task';
-import TaskCard from './TaskCard';
-import '../../styles/components/TaskList.css';
+import { ColumnsType } from 'antd/es/table';
 
 interface TaskListProps {
   tasks: Task[];
-  selectedTaskId?: string;
-  onSelect: (id: string) => void;
+  loading: boolean;
 }
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, selectedTaskId, onSelect }) => {
+const getPriorityColor = (priority: 'HIGH' | 'MEDIUM' | 'LOW') => {
+  switch (priority) {
+    case 'HIGH':
+      return 'red';
+    case 'MEDIUM':
+      return 'orange';
+    case 'LOW':
+      return 'green';
+    default:
+      return 'default';
+  }
+};
+
+const getStatusColor = (status: 'OPEN' | 'IN_PROGRESS' | 'DONE') => {
+  switch (status) {
+    case 'OPEN':
+      return 'blue';
+    case 'IN_PROGRESS':
+      return 'purple';
+    case 'DONE':
+      return 'green';
+    default:
+      return 'default';
+  }
+};
+
+const TaskList: React.FC<TaskListProps> = ({ tasks, loading }) => {
+  const columns: ColumnsType<Task> = [
+    {
+      title: 'Title',
+      dataIndex: 'title',
+      key: 'title',
+      render: (text, record) => <a href={`/tasks/${record.id}`}>{text}</a>,
+    },
+    {
+      title: 'Priority',
+      dataIndex: 'priority',
+      key: 'priority',
+      render: (priority: 'HIGH' | 'MEDIUM' | 'LOW') => (
+        <Tag color={getPriorityColor(priority)}>{priority}</Tag>
+      ),
+    },
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: 'OPEN' | 'IN_PROGRESS' | 'DONE') => (
+        <Tag color={getStatusColor(status)}>{status.replace('_', ' ')}</Tag>
+      ),
+    },
+    {
+      title: 'Due Date',
+      dataIndex: 'dueDate',
+      key: 'dueDate',
+      render: (dueDate) => (dueDate ? new Date(dueDate).toLocaleDateString() : 'N/A'),
+    },
+    {
+      title: 'Assigned To',
+      dataIndex: 'assignedTo',
+      key: 'assignedTo',
+      render: (assignedTo) => (assignedTo ? assignedTo.name : 'Unassigned'),
+    },
+  ];
+
   return (
-    <List
+    <Table
+      columns={columns}
       dataSource={tasks}
-      renderItem={task => (
-        <List.Item
-          key={task.id}
-          className="task-list-item"
-          onClick={() => onSelect(task.id)}
-        >
-          <div
-            className={`task-list-item-content ${task.id === selectedTaskId ? 'selected' : ''}`}
-          >
-            <span className="task-list-title">{task.title}</span>
-            <span className="task-list-project">{task.project?.name || '—'}</span>
-            <span className="task-list-priority-badge">
-              {task.priority}
-            </span>
-          </div>
-        </List.Item>
-      )}
-      className="task-list-container"
+      loading={loading}
+      rowKey="id"
+      pagination={{ pageSize: 10 }}
     />
   );
 };

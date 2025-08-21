@@ -1,26 +1,18 @@
 import apiClient from './authService';
-import { UUID } from '../types/task';
-
-export interface CommentModel {
-  id?: UUID;
-  content: string;
-  createdAt?: string;
-  updatedAt?: string;
-  authorId?: UUID;
-  parentCommentId?: UUID | null;
-}
+import { UUID } from 'types/task';
+import { Comment } from 'types/comment';
 
 export const commentService = {
-  async list(taskId: UUID): Promise<CommentModel[]> {
+  async list(taskId: UUID): Promise<Comment[]> {
     const { data } = await apiClient.get(`/tasks/${taskId}/comments`);
     return data || [];
   },
-  async create(taskId: UUID, payload: { content: string; parentCommentId?: UUID | null }): Promise<CommentModel> {
+  async create(taskId: UUID, payload: { content: string; parentCommentId?: UUID | null }): Promise<Comment> {
     const params = payload.parentCommentId ? `?parentCommentId=${payload.parentCommentId}` : '';
     const { data } = await apiClient.post(`/tasks/${taskId}/comments${params}`, { content: payload.content });
     return data;
   },
-  async update(taskId: UUID, commentId: UUID, content: string): Promise<CommentModel> {
+  async update(taskId: UUID, commentId: UUID, content: string): Promise<Comment> {
     const { data } = await apiClient.put(`/tasks/${taskId}/comments/${commentId}`, content, {
       headers: { 'Content-Type': 'text/plain' },
     });

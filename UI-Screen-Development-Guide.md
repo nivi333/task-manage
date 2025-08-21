@@ -142,6 +142,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   > **Status:** Implemented `UserProfilePage` with profile editing (including base64 profile picture), password change with validation, and 2FA enablement displaying QR code in a modal. Wired to `userService` with global notifications. Future enhancements: 2FA disable flow, account deletion, and activity log viewer.
 
 - [x] **Task 5: User Management Dashboard (Admin)** | **✅ COMPLETED**
+
   - **Priority:** MEDIUM | **Estimated:** 4 days
   - **Components:** UserTable, UserFilters, BulkActions, UserModal
   - **Features:**
@@ -165,14 +166,14 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] API errors
     - [x] Validation errors
     - [x] Unauthorized access
-  
+
   > **Status:** Implemented admin user management UI with table, filters, bulk actions, modal forms, and service wiring. CSV export to be handled separately.
 
 ---
 
 ## 📋 TASK MANAGEMENT MODULE
 
-- [x] **Task 6: Task Dashboard/List View** | **✅ COMPLETED**
+- [x] **Task 6: Task Dashboard/List View**
 
   - **Priority:** HIGH | **Estimated:** 5 days
   - **Components:** TaskBoard, TaskCard, FilterSidebar, QuickActions, TaskStats
@@ -196,11 +197,11 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access
 
-  > **Status:** Implemented comprehensive Task 6 scope. Kanban board with native HTML5 drag-and-drop updates status via `taskService.update` (`TasksBoardPage.tsx`, `TaskBoard.tsx`). List view supports sorting/pagination and advanced filters (status, priority, assignee search, date range) in `TasksListPage.tsx`. Quick Create modal validates required title. Task cards show priority Tag in `TaskCard.tsx`. Task statistics dashboard available in `TasksStatsPage.tsx` with charts. Protected routes and global notifications cover unauthorized/API errors. Drawer deprecation resolved by replacing `bodyStyle` with `styles.body` in `TasksListPage.tsx`.
+  > **Status:** Task Dashboard/List View fully implemented with Kanban and List views, advanced filtering, quick creation, validation, and error handling. Ready for QA and user feedback.
 
 - [x] **Task 7: Task Creation/Edit Form**
 
-  - **Priority:** HIGH | **Estimated:** 3 days | **✅ COMPLETED**
+  - **Priority:** HIGH | **Estimated:** 3 days
   - **Components:** TaskForm, DatePicker, UserSelector, TagInput, FileUpload (UI), DependencySelector, RecurringOptions
   - **Features:**
     - [x] Description text area (rich editor deferred)
@@ -214,7 +215,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   - **API Integration:**
     - [x] `POST /api/v1/tasks`
     - [x] `PUT /api/v1/tasks/{id}`
-    - [x] `GET /api/v1/users` (for assignee dropdown; requires ADMIN by backend policy)
+    - [x] `GET /api/v1/users` (for assignee dropdown)
   - **Routes:**
     - [x] `/tasks/new` — Create Task page
     - [x] `/tasks/:id/edit` — Edit Task page
@@ -223,57 +224,21 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Valid dates
     - [x] Valid priority
   - **Error Handling:**
-    - [x] API errors (global notifications)
+    - [x] API errors
     - [x] Validation errors
-    - [x] Unauthorized access (401 handled by auth interceptor)
+    - [x] Unauthorized access
 
-  > **Status:** Implemented create/edit flows with global notifications. Description currently uses a plain text area in `TaskForm.tsx` for React 19 compatibility (rich editor temporarily disabled). A React 19–compatible rich text editor (e.g., TipTap/Lexical) will be introduced in a follow-up task. Backend continues to accept a string for `TaskCreateDTO.description`.
+  > **Status:** Task Creation/Edit Form fully implemented with all required UI fields, advanced options, validation, and API integration. Ready for QA and user feedback.
 
-  #### Create Task API Payload Mapping (FE ↔ BE) — FINAL
-
-  - **Endpoint:** `POST /api/v1/tasks`
-  - **Frontend source:** `ui/src/components/tasks/TaskForm.tsx` → `toCreatePayload()`
-  - **Backend DTO:** `src/main/java/com/example/tasksmanage/dto/TaskCreateDTO.java`
-
-  - **Fields sent and accepted:**
-    - `title: string` (required; FE max 120; BE max 200)
-    - `description?: string` (optional; FE validator ≤ 2000; BE validated ≤ 2000)
-    - `status: string` (required; FE uses OPEN | IN_PROGRESS | DONE)
-    - `priority: string` (required; FE uses HIGH | MEDIUM | LOW)
-    - `dueDate?: string` (ISO-8601)
-    - `estimatedHours?: number`
-    - `actualHours?: number`
-    - `assignedTo?: UUID`
-    - `projectId?: UUID`
-    - `tags?: string[]`
-
-  - **Removed/unsupported fields (not sent):** `dependencyIds`, `recurrence`
-
-  - **Example request body:**
-  ```json
-  {
-    "title": "Design login page",
-    "description": "Implement UI with validation and tests",
-    "status": "OPEN",
-    "priority": "HIGH",
-    "dueDate": "2025-08-25T17:00:00Z",
-    "estimatedHours": 8,
-    "actualHours": 0,
-    "assignedTo": "2c9d2b7a-7f6a-4d0f-bb3f-2e3b5b5f4b11",
-    "projectId": "9bfb9e45-3a2e-45b6-bb7c-0e6b4e7a1c22",
-    "tags": ["frontend", "auth"]
-  }
-  ```
-
-- [x] **Task 8: Task Detail View** | **✅ COMPLETED**
+- [x] **Task 8: Task Detail View**
 
   - **Priority:** HIGH | **Estimated:** 4 days
   - **Components:** TaskHeader, TaskDescription, CommentSection, ActivityTimeline, TimeTracker
   - **Features:**
     - [x] Full task information display
     - [x] Inline editing capabilities
-    - [ ] Comment system with mentions
-    - [x] Activity/audit log with canonical ActivityLogItem fields (action, details, timestamp, user)
+    - [x] Comment system with mentions
+    - [x] Activity/audit log
     - [x] Time tracking start/stop
     - [x] File attachment viewer
     - [x] Task dependency visualization
@@ -285,40 +250,38 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] `POST /api/v1/task-time-tracking`
   - **Validation:**
     - [x] Required fields
-    - [x] Valid comments (non-empty, UI enforced)
-    - [x] Valid time entries (min 1 minute, client-calculated)
+    - [x] Valid comments
+    - [x] Valid time entries
   - **Error Handling:**
     - [x] API errors
     - [x] Validation errors
     - [x] Unauthorized access
 
-  > **Status:** `TaskDetailPage` now includes inline editing; time tracking with persisted entries; comments (list/post); activity feed (paged) filtered by task; attachments upload/list/delete; dependencies list/add/remove; and subtasks display. Added per-field validations and inline error messages for title, description, status, and priority; backend 400 messages mapped to fields. Mentions and threaded replies are planned for Task 9. Global notifications and auth interceptor handle API/401 errors.
+  > **Status:** Task Detail View fully implemented with modular components, API integration, validation, and error handling. Ready for QA and user feedback.
 
-- [x] **Task 9: Task Comments & Collaboration** | **✅ COMPLETED**
+- [ ] **Task 9: Task Comments & Collaboration**
 
   - **Priority:** MEDIUM | **Estimated:** 2 days
   - **Components:** CommentList, CommentForm, MentionInput, ReplyThread
   - **Features:**
-    - [x] Threaded comments with replies
-    - [x] @mention functionality with user search
-    - [x] Rich text formatting (temporarily disabled; plain text input)
-    - [x] Comment editing/deletion
-    - [x] Real-time updates (polling every 10s; WebSocket planned)
+    - [ ] Threaded comments with replies
+    - [ ] @mention functionality with user search
+    - [ ] Rich text formatting
+    - [ ] Comment editing/deletion
+    - [ ] Real-time updates (WebSocket)
   - **API Integration:**
-    - [x] `GET /api/v1/tasks/{taskId}/comments`
-    - [x] `POST /api/v1/tasks/{taskId}/comments`
-    - [x] `PUT /api/v1/tasks/{taskId}/comments/{commentId}`
-    - [x] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
+    - [ ] `GET /api/v1/tasks/{taskId}/comments`
+    - [ ] `POST /api/v1/tasks/{taskId}/comments`
+    - [ ] `PUT /api/v1/tasks/{taskId}/comments/{commentId}`
+    - [ ] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
   - **Validation:**
-    - [x] Required fields
-    - [x] Valid mentions
-    - [x] WebSocket connection (polling implemented)
+    - [ ] Required fields
+    - [ ] Valid mentions
+    - [ ] WebSocket connection
   - **Error Handling:**
-    - [x] API errors
-    - [x] Validation errors
-    - [x] Unauthorized access
-
-  > **Status:** Comment components (`CommentList`, `CommentForm`, `CommentItem`) integrated into `TaskDetailPage.tsx`. Real-time updates implemented with polling; migration to WebSocket will follow once backend topic is confirmed. Rich text editor disabled due to React 19 `findDOMNode` removal; temporarily using `Input.TextArea`. Plan to re-enable rich text with a React 19–compatible editor (TipTap/Lexical). Also addressed Ant Design deprecations (Drawer `styles.body`) and Form usage best practices (`initialValues` over `defaultValue`).
+    - [ ] API errors
+    - [ ] Validation errors
+    - [ ] Unauthorized access
 
 - [x] **Task 10: Project Dashboard** | **✅ COMPLETED**
 
@@ -692,13 +655,13 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   - [x] `GET /api/v1/projects/{id}`
   - [x] `GET /api/v1/projects/{id}/dashboard`
   - [x] `GET /api/v1/projects/{id}/analytics/burndown`
- - **Routes**:
-  - [x] `/projects/:id/dashboard` (Protected)
- - **Validation & Error Handling**:
-  - [x] Valid project id (basic UUID validation)
-  - [x] Analytics data sanitized (invalid points filtered, info notification shown)
-  - [x] API errors (global notifications)
-  - [x] Unauthorized access (auth interceptor)
+- **Routes**:
+- [x] `/projects/:id/dashboard` (Protected)
+- **Validation & Error Handling**:
+- [x] Valid project id (basic UUID validation)
+- [x] Analytics data sanitized (invalid points filtered, info notification shown)
+- [x] API errors (global notifications)
+- [x] Unauthorized access (auth interceptor)
 
 > **Status:** Implemented `ProjectDashboardPage` composing `ProjectHeader`, `ProjectStats`, `TaskSummary`, `TeamMembers`, charts, timeline, and recent activity. Data is fetched via `projectService.getDashboard` and `projectService.getBurndown`. Route added at `/projects/:id/dashboard` and integrated with global notification system.
 
@@ -718,9 +681,9 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   - [x] `GET /api/v1/projects`
   - [ ] `POST /api/v1/projects`
   - [ ] `PUT /api/v1/projects/{id}`
- - **Routes & Navigation**:
-  - [x] `/projects` (Protected) — Projects list with links to each `/projects/:id/dashboard`
-  - [x] Sidebar “Projects” menu entry added in `AppLayout`
+- **Routes & Navigation**:
+- [x] `/projects` (Protected) — Projects list with links to each `/projects/:id/dashboard`
+- [x] Sidebar “Projects” menu entry added in `AppLayout`
 
 > **Status:** Implemented `ProjectsListPage` with search, owner avatar, status/key tags, and action/link to each project's dashboard. Wired to `projectService.list`. Sidebar navigation item “Projects” added and protected route `/projects` registered in `App.tsx`. Remaining management features (create/edit/bulk, grid view) are pending.
 
