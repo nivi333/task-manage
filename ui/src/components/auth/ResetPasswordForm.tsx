@@ -152,7 +152,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
       </Form>
 
       <div className="back-to-login-container">
-        <TTButton ttVariant="transparent" onClick={onBackToLogin}>
+        <TTButton ttVariant="transparent" onClick={onBackToLogin} block>
           <ArrowLeftOutlined />
           Back to Login
         </TTButton>

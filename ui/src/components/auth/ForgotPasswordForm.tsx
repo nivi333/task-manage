@@ -58,7 +58,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
   };
 
   return (
-    <div className="auth-card">
+    <div className="auth-card tt-card-flat">
       <h1 className="auth-title">Forgot Password</h1>
       <p className="auth-subtitle">
         Enter your email address and we'll send you instructions to reset your
@@ -109,7 +109,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
       </Form>
 
       <div className="back-to-login-container">
-        <TTButton ttVariant="transparent" onClick={onBackToLogin}>
+        <TTButton ttVariant="transparent" onClick={onBackToLogin} block>
           <ArrowLeftOutlined />
           Back to Login
         </TTButton>

@@ -12,6 +12,7 @@ import {
   Divider,
   Space,
   Avatar,
+  Skeleton,
 } from "antd";
 import {
   ArrowLeftOutlined,
@@ -30,6 +31,7 @@ import taskService from "services/taskService";
 import { Task } from "types/task";
 import FileAttachmentViewer from "components/tasks/FileAttachmentViewer";
 import SubtaskManagement from "components/tasks/SubtaskManagement";
+import TaskFormDrawer from "components/tasks/TaskFormDrawer";
 import "./TaskDetailPage.css";
 
 const { Title, Text } = Typography;
@@ -45,6 +47,8 @@ const TaskDetailPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchText, setSearchText] = useState<string>("");
+  const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -60,7 +64,7 @@ const TaskDetailPage: React.FC = () => {
   }, [id]);
 
   // Load list for the left panel
-  useEffect(() => {
+  const fetchSidebarTasks = () => {
     taskService
       .getTasks({ limit: 50 })
       .then((res: any) => {
@@ -70,6 +74,10 @@ const TaskDetailPage: React.FC = () => {
       .catch(() => {
         // keep page usable even if sidebar list fails
       });
+  };
+
+  useEffect(() => {
+    fetchSidebarTasks();
   }, []);
 
   // Helper functions for status and priority colors
@@ -101,19 +109,7 @@ const TaskDetailPage: React.FC = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <Spin size="large" style={{ display: "block", margin: "100px auto" }} />
-    );
-  }
-
-  if (error || !task) {
-    return (
-      <div style={{ textAlign: "center", marginTop: 100 }}>
-        {error || "Task not found."}
-      </div>
-    );
-  }
+  // Render layout immediately; show skeleton/error only in the right panel
 
   // Footer actions removed per request
 
@@ -178,7 +174,10 @@ const TaskDetailPage: React.FC = () => {
                       size="small"
                       type="primary"
                       icon={<PlusOutlined />}
-                      onClick={() => navigate("/tasks/create")}
+                      onClick={() => {
+                        setEditingTask(null);
+                        setDrawerVisible(true);
+                      }}
                     >
                       New
                     </Button>
@@ -206,7 +205,7 @@ const TaskDetailPage: React.FC = () => {
                         <List.Item
                           onClick={() => navigate(`/tasks/${item.id}`)}
                           className={`task-list-item${
-                            item.id === task.id ? " selected" : ""
+                            task && item.id === task.id ? " selected" : ""
                           }`}
                           style={{ cursor: "pointer" }}
                         >
@@ -221,16 +220,17 @@ const TaskDetailPage: React.FC = () => {
                                 }}
                               >
                                 {/* Left: Task title */}
-                                <span style={{ flex: 1, minWidth: 0 }}>
+                                <span style={{ flex: "1 1 auto", minWidth: 0 }}>
                                   <span
                                     className="task-list-title"
-                                    style={{ minWidth: 0 }}
+                                    style={{ minWidth: 0, display: "block" }}
+                                    title={item.title}
                                   >
                                     {item.title}
                                   </span>
                                 </span>
                                 {/* Center: Project name */}
-                                <span style={{ flex: 1, textAlign: "center" }}>
+                                <span style={{ flex: "0 0 auto", textAlign: "center", padding: "0 6px" }}>
                                   <span
                                     className="task-list-project"
                                     style={{ fontSize: 12, color: "#666" }}
@@ -243,7 +243,7 @@ const TaskDetailPage: React.FC = () => {
                                 {/* Right: Priority tag */}
                                 <span
                                   style={{
-                                    flex: 1,
+                                    flex: "0 0 auto",
                                     display: "flex",
                                     justifyContent: "flex-end",
                                   }}
@@ -287,126 +287,143 @@ const TaskDetailPage: React.FC = () => {
               style={{ background: "#fff" }}
               bodyStyle={{ padding: 15, background: "#fff" }}
             >
-              <div className="task-detail-table">
-                {/* Title */}
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Title</span>
-                  </div>
-                  <div className="cell cell-right">
-                    <span className="cell-value">
-                      <strong>{task.title}</strong>
-                    </span>
-                  </div>
+              {loading ? (
+                <>
+                  <Skeleton active paragraph={{ rows: 6 }} />
+                  <Skeleton active paragraph={{ rows: 6 }} />
+                </>
+              ) : error || !task ? (
+                <div style={{ textAlign: "center", padding: 60 }}>
+                  {error || "Task not found."}
                 </div>
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Assignee</span>
+              ) : (
+                <div className="task-detail-table">
+                  {/* Title */}
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Title</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <span className="cell-value">
+                        <strong>{task.title}</strong>
+                      </span>
+                    </div>
                   </div>
-                  <div className="cell cell-right">
-                    <span className="cell-value">
-                      {task.assignedTo?.username || "Unassigned"}
-                    </span>
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Assignee</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <span className="cell-value">
+                        {task.assignedTo?.username || "Unassigned"}
+                      </span>
+                    </div>
                   </div>
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Due Date</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <span className="cell-value">
+                        {task.dueDate
+                          ? dayjs(task.dueDate).format("MMM D, YYYY")
+                          : "—"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Created</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <span className="cell-value">
+                        {dayjs(task.createdAt).fromNow()}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Status</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <Tag
+                        color={getStatusColor(task.status)}
+                        style={{ marginInlineEnd: 0 }}
+                      >
+                        {task.status?.replace(/_/g, " ")}
+                      </Tag>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Priority</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <Tag
+                        color={getPriorityColor(task.priority)}
+                        style={{ marginInlineEnd: 0 }}
+                      >
+                        {task.priority}
+                      </Tag>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Project</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <span className="cell-value">
+                        {(task as any)?.projectName ||
+                          (task as any)?.project?.name ||
+                          "—"}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Description</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <span className="cell-value">
+                        {task.description || "No description provided."}
+                      </span>
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Subtasks</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <SubtaskManagement
+                        subtasks={task.subtasks || []}
+                        parentTaskId={task.id}
+                        compact
+                      />
+                    </div>
+                  </div>
+                  <div className="row">
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Attachments</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <FileAttachmentViewer
+                        attachments={task.attachments || []}
+                        compact
+                      />
+                    </div>
+                  </div>
+                  {/* Comments section removed per request */}
                 </div>
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Due Date</span>
-                  </div>
-                  <div className="cell cell-right">
-                    <span className="cell-value">
-                      {task.dueDate
-                        ? dayjs(task.dueDate).format("MMM D, YYYY")
-                        : "—"}
-                    </span>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Created</span>
-                  </div>
-                  <div className="cell cell-right">
-                    <span className="cell-value">
-                      {dayjs(task.createdAt).fromNow()}
-                    </span>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Status</span>
-                  </div>
-                  <div className="cell cell-right">
-                    <Tag
-                      color={getStatusColor(task.status)}
-                      style={{ marginInlineEnd: 0 }}
-                    >
-                      {task.status?.replace(/_/g, " ")}
-                    </Tag>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Priority</span>
-                  </div>
-                  <div className="cell cell-right">
-                    <Tag
-                      color={getPriorityColor(task.priority)}
-                      style={{ marginInlineEnd: 0 }}
-                    >
-                      {task.priority}
-                    </Tag>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Project</span>
-                  </div>
-                  <div className="cell cell-right">
-                    <span className="cell-value">
-                      {(task as any)?.projectName ||
-                        (task as any)?.project?.name ||
-                        "—"}
-                    </span>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Description</span>
-                  </div>
-                  <div className="cell cell-right">
-                    <span className="cell-value">
-                      {task.description || "No description provided."}
-                    </span>
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Subtasks</span>
-                  </div>
-                  <div className="cell cell-right">
-                    <SubtaskManagement
-                      subtasks={task.subtasks || []}
-                      parentTaskId={task.id}
-                      compact
-                    />
-                  </div>
-                </div>
-                <div className="row">
-                  <div className="cell cell-left">
-                    <span className="cell-heading">Attachments</span>
-                  </div>
-                  <div className="cell cell-right">
-                    <FileAttachmentViewer
-                      attachments={task.attachments || []}
-                      compact
-                    />
-                  </div>
-                </div>
-                {/* Comments section removed per request */}
-              </div>
+              )}
             </Card>
           </Col>
         </Row>
+      <TaskFormDrawer
+        open={isDrawerVisible}
+        onClose={() => setDrawerVisible(false)}
+        onTaskSaved={fetchSidebarTasks}
+        task={editingTask}
+      />
       </div>
     </AppLayout>
   );

@@ -57,6 +57,8 @@ const CreateTaskPage: React.FC = () => {
     try {
       const taskData = {
         ...values,
+        description: values.description ?? '',
+        tags: values.tags ?? [],
         dueDate: values.dueDate ? values.dueDate.toISOString() : null,
       };
       await taskService.createTask(taskData);
@@ -88,7 +90,12 @@ const CreateTaskPage: React.FC = () => {
           </div>
         }
       >
-        <Form form={form} layout="vertical" onFinish={onFinish}>
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{ description: '', tags: [], dueDate: null, estimatedHours: null }}
+        >
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item

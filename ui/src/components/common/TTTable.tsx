@@ -22,7 +22,7 @@ function TTTable<RecordType extends object = any>({ dense = true, className, pag
       size={dense ? 'middle' : 'large'}
       className={mergedClass}
       pagination={defaultPagination}
-      bordered={bordered ?? true}
+      bordered={bordered ?? false}
       {...rest}
     />
   );

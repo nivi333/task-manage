@@ -10,7 +10,6 @@ import {
   Upload,
   Avatar,
   Typography,
-  Divider,
   Modal,
   message,
 } from "antd";
@@ -172,6 +171,7 @@ const UserProfilePage: React.FC = () => {
         <Row gutter={[16, 16]}>
           <Col xs={24} lg={14}>
             <Card
+              className="tt-card-flat"
               title={
                 <Space>
                   <UserOutlined />
@@ -331,6 +331,7 @@ const UserProfilePage: React.FC = () => {
           </Col>
           <Col xs={24} lg={10}>
             <Card
+              className="tt-card-flat"
               title={
                 <Space>
                   <LockOutlined />
@@ -385,8 +386,8 @@ const UserProfilePage: React.FC = () => {
                 </Form.Item>
               </Form>
             </Card>
-            <Divider />
             <Card
+              className="tt-card-flat"
               title={
                 <Space>
                   <QrcodeOutlined />

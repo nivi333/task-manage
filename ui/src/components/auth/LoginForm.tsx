@@ -189,7 +189,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
 
   return (
     <>
-      <div className="auth-card">
+      <div className="auth-card tt-card-flat">
         <h1 className="auth-title">Login</h1>
 
         <Form

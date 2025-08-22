@@ -100,10 +100,11 @@
 }
 
 /* Kanban board specific card styles */
-.task-board-column :where(.css-dev-only-do-not-override-1hfsdkp).ant-card-bordered {
+.tt-kanban-card.ant-card-bordered {
   border: 1px solid #f0f0f0;
 }
 
-.task-board-column .ant-table-wrapper.tt-table-dense.css-dev-only-do-not-override-1hfsdkp {
+.task-board-column
+  .ant-table-wrapper.tt-table-dense.css-dev-only-do-not-override-1hfsdkp {
   box-shadow: rgb(240, 241, 242) 0px 2px 8px;
 }

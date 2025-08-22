@@ -158,10 +158,11 @@ const RegistrationForm: React.FC = () => {
   };
 
   return (
-    <RegistrationCard>
+    <RegistrationCard className="auth-card tt-card-flat">
       <RegistrationTitle>Register</RegistrationTitle>
       <RegistrationStepper current={currentStep} />
       <StyledForm
+        className="auth-form"
         form={form}
         layout="vertical"
         onFinish={handleFinish}

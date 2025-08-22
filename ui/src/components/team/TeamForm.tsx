@@ -6,19 +6,27 @@ import { Team } from "../../types/team";
 import { notificationService } from "../../services/notificationService";
 
 // Team creation form using global CSS classes only
-const TeamForm: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
+const TeamForm: React.FC<{
+  onCancel?: () => void;
+  onSuccess?: (team: Team) => void;
+}> = ({ onCancel, onSuccess }) => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
   const onFinish = async (values: { name: string; description?: string }) => {
     try {
       const payload: Partial<Team> = {
-        name: values.name,
-        description: values.description,
+        name: values.name?.trim(),
+        description: (values.description ?? "").trim(),
       } as any;
       const created = await teamService.createTeam(payload);
       notificationService.success("Team created successfully");
-      navigate(`/teams/${created.id}`);
+      if (typeof onSuccess === "function") {
+        onSuccess(created);
+      } else {
+        // Fallback: remain within Teams area
+        navigate("/teams");
+      }
     } catch (e) {
       notificationService.error("Failed to create team");
     }
@@ -29,6 +37,7 @@ const TeamForm: React.FC<{ onCancel?: () => void }> = ({ onCancel }) => {
       form={form}
       layout="vertical"
       onFinish={onFinish}
+      initialValues={{ name: "", description: "" }}
       style={{ minWidth: 350 }}
     >
       <Form.Item

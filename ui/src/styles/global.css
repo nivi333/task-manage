@@ -7,6 +7,45 @@ body,
   padding: 0;
 }
 
+/* Compact Modal: force header to a single line and align custom close */
+.tt-compact-modal .ant-modal-header {
+  display: flex !important;
+  align-items: center !important;
+  padding: 12px !important;
+  /* Match AntD footer divider color */
+  border-bottom: 1px solid var(--color-border) !important;
+}
+.tt-compact-modal .ant-modal-title {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: nowrap !important;
+  flex: 1 1 auto !important;
+  margin: 0 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+/* Make the first child (title text) flex and truncate, keep last child (close) tight */
+.tt-compact-modal .ant-modal-title > :first-child {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+.tt-compact-modal .ant-modal-title > :last-child {
+  flex: 0 0 auto !important;
+  margin-left: 8px !important;
+}
+/* Use the default close, but make it inline-aligned and non-absolute */
+.tt-compact-modal .ant-modal-close {
+  position: static !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  margin-left: 8px !important;
+}
+
 body {
   background-color: #fff;
 }
@@ -127,12 +166,32 @@ body {
 }
 
 /* Highlight the actual Avatar on hover */
-/* Single dotted border on hover using outline to avoid double ring */
+/* Subtle solid hover ring without dotted outline */
 .avatar-upload:hover .ant-avatar {
-  outline: 2px dotted var(--color-primary);
-  outline-offset: 2px;
-  box-shadow: none !important;
-  transition: outline 0.15s ease;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.28) !important; /* var(--color-primary) at ~28% */
+  transition: box-shadow 0.15s ease;
+}
+
+/* Profile Upload: remove dashed border and improve focus/hover */
+.profile-upload .ant-upload {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+.profile-upload .ant-upload::before,
+.profile-upload .ant-upload::after {
+  display: none !important;
+}
+.profile-upload .ant-btn:focus,
+.profile-upload .ant-btn:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25) !important;
+}
+.profile-upload .ant-btn:hover {
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.18) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--color-primary) !important;
 }
 
 /* Cropper frame (square) */
@@ -288,8 +347,7 @@ body {
 }
 
 /* Global Button Base Styles */
-.btn-base,
-.ant-btn {
+.btn-base {
   border: 1.5px solid var(--color-border, #d9d9d9) !important;
 }
 
@@ -314,8 +372,8 @@ body {
 }
 
 .btn-base:focus {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25);
 }
 
 .btn-base:disabled {
@@ -550,6 +608,52 @@ textarea::placeholder {
   box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
 }
 
+/* Autofill: force white background across browsers */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--color-text-primary) !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+  caret-color: var(--color-text-primary) !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* Standardized pseudo-class where supported */
+input:autofill,
+textarea:autofill,
+select:autofill {
+  -webkit-text-fill-color: var(--color-text-primary) !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  caret-color: var(--color-text-primary) !important;
+}
+
+/* Firefox */
+input:-moz-autofill,
+textarea:-moz-autofill,
+select:-moz-autofill {
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  color: var(--color-text-primary) !important;
+  caret-color: var(--color-text-primary) !important;
+}
+
+/* Ensure AntD affix-wrapped inputs keep white bg on autofill */
+.ant-input-affix-wrapper input:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-text-primary) !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+  -webkit-box-shadow: 0 0 0 1000px #fff inset !important;
+}
+.ant-input-affix-wrapper input:autofill {
+  -webkit-text-fill-color: var(--color-text-primary) !important;
+  box-shadow: 0 0 0 1000px #fff inset !important;
+}
+
 /* Input.Search: ensure affix wrapper uses global height */
 .ant-input-search .ant-input-group .ant-input-affix-wrapper,
 .ant-input-search .ant-input-group .ant-input {
@@ -645,6 +749,13 @@ textarea::placeholder {
   padding: 0 !important;
 }
 
+/* Cards: ensure consistent spacing below card headers globally
+   Note: Avoid using AntD dev-only hash like :where(.css-dev-only-do-not-override-XXXX)
+   because it changes across environments. Use stable selectors instead. */
+.ant-card .ant-card-head {
+  margin-bottom: 15px !important;
+}
+
 /* Buttons: exact vertical centering */
 .ant-btn,
 .ant-btn-primary,
@@ -713,21 +824,6 @@ input.ant-input,
   padding: 0px;
   border-radius: 6px;
 }
-:where(.css-dev-only-do-not-override-1hfsdkp).ant-card {
-  box-sizing: border-box;
-  margin: 0 !important;
-  padding: 0;
-  color: rgba(0, 0, 0, 0.88);
-  font-size: 14px;
-  line-height: 1.5714285714285714;
-  list-style: none;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
-    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  position: relative;
-  border-radius: 10px;
-  background: #fff !important;
-}
 
 /* Pagination styles */
 .ant-pagination {
@@ -757,9 +853,6 @@ input.ant-input,
   margin: 0 4px !important;
 }
 
-:where(.css-dev-only-do-not-override-1hfsdkp).ant-card .ant-card-head {
-  margin-bottom: 15px;
-}
 .task-list-panel .ant-card.ant-card-bordered.ant-card-hoverable.ant-card-small {
   margin: 0;
   width: 100%;
@@ -863,6 +956,13 @@ input.ant-input,
   border-radius: var(--border-radius-md) !important;
 }
 
+/* Remove default dotted outline on AntD buttons across the app */
+.ant-btn:focus,
+.ant-btn:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.25) !important;
+}
+
 /* Link utility */
 .link-primary {
   color: var(--color-primary) !important;
@@ -932,6 +1032,13 @@ input.ant-input,
   :where(.css-dev-only-do-not-override-1hfsdkp).ant-input-group
   .ant-input-affix-wrapper:not(:last-child) {
   border-radius: 8px 0 0 8px !important;
+}
+
+/* Flat Card utility: white background, no border, no shadow (use where needed) */
+.tt-card-flat {
+  background: #fff !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Tasks filters: left icon and uniform control heights */

@@ -55,10 +55,13 @@ apiClient.interceptors.response.use(
       localStorage.removeItem("authToken");
       localStorage.removeItem("rememberMe");
       // DO NOT redirect to login here. Let the app handle navigation if needed.
-    } else if (error.response?.data?.message) {
-      // Show notification popup for API error if message exists
-      console.log("[NOTIFICATION] Error:", error.response.data.message);
-      notificationService.error(error.response.data.message);
+    } else {
+      const message =
+        error.response?.data?.message ||
+        error.message ||
+        "Request failed. Please try again.";
+      console.log("[NOTIFICATION] Error:", message);
+      notificationService.error(message);
     }
     return Promise.reject(error);
   }

@@ -26,6 +26,7 @@ import './styles/components/auth.css';
 import './styles/components/forms.css';
 import './styles/components/admin.css';
 import { colors } from './styles/colors';
+import CreateTaskPage from './pages/CreateTaskPage';
 
 // Theme configuration for Ant Design
 const theme = {
@@ -213,6 +214,15 @@ const AppContent: React.FC = () => {
               <Route path="board" element={<TasksBoardPage />} />
               <Route path="stats" element={<TasksStatsPage />} />
             </Route>
+            {/* Create Task route must exist so 'create' isn't treated as an ID */}
+            <Route
+              path="/tasks/create"
+              element={
+                <ProtectedRoute>
+                  <CreateTaskPage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/tasks/:id"
               element={

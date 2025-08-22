@@ -43,7 +43,7 @@ const TeamListPage: React.FC = () => {
 
   return (
     <AppLayout title="Teams">
-      <Card variant="borderless">
+      <Card variant="borderless" className="tt-card-flat">
         <div
           style={{
             display: "flex",

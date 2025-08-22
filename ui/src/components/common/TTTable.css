@@ -1,12 +1,13 @@
 .tt-table-dense .ant-table {
-  border: 1px solid var(--tt-border-color, #e5e7eb);
+  border: none !important;
   border-radius: 8px;
+  background: #fff !important;
 }
 
 /* Header and cell borders */
 .tt-table-dense .ant-table-thead > tr > th {
   border-color: var(--tt-border-color, #e5e7eb);
-  background: #fafafa;
+  background: #fff !important;
 }
 
 .tt-table-dense .ant-table-tbody > tr > td {
@@ -15,7 +16,7 @@
 
 /* Optional: subtle row hover */
 .tt-table-dense .ant-table-tbody > tr:hover > td {
-  background: #fcfcfc;
+  background: #fff !important;
 }
 
 /* Pagination spacing */

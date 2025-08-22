@@ -273,6 +273,27 @@
   align-items: center;
   height: 100%;
 } /* Make input icons always vertically centered */
+/* Auth: keep primary gradient constant on hover/focus/active in auth screens */
+.auth-card .ant-btn-primary:hover,
+.auth-card .ant-btn-primary:focus,
+.auth-card .ant-btn-primary:active,
+.auth-form .ant-btn-primary:hover,
+.auth-form .ant-btn-primary:focus,
+.auth-form .ant-btn-primary:active,
+.auth-card .btn-primary:hover,
+.auth-card .btn-primary:focus,
+.auth-card .btn-primary:active,
+.auth-form .btn-primary:hover,
+.auth-form .btn-primary:focus,
+.auth-form .btn-primary:active {
+  background: linear-gradient(
+    135deg,
+    var(--color-primary) 0%,
+    var(--color-secondary) 100%
+  ) !important;
+  box-shadow: var(--shadow-sm) !important;
+  transform: none !important;
+}
 
 /* Remember Me Container */
 .remember-me-container {

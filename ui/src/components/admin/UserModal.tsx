@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, Row, Col, Avatar, Upload } from "antd";
-import { UserOutlined, UploadOutlined } from "@ant-design/icons";
+import { UserOutlined, UploadOutlined, CloseOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
 import {
   User,
@@ -100,9 +100,33 @@ const UserModal: React.FC<UserModalProps> = ({
 
   return (
     <Modal
-      title={isEditing ? "Edit User" : "Create New User"}
+      title={
+        <>
+          <span
+            style={{
+              margin: 0,
+              lineHeight: 1.2,
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+              paddingRight: 8,
+            }}
+          >
+            {isEditing ? "Edit User" : "Create New User"}
+          </span>
+          <TTButton
+            type="text"
+            aria-label="Close"
+            onClick={handleCancel}
+            style={{ margin: 0, padding: 4, lineHeight: 1, fontSize: 18, width: 32, height: 32 }}
+            icon={<CloseOutlined style={{ fontSize: 18 }} />}
+          />
+        </>
+      }
       open={visible}
       onCancel={handleCancel}
+      closable={false}
+      rootClassName="tt-compact-modal"
       afterOpenChange={(open) => {
         console.log("[UserModal] afterOpenChange:", open);
       }}
@@ -119,31 +143,41 @@ const UserModal: React.FC<UserModalProps> = ({
           {isEditing ? "Update User" : "Create User"}
         </TTButton>,
       ]}
-      width={600}
+      width={560}
       destroyOnHidden
       forceRender={false}
+      styles={{
+        header: { padding: 12 },
+        body: { padding: 12 },
+        footer: { padding: 10 },
+      }}
     >
-      <Form form={form} layout="vertical" requiredMark={false} autoComplete="off">
-        {isEditing && (
-          <Row justify="center" style={{ marginBottom: 24 }}>
-            <Col>
-              <Avatar
-                size={80}
-                icon={<UserOutlined />}
-                src={user?.profilePicture}
-              />
-              <div style={{ textAlign: "center", marginTop: 8 }}>
-                <Upload showUploadList={false} beforeUpload={() => false}>
-                  <TTButton type="text" size="small" icon={<UploadOutlined />}>
-                    Change Photo
-                  </TTButton>
-                </Upload>
-              </div>
-            </Col>
-          </Row>
-        )}
+      <Form
+        form={form}
+        layout="vertical"
+        requiredMark={false}
+        autoComplete="off"
+      >
+        <div style={{ textAlign: "center", marginBottom: 8 }}>
+          <Avatar
+            size={80}
+            icon={<UserOutlined />}
+            src={user?.profilePicture}
+          />
+          <div style={{ marginTop: 8 }}>
+            <Upload
+              className="avatar-upload"
+              showUploadList={false}
+              beforeUpload={() => false}
+            >
+              <TTButton type="text" size="small" icon={<UploadOutlined />}>
+                {isEditing ? "Change Photo" : "Upload Photo"}
+              </TTButton>
+            </Upload>
+          </div>
+        </div>
 
-        <Row gutter={16}>
+        <Row gutter={8}>
           <Col span={12}>
             <Form.Item
               label="First Name"
@@ -152,8 +186,14 @@ const UserModal: React.FC<UserModalProps> = ({
                 { required: true, message: "Please enter first name" },
                 { min: 2, message: "First name must be at least 2 characters" },
               ]}
+              style={{ marginBottom: 8 }}
             >
-              <Input placeholder="Enter first name" autoComplete="off" name="um_firstName" inputMode="text" />
+              <Input
+                placeholder="Enter first name"
+                autoComplete="off"
+                name="um_firstName"
+                inputMode="text"
+              />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -164,8 +204,14 @@ const UserModal: React.FC<UserModalProps> = ({
                 { required: true, message: "Please enter last name" },
                 { min: 2, message: "Last name must be at least 2 characters" },
               ]}
+              style={{ marginBottom: 8 }}
             >
-              <Input placeholder="Enter last name" autoComplete="off" name="um_lastName" inputMode="text" />
+              <Input
+                placeholder="Enter last name"
+                autoComplete="off"
+                name="um_lastName"
+                inputMode="text"
+              />
             </Form.Item>
           </Col>
         </Row>
@@ -182,8 +228,14 @@ const UserModal: React.FC<UserModalProps> = ({
                 "Username can only contain letters, numbers, and underscores",
             },
           ]}
+          style={{ marginBottom: 8 }}
         >
-          <Input placeholder="Enter username" autoComplete="new-username" name="um_username" inputMode="text" />
+          <Input
+            placeholder="Enter username"
+            autoComplete="new-username"
+            name="um_username"
+            inputMode="text"
+          />
         </Form.Item>
 
         <Form.Item
@@ -193,8 +245,14 @@ const UserModal: React.FC<UserModalProps> = ({
             { required: true, message: "Please enter email" },
             { type: "email", message: "Please enter a valid email" },
           ]}
+          style={{ marginBottom: 8 }}
         >
-          <Input placeholder="Enter email address" autoComplete="off" name="um_email" inputMode="email" />
+          <Input
+            placeholder="Enter email address"
+            autoComplete="off"
+            name="um_email"
+            inputMode="email"
+          />
         </Form.Item>
 
         {!isEditing && (
@@ -205,17 +263,23 @@ const UserModal: React.FC<UserModalProps> = ({
               { required: true, message: "Please enter password" },
               { min: 8, message: "Password must be at least 8 characters" },
             ]}
+            style={{ marginBottom: 8 }}
           >
-            <Input.Password placeholder="Enter password" autoComplete="new-password" name="um_password" />
+            <Input.Password
+              placeholder="Enter password"
+              autoComplete="new-password"
+              name="um_password"
+            />
           </Form.Item>
         )}
 
-        <Row gutter={16}>
+        <Row gutter={8}>
           <Col span={12}>
             <Form.Item
               label="Role"
               name="role"
               rules={[{ required: true, message: "Please select a role" }]}
+              style={{ marginBottom: 8 }}
             >
               <TTSelect
                 placeholder="Select role"
@@ -232,6 +296,7 @@ const UserModal: React.FC<UserModalProps> = ({
               label="Status"
               name="status"
               rules={[{ required: true, message: "Please select status" }]}
+              style={{ marginBottom: 8 }}
             >
               <TTSelect
                 placeholder="Select status"
