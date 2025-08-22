@@ -59,12 +59,27 @@ public class UserController {
     }
 
     @PostMapping("/profile/avatar")
-    public ResponseEntity<com.example.tasksmanage.dto.UserProfileDTO> uploadAvatar(@AuthenticationPrincipal User user, @RequestParam("file") org.springframework.web.multipart.MultipartFile file) throws java.io.IOException {
+    public ResponseEntity<com.example.tasksmanage.dto.UserProfileDTO> uploadAvatar(
+            @AuthenticationPrincipal User user, 
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
+            @RequestParam(value = "firstName", required = false) String firstName,
+            @RequestParam(value = "lastName", required = false) String lastName,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "username", required = false) String username) throws java.io.IOException {
         User current = (user != null) ? user : getAuthenticatedUserOrNull();
         if (current == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
-        return ResponseEntity.ok(userService.uploadAvatar(current, file));
+        return ResponseEntity.ok(userService.uploadAvatar(current, file, firstName, lastName, email, username));
+    }
+
+    @DeleteMapping("/profile/avatar")
+    public ResponseEntity<com.example.tasksmanage.dto.UserProfileDTO> removeAvatar(@AuthenticationPrincipal User user) {
+        User current = (user != null) ? user : getAuthenticatedUserOrNull();
+        if (current == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+        return ResponseEntity.ok(userService.removeAvatar(current));
     }
 
     // ADMIN: List users with pagination and filtering

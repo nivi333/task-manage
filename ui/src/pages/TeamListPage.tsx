@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Button, Spin, Alert, Modal } from 'antd';
-import TeamSettingsDrawer from '../components/team/TeamSettingsDrawer';
-import TTTable from '../components/common/TTTable';
-import AppLayout from '../components/layout/AppLayout';
-import TeamCreateForm from './TeamCreatePage';
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Card, Button, Spin, Alert, Modal } from "antd";
+import TeamSettingsDrawer from "../components/team/TeamSettingsDrawer";
+import TTTable from "../components/common/TTTable";
+import AppLayout from "../components/layout/AppLayout";
+import TeamCreateForm from "./TeamCreatePage";
+import { useNavigate } from "react-router-dom";
 import { teamService } from "../services/teamService";
-import { Team } from '../types/team';
+import { Team } from "../types/team";
 
 const TeamListPage: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
@@ -26,7 +26,7 @@ const TeamListPage: React.FC = () => {
         const data = await teamService.list();
         setTeams(data);
       } catch (e: any) {
-        setError(e?.message || 'Failed to load teams');
+        setError(e?.message || "Failed to load teams");
       } finally {
         setLoading(false);
       }
@@ -34,13 +34,24 @@ const TeamListPage: React.FC = () => {
     fetchTeams();
   }, []);
 
-  if (loading) return <Spin size="large" style={{ margin: 64, display: 'block' }} />;
-  if (error) return <Alert message={error} type="error" showIcon style={{ margin: 32 }} />;
+  if (loading)
+    return <Spin size="large" style={{ margin: 64, display: "block" }} />;
+  if (error)
+    return (
+      <Alert message={error} type="error" showIcon style={{ margin: 32 }} />
+    );
 
   return (
     <AppLayout title="Teams">
       <Card>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 16 }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            alignItems: "center",
+            marginBottom: 16,
+          }}
+        >
           <Button type="primary" onClick={() => setCreateModalOpen(true)}>
             Create New Team
           </Button>
@@ -52,49 +63,63 @@ const TeamListPage: React.FC = () => {
           destroyOnClose
           title="Create Team"
         >
-          <TeamCreateForm onSuccess={() => { setCreateModalOpen(false); }} onCancel={() => setCreateModalOpen(false)} />
+          <TeamCreateForm
+            onSuccess={() => {
+              setCreateModalOpen(false);
+            }}
+            onCancel={() => setCreateModalOpen(false)}
+          />
         </Modal>
         <TTTable
-          dataSource={teams.filter(t => t && t.id && t.name)}
+          dataSource={teams.filter((t) => t && t.id && t.name)}
           rowKey="id"
           columns={[
             {
-              title: 'Team Name',
-              dataIndex: 'name',
-              key: 'name',
+              title: "Team Name",
+              dataIndex: "name",
+              key: "name",
               render: (text: string, record: Team) => (
                 <span style={{ fontWeight: 500 }}>{text}</span>
               ),
             },
             {
-              title: 'Description',
-              dataIndex: 'description',
-              key: 'description',
-              render: (desc: string) => desc || <span style={{ color: '#aaa' }}>No description</span>,
+              title: "Description",
+              dataIndex: "description",
+              key: "description",
+              render: (desc: string) =>
+                desc || <span style={{ color: "#aaa" }}>No description</span>,
             },
             {
-              title: 'Members',
-              dataIndex: 'memberCount',
-              key: 'memberCount',
-              align: 'center' as const,
+              title: "Members",
+              dataIndex: "memberCount",
+              key: "memberCount",
+              align: "center" as const,
               render: (count: number) => <span>{count ?? 0}</span>,
             },
             {
-              title: 'Actions',
-              key: 'actions',
-              align: 'center' as const,
+              title: "Actions",
+              key: "actions",
+              align: "center" as const,
               render: (_: any, record: Team) => (
-                <Button type="link" onClick={() => {
-                  setSelectedTeam(record);
-                  setSettingsDrawerOpen(true);
-                }}>
+                <Button
+                  type="link"
+                  onClick={() => {
+                    setSelectedTeam(record);
+                    setSettingsDrawerOpen(true);
+                  }}
+                >
                   Manage
                 </Button>
               ),
             },
           ]}
-          locale={{ emptyText: 'No teams found.' }}
-          style={{ background: 'white', borderRadius: 8, boxShadow: '0 2px 8px #f0f1f2', marginTop: 8 }}
+          locale={{ emptyText: "No teams found." }}
+          style={{
+            background: "white",
+            borderRadius: 8,
+            boxShadow: "0 2px 8px #f0f1f2",
+            marginTop: 8,
+          }}
         />
       </Card>
       <TeamSettingsDrawer

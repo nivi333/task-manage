@@ -113,7 +113,9 @@ const MemberSelector: React.FC<MemberSelectorProps> = ({ teamId, cardless = fals
             labelInValue={false}
             getPopupContainer={trigger => trigger.parentNode}
           >
-            {userOptions.map(user => (
+            {userOptions
+              .filter(user => !members.some(m => m.id === user.value))
+              .map(user => (
               <Select.Option key={user.value} value={user.value} label={user.label} email={user.email}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <Avatar 

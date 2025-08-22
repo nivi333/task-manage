@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class UserProfileDTO {
+    private String profilePicture; // base64 string, if present
     private UUID id;
 
     @Email
@@ -51,6 +52,9 @@ public class UserProfileDTO {
     public void setLastName(String lastName) { this.lastName = lastName; }
     public String getAvatarUrl() { return avatarUrl; }
     public void setAvatarUrl(String avatarUrl) { this.avatarUrl = avatarUrl; }
+
+    public String getProfilePicture() { return profilePicture; }
+    public void setProfilePicture(String profilePicture) { this.profilePicture = profilePicture; }
     public Set<Role> getRoles() { return roles; }
     public void setRoles(Set<Role> roles) { this.roles = roles; }
     public AccountStatus getStatus() { return status; }

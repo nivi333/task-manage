@@ -31,6 +31,22 @@ public class UserService {
 
     // ... existing fields and constructor
 
+    public com.example.tasksmanage.dto.UserProfileDTO removeAvatar(User user) {
+        // Remove avatar file from disk if present
+        if (user.getAvatarUrl() != null && user.getAvatarUrl().startsWith("/avatars/")) {
+            String avatarsDir = "src/main/resources";
+            String avatarPath = avatarsDir + user.getAvatarUrl();
+            try {
+                java.nio.file.Path path = java.nio.file.Paths.get(avatarPath);
+                java.nio.file.Files.deleteIfExists(path);
+            } catch (Exception ignored) {}
+        }
+        user.setAvatarUrl(null);
+        user.setUpdatedAt(new java.util.Date());
+        userRepository.save(user);
+        return getProfile(user);
+    }
+
     public com.example.tasksmanage.dto.UserProfileDTO getProfile(User user) {
         com.example.tasksmanage.dto.UserProfileDTO dto = new com.example.tasksmanage.dto.UserProfileDTO();
         dto.setId(user.getId());
@@ -39,6 +55,10 @@ public class UserService {
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
         dto.setAvatarUrl(user.getAvatarUrl());
+        // If avatarUrl is a base64 string, also set profilePicture
+        if (user.getAvatarUrl() != null && user.getAvatarUrl().startsWith("data:image/")) {
+            dto.setProfilePicture(user.getAvatarUrl());
+        }
         dto.setRoles(user.getRoles());
         dto.setStatus(user.getStatus());
         dto.setCreatedAt(user.getCreatedAt());
@@ -60,7 +80,15 @@ public class UserService {
 
     @Transactional
     public com.example.tasksmanage.dto.UserProfileDTO uploadAvatar(User user,
-            org.springframework.web.multipart.MultipartFile file) throws java.io.IOException {
+            org.springframework.web.multipart.MultipartFile file,
+            String firstName, String lastName, String email, String username) throws java.io.IOException {
+        // Update profile fields if provided
+        if (firstName != null) user.setFirstName(firstName);
+        if (lastName != null) user.setLastName(lastName);
+        if (email != null) user.setEmail(email);
+        if (username != null) user.setUsername(username);
+        
+        // Handle avatar upload
         String avatarsDir = "src/main/resources/avatars/";
         java.nio.file.Files.createDirectories(java.nio.file.Paths.get(avatarsDir));
         String ext = org.springframework.util.StringUtils.getFilenameExtension(file.getOriginalFilename());
@@ -71,6 +99,13 @@ public class UserService {
         user.setUpdatedAt(new java.util.Date());
         userRepository.save(user);
         return getProfile(user);
+    }
+
+    // Overloaded method for backward compatibility
+    @Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO uploadAvatar(User user,
+            org.springframework.web.multipart.MultipartFile file) throws java.io.IOException {
+        return uploadAvatar(user, file, null, null, null, null);
     }
 
     // ADMIN: List users with pagination and optional search

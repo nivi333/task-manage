@@ -36,11 +36,17 @@ export const teamService = {
     await apiClient.delete(`/teams/${id}`);
   },
   async addMember(id: UUID, user: { id?: UUID; username?: string; email?: string }): Promise<Team> {
-    const { data } = await apiClient.post(`/teams/${id}/members`, user);
+    // Backend expects userId as a PATH variable: POST /teams/{id}/members/{userId}
+    const userId = (user as any)?.id || (user as any)?.userId;
+    if (!userId) {
+      throw new Error('userId is required to add a team member');
+    }
+    const { data } = await apiClient.post(`/teams/${id}/members/${userId}`);
     return data;
   },
   async removeMember(id: UUID, userId: UUID): Promise<Team> {
-    const { data } = await apiClient.delete(`/teams/${id}/members`, { params: { userId } });
+    // Backend expects userId as a PATH variable: DELETE /teams/{id}/members/{userId}
+    const { data } = await apiClient.delete(`/teams/${id}/members/${userId}`);
     return data;
   },
   async getStats(id: UUID): Promise<TeamStatsSummary> {
