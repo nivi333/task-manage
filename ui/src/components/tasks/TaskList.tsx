@@ -25,12 +25,14 @@ const getPriorityColor = (priority: 'HIGH' | 'MEDIUM' | 'LOW') => {
   }
 };
 
-const getStatusColor = (status: 'OPEN' | 'IN_PROGRESS' | 'DONE') => {
+const getStatusColor = (status: 'OPEN' | 'IN_PROGRESS' | 'TESTING' | 'DONE') => {
   switch (status) {
     case 'OPEN':
       return 'blue';
     case 'IN_PROGRESS':
       return 'purple';
+    case 'TESTING':
+      return 'gold';
     case 'DONE':
       return 'green';
     default:
@@ -59,7 +61,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, loading, onEdit }) => {
       title: 'Status',
       dataIndex: 'status',
       key: 'status',
-      render: (status: 'OPEN' | 'IN_PROGRESS' | 'DONE') => (
+      render: (status: 'OPEN' | 'IN_PROGRESS' | 'TESTING' | 'DONE') => (
         <Tag color={getStatusColor(status)}>{status.replace('_', ' ')}</Tag>
       ),
     },

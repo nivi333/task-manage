@@ -62,6 +62,22 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         const refreshToken = payload?.refreshToken;
         if (token) {
           localStorage.setItem("authToken", token);
+          // Expose helpers to inspect/copy token anytime
+          (window as any).getAuthToken = () => localStorage.getItem("authToken");
+          (window as any).copyAuthToken = async () => {
+            const t = localStorage.getItem("authToken");
+            if (!t) {
+              console.warn("[Auth] No authToken in localStorage to copy.");
+              return;
+            }
+            try {
+              await navigator.clipboard.writeText(t);
+              console.info("[Auth] authToken copied to clipboard.");
+            } catch (err) {
+              console.warn("[Auth] Clipboard write failed. Token:", t);
+            }
+          };
+          console.info("[Auth] Logged in. authToken set:", token);
         }
         if (refreshToken) {
           localStorage.setItem("refreshToken", refreshToken);
@@ -123,6 +139,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       const refreshToken = payload?.refreshToken;
       if (accessToken) {
         localStorage.setItem("authToken", accessToken);
+        (window as any).getAuthToken = () => localStorage.getItem("authToken");
+        (window as any).copyAuthToken = async () => {
+          const t = localStorage.getItem("authToken");
+          if (!t) {
+            console.warn("[Auth] No authToken in localStorage to copy.");
+            return;
+          }
+          try {
+            await navigator.clipboard.writeText(t);
+            console.info("[Auth] authToken copied to clipboard.");
+          } catch (err) {
+            console.warn("[Auth] Clipboard write failed. Token:", t);
+          }
+        };
+        console.info("[Auth] 2FA success. authToken set:", accessToken);
       }
       if (refreshToken) {
         localStorage.setItem("refreshToken", refreshToken);

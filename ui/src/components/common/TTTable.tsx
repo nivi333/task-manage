@@ -1,12 +1,13 @@
 import React from 'react';
 import { Table } from 'antd';
+import './TTTable.css';
 import type { TableProps } from 'antd';
 
 export type TTTableProps<RecordType> = TableProps<RecordType> & {
   dense?: boolean;
 };
 
-function TTTable<RecordType extends object = any>({ dense = true, className, pagination, ...rest }: TTTableProps<RecordType>) {
+function TTTable<RecordType extends object = any>({ dense = true, className, pagination, bordered, ...rest }: TTTableProps<RecordType>) {
   const mergedClass = [className, dense ? 'tt-table-dense' : undefined].filter(Boolean).join(' ');
   const defaultPagination = pagination === undefined
     ? {
@@ -21,6 +22,7 @@ function TTTable<RecordType extends object = any>({ dense = true, className, pag
       size={dense ? 'middle' : 'large'}
       className={mergedClass}
       pagination={defaultPagination}
+      bordered={bordered ?? true}
       {...rest}
     />
   );

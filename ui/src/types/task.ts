@@ -6,7 +6,7 @@ export interface Task {
   id: string;
   title: string;
   description?: string;
-  status: 'OPEN' | 'IN_PROGRESS' | 'DONE';
+  status: 'OPEN' | 'IN_PROGRESS' | 'TESTING' | 'DONE';
   priority: 'HIGH' | 'MEDIUM' | 'LOW';
   dueDate?: string;
   createdAt: string;
@@ -22,7 +22,7 @@ export interface Task {
 export interface TaskCreateDTO {
   title: string;
   description?: string;
-  status: 'OPEN' | 'IN_PROGRESS' | 'DONE';
+  status: 'OPEN' | 'IN_PROGRESS' | 'TESTING' | 'DONE';
   priority: 'HIGH' | 'MEDIUM' | 'LOW';
   dueDate?: string;
   assignedTo?: string; // UUID

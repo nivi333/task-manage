@@ -760,9 +760,6 @@ input.ant-input,
 :where(.css-dev-only-do-not-override-1hfsdkp).ant-card .ant-card-head {
   margin-bottom: 15px;
 }
-.ant-card-bordered {
-  border: none !important;
-}
 .task-list-panel .ant-card.ant-card-bordered.ant-card-hoverable.ant-card-small {
   margin: 0;
   width: 100%;

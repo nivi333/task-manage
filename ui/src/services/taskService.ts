@@ -18,8 +18,12 @@ export interface TaskFilters {
 
 const getTasks = async (filters: TaskFilters = {}): Promise<Task[]> => {
   try {
-    const response = await apiClient.get<Task[]>(API_URL, { params: filters });
-    return response.data;
+    const response = await apiClient.get<any>(API_URL, { params: filters });
+    const data = response.data as any;
+    // Normalize: support both pageable { content: [...] } and direct array responses
+    if (Array.isArray(data)) return data as Task[];
+    if (data && Array.isArray(data.content)) return data.content as Task[];
+    return [] as Task[];
   } catch (error) {
     notificationService.error('Failed to fetch tasks.');
     throw error;
@@ -56,6 +60,21 @@ const updateTask = async (id: string, taskData: TaskUpdateDTO): Promise<Task> =>
   }
 };
 
+// Explicit status move helper for drag & drop to guarantee payload format
+const moveTaskStatus = async (
+  id: string,
+  status: 'OPEN' | 'IN_PROGRESS' | 'TESTING' | 'DONE'
+): Promise<Task> => {
+  try {
+    const payload = { status };
+    // Use PATCH to dedicated status endpoint to avoid full TaskCreateDTO validation
+    const response = await apiClient.patch<Task>(`${API_URL}/${id}/status`, payload);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const deleteTask = async (id: string): Promise<void> => {
   try {
     await apiClient.delete(`${API_URL}/${id}`);
@@ -70,6 +89,7 @@ const taskService = {
   getTaskById,
   createTask,
   updateTask,
+  moveTaskStatus,
   deleteTask,
 };
 

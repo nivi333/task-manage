@@ -1,0 +1,24 @@
+.tt-table-dense .ant-table {
+  border: 1px solid var(--tt-border-color, #e5e7eb);
+  border-radius: 8px;
+}
+
+/* Header and cell borders */
+.tt-table-dense .ant-table-thead > tr > th {
+  border-color: var(--tt-border-color, #e5e7eb);
+  background: #fafafa;
+}
+
+.tt-table-dense .ant-table-tbody > tr > td {
+  border-color: var(--tt-border-color, #e5e7eb);
+}
+
+/* Optional: subtle row hover */
+.tt-table-dense .ant-table-tbody > tr:hover > td {
+  background: #fcfcfc;
+}
+
+/* Pagination spacing */
+.tt-table-dense .ant-table-pagination {
+  margin: 12px 16px;
+}

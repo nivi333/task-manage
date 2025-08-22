@@ -8,6 +8,9 @@ import ResetPasswordPage from './pages/ResetPasswordPage';
 import UserManagementPage from './pages/UserManagementPage';
 import TasksListPage from './pages/TasksListPage';
 import TaskDetailPage from './pages/TaskDetailPage';
+import TasksBoardPage from './pages/TasksBoardPage';
+import TasksStatsPage from './pages/TasksStatsPage';
+import TasksPage from './pages/TasksPage';
 import UserProfilePage from './pages/UserProfilePage';
 import ProjectsListPage from './pages/ProjectsListPage';
 import ProjectDashboardPage from './pages/ProjectDashboardPage';
@@ -197,15 +200,19 @@ const AppContent: React.FC = () => {
                 </ProtectedRoute>
               }
             />
-            {/* Tasks section - revert to old style, no sub-sidebar */}
+            {/* Tasks section with left-side sub menu */}
             <Route
               path="/tasks"
               element={
                 <ProtectedRoute>
-                  <TasksListPage />
+                  <TasksPage />
                 </ProtectedRoute>
               }
-            />
+            >
+              <Route index element={<TasksListPage />} />
+              <Route path="board" element={<TasksBoardPage />} />
+              <Route path="stats" element={<TasksStatsPage />} />
+            </Route>
             <Route
               path="/tasks/:id"
               element={

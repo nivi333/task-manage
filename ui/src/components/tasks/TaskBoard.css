@@ -1,9 +1,100 @@
-.task-board-column {
-  background-color: #f4f5f7;
-  border-radius: 4px;
-  min-height: 400px;
+.task-board-row {
+  margin-top: 8px;
 }
 
-.task-board-column .ant-card-head {
+.task-board-column {
+  background-color: #f7f9fc;
+  border-radius: 8px;
+  min-height: 420px;
+}
+
+.task-board-column.modern {
+  background: #fafbff;
+  border: 1px solid #eef1f6;
+  border-radius: 10px;
+}
+
+.task-board-column.modern .ant-card-head {
+  background: #f6f8fc;
+  border-bottom: 1px solid #eef1f6;
+}
+
+.task-board-column.modern .ant-card-head-title {
+  font-size: 14px;
+  letter-spacing: 0.2px;
   font-weight: 600;
+}
+
+.task-board-column.modern .ant-card-body {
+  padding: 12px;
+  max-height: calc(100vh - 240px);
+  overflow-y: auto;
+}
+
+/* Spacing between task cards */
+.task-board-column .task-card {
+  margin-bottom: 12px;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+/* Divider line between tasks (wrapper divs), independent of card margins */
+.task-board-column .task-card-draggable + .task-card-draggable {
+  border-top: 1px solid #eceff5;
+  margin-top: 8px;
+}
+
+.task-board-column .task-card:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+}
+
+/* Lane accents */
+.lane-open {
+  border-top: 3px solid #3b82f6; /* blue */
+}
+.lane-inprogress {
+  border-top: 3px solid #a855f7; /* purple */
+}
+.lane-testing {
+  border-top: 3px solid #f59e0b; /* amber */
+}
+.lane-done {
+  border-top: 3px solid #10b981; /* green */
+}
+
+/* Drag affordance */
+.task-card-draggable {
+  cursor: grab;
+  margin: 5px; /* requested padding */
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04); /* very light */
+  border-radius: 8px; /* match card rounding */
+  background: transparent; /* keep wrapper neutral */
+}
+.task-card-draggable:active {
+  cursor: grabbing;
+}
+
+/* Lane title with count */
+.lane-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.lane-title .lane-name {
+  font-weight: 600;
+  letter-spacing: 0.2px;
+}
+.lane-title .lane-count {
+  background: #eef2ff;
+  color: #3730a3;
+  border: 1px solid #e0e7ff;
+  border-radius: 999px;
+  padding: 0 8px;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+/* Drag-over visual */
+.task-board-column.drag-over {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18) inset;
 }

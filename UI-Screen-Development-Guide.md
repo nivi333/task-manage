@@ -726,9 +726,16 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   - [x] Valid team id
   - [x] Valid member data
 - **Error Handling**:
+
   - [x] API errors
   - [x] Validation errors
   - [x] Unauthorized access
+
+- **Routes & Navigation**:
+  - [x] `/teams` — Teams list (with create modal and manage drawer)
+  - [x] `/teams/:id/settings` — Dedicated Team Settings page (members + settings)
+
+> **Status:** Implemented dedicated Team Settings page and linked it from the Teams List via a "Settings" action, while keeping the in-page "Manage" drawer.
 
 ### Task 14: Team Creation & Management | **✅ COMPLETED**
 

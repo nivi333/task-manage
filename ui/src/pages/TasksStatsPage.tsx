@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Layout, Spin, Typography } from 'antd';
+import { Spin } from 'antd';
 import taskService from '../services/taskService';
 import { Task } from '../types/task';
 import TaskStats from '../components/tasks/TaskStats';
-
-const { Content } = Layout;
-const { Title } = Typography;
 
 const TasksStatsPage: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -28,18 +25,15 @@ const TasksStatsPage: React.FC = () => {
   }, []);
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
-      <Content style={{ padding: '24px' }}>
-        <Title level={2}>Task Statistics</Title>
-        {loading ? (
-          <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <Spin size="large" />
-          </div>
-        ) : (
-          <TaskStats tasks={tasks} />
-        )}
-      </Content>
-    </Layout>
+    <div>
+      {loading ? (
+        <div style={{ textAlign: 'center', margin: '50px 0' }}>
+          <Spin size="large" />
+        </div>
+      ) : (
+        <TaskStats tasks={tasks} />
+      )}
+    </div>
   );
 };
 
