@@ -39,7 +39,7 @@ const TeamListPage: React.FC = () => {
 
   return (
     <AppLayout title="Teams">
-      <Card style={{ padding: 24 }}>
+      <Card>
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: 16 }}>
           <Button type="primary" onClick={() => setCreateModalOpen(true)}>
             Create New Team

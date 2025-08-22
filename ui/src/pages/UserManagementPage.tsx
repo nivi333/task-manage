@@ -180,7 +180,7 @@ const UserManagementPage: React.FC = () => {
       title={<HeaderTitle level={3}>User Management</HeaderTitle>}
       contentPadding={0}
     >
-      <div className="user-management-page">
+      <div className="user-management-page user-management-container">
         <div className="um-toolbar">
           <div className="um-toolbar-left">
             <UserFilters

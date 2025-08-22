@@ -11,6 +11,10 @@ body {
   background-color: #fff;
 }
 
+.ant-layout-content {
+  background: var(--color-background) !important;
+}
+
 /* Global CSS Variables */
 :root {
   --color-primary: #667eea;
@@ -703,7 +707,7 @@ input.ant-input,
 }
 .task-list-panel .ant-list-item {
   width: 100%;
-  background: var(--color-card-background);
+  background: var(--color-background);
   cursor: pointer;
   border-left: 4px solid #a68fff;
   padding: 0px;
@@ -722,6 +726,39 @@ input.ant-input,
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   position: relative;
   border-radius: 10px;
+  background: #fff !important;
+}
+
+/* Pagination styles */
+.ant-pagination {
+  margin: 16px 0 !important;
+  padding: 0 16px !important;
+}
+
+/* Ensure pagination container has proper spacing */
+.ant-table-pagination.ant-pagination {
+  margin: 16px 0 !important;
+  padding: 0 16px !important;
+}
+
+/* User management specific pagination */
+.user-management-page .ant-pagination,
+.user-management-page .ant-table-pagination {
+  margin: 16px 0 !important;
+  padding: 0 16px !important;
+}
+
+/* Ensure pagination items are properly aligned */
+.ant-pagination-item,
+.ant-pagination-prev,
+.ant-pagination-next,
+.ant-pagination-jump-prev,
+.ant-pagination-jump-next {
+  margin: 0 4px !important;
+}
+
+:where(.css-dev-only-do-not-override-1hfsdkp).ant-card .ant-card-head {
+  margin-bottom: 15px;
 }
 .ant-card-bordered {
   border: none !important;

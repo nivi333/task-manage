@@ -33,7 +33,7 @@
 }
 
 /* Compact table email ellipsis alignment in cells */
-.ant-table-cell .ant-typography[style*='max-width'] {
+.ant-table-cell .ant-typography[style*="max-width"] {
   vertical-align: middle;
 }
 
@@ -219,7 +219,10 @@
   color: var(--color-text-primary);
 }
 
-.ant-form-item-label > label.ant-form-item-required:not(.ant-form-item-required-mark-optional)::before {
+.ant-form-item-label
+  > label.ant-form-item-required:not(
+    .ant-form-item-required-mark-optional
+  )::before {
   color: var(--color-error);
 }
 
@@ -264,10 +267,6 @@
   margin-top: var(--spacing-lg);
 }
 
-.user-management-page .ant-table-wrapper .ant-table-pagination.ant-pagination {
-  margin: 16px !important; /* replace 16px 0 with single 16px */
-}
-
 .ant-pagination .ant-pagination-item {
   border-radius: var(--border-radius-sm);
 }
@@ -295,21 +294,21 @@
   .user-management-page {
     padding: var(--spacing-md);
   }
-  
+
   .user-filters .ant-row {
     gap: var(--spacing-sm);
   }
-  
+
   .bulk-actions {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--spacing-sm);
   }
-  
+
   .ant-table {
     font-size: var(--font-size-sm);
   }
-  
+
   .ant-modal {
     margin: var(--spacing-md);
     max-width: calc(100vw - 32px);
@@ -320,11 +319,11 @@
   .user-management-page {
     padding: var(--spacing-sm);
   }
-  
+
   .ant-modal .ant-modal-body {
     padding: var(--spacing-md);
   }
-  
+
   .ant-form-item {
     margin-bottom: var(--spacing-md);
   }
