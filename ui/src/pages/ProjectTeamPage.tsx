@@ -190,7 +190,6 @@ const ProjectTeamPage: React.FC = () => {
   return (
     <AppLayout
       title={<HeaderTitle level={3}>Project Team</HeaderTitle>}
-      contentPadding={16}
     >
       <Space direction="vertical" style={{ width: "100%" }} size={16}>
         <Card

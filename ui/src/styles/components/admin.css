@@ -1,14 +1,51 @@
 /* User Management Admin Styles */
 
 .user-management-page {
-  background: var(--color-background);
   min-height: 100vh;
 }
 
+/* User Management Toolbar */
+.um-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.um-toolbar-left {
+  flex: 1 1 520px;
+  min-width: 320px;
+}
+
+.um-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+/* Bulk actions row alignment */
+.um-bulk-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Compact table email ellipsis alignment in cells */
+.ant-table-cell .ant-typography[style*='max-width'] {
+  vertical-align: middle;
+}
+
 .user-management-page .ant-card {
+  background: #fff;
   border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
   border: 1px solid var(--color-border);
+}
+
+.user-management-page .ant-card .ant-card-body {
+  background: #fff;
 }
 
 /* User Filters */
@@ -72,8 +109,12 @@
   border-radius: var(--border-radius-lg);
 }
 
-.ant-table-thead > tr > th {
-  background-color: var(--color-background);
+.user-management-page .ant-table-wrapper .ant-table {
+  background: #fff;
+}
+
+.user-management-page .ant-table-wrapper .ant-table-thead > tr > th {
+  background-color: #fff !important; /* White table header to match card */
   border-bottom: 1px solid var(--color-border);
   font-weight: var(--font-weight-semibold);
   color: var(--color-text-primary);
@@ -83,8 +124,26 @@
   border-bottom: 1px solid var(--color-border);
 }
 
-.ant-table-tbody > tr:hover > td {
-  background-color: var(--color-background);
+.user-management-page .ant-table-wrapper .ant-table-tbody > tr > td {
+  background-color: #fff; /* Table cells white */
+}
+
+.user-management-page .ant-table-wrapper .ant-table-tbody > tr:hover > td {
+  background-color: #fff !important; /* Keep rows white on hover */
+}
+
+.user-management-page .ant-table-wrapper th.ant-table-selection-column,
+.user-management-page .ant-table-wrapper td.ant-table-selection-column {
+  padding-left: 15px !important;
+}
+
+/* Ensure all table containers and scroll bodies are white */
+.user-management-page .ant-table-wrapper .ant-table,
+.user-management-page .ant-table-wrapper .ant-table-container,
+.user-management-page .ant-table-wrapper .ant-table-content,
+.user-management-page .ant-table-wrapper .ant-table-body,
+.user-management-page .ant-table-wrapper .ant-table-cell {
+  background-color: #fff;
 }
 
 .ant-table-row-selected > td {
@@ -203,6 +262,10 @@
 /* Pagination */
 .ant-pagination {
   margin-top: var(--spacing-lg);
+}
+
+.user-management-page .ant-table-wrapper .ant-table-pagination.ant-pagination {
+  margin: 16px !important; /* replace 16px 0 with single 16px */
 }
 
 .ant-pagination .ant-pagination-item {

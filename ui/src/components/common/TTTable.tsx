@@ -6,9 +6,24 @@ export type TTTableProps<RecordType> = TableProps<RecordType> & {
   dense?: boolean;
 };
 
-function TTTable<RecordType extends object = any>({ dense = true, className, ...rest }: TTTableProps<RecordType>) {
+function TTTable<RecordType extends object = any>({ dense = true, className, pagination, ...rest }: TTTableProps<RecordType>) {
   const mergedClass = [className, dense ? 'tt-table-dense' : undefined].filter(Boolean).join(' ');
-  return <Table<RecordType> size={dense ? 'middle' : 'large'} className={mergedClass} pagination={false} {...rest} />;
+  const defaultPagination = pagination === undefined
+    ? {
+        pageSize: 10,
+        showSizeChanger: true,
+        pageSizeOptions: ['10', '20', '50', '100'],
+        showQuickJumper: true,
+      }
+    : pagination;
+  return (
+    <Table<RecordType>
+      size={dense ? 'middle' : 'large'}
+      className={mergedClass}
+      pagination={defaultPagination}
+      {...rest}
+    />
+  );
 }
 
 export default TTTable;

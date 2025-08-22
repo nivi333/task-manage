@@ -1,18 +1,18 @@
-import React from 'react';
-import Dropdown from '../common/Dropdown';
-import { Avatar, Tag, Space, Tooltip, Typography } from 'antd';
-import type { SortOrder } from 'antd/es/table/interface';
-import { 
-  UserOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
+import React from "react";
+import Dropdown from "../common/Dropdown";
+import { Avatar, Tag, Space, Tooltip, Typography } from "antd";
+import type { SortOrder } from "antd/es/table/interface";
+import {
+  UserOutlined,
+  EditOutlined,
+  DeleteOutlined,
   MoreOutlined,
   CheckCircleOutlined,
   StopOutlined,
-  ExclamationCircleOutlined
-} from '@ant-design/icons';
-import { User, UserRole, UserStatus, UserFilters } from '../../types/user';
-import { TTButton, TTTable } from '../common';
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
+import { User, UserRole, UserStatus, UserFilters } from "../../types/user";
+import { TTButton, TTTable } from "../common";
 
 const { Text } = Typography;
 
@@ -44,38 +44,51 @@ const UserTable: React.FC<UserTableProps> = ({
   onStatusChange,
   pagination,
   filters,
-  onFiltersChange
+  onFiltersChange,
 }) => {
   const getRoleColor = (role: UserRole) => {
+    // Neutral, non-semantic colors to avoid implying danger/success
     switch (role) {
-      case UserRole.ADMIN: return 'red';
-      case UserRole.MANAGER: return 'blue';
-      case UserRole.USER: return 'green';
-      default: return 'default';
+      case UserRole.ADMIN:
+        return "geekblue";
+      case UserRole.MANAGER:
+        return "blue";
+      case UserRole.USER:
+        return "default";
+      default:
+        return "default";
     }
   };
 
   const getStatusColor = (status: UserStatus) => {
     switch (status) {
-      case UserStatus.ACTIVE: return 'success';
-      case UserStatus.INACTIVE: return 'default';
-      case UserStatus.SUSPENDED: return 'error';
-      default: return 'default';
+      case UserStatus.ACTIVE:
+        return "success";
+      case UserStatus.INACTIVE:
+        return "default";
+      case UserStatus.SUSPENDED:
+        return "error";
+      default:
+        return "default";
     }
   };
 
   const getStatusIcon = (status: UserStatus) => {
     switch (status) {
-      case UserStatus.ACTIVE: return <CheckCircleOutlined />;
-      case UserStatus.INACTIVE: return <StopOutlined />;
-      case UserStatus.SUSPENDED: return <ExclamationCircleOutlined />;
-      default: return null;
+      case UserStatus.ACTIVE:
+        return <CheckCircleOutlined />;
+      case UserStatus.INACTIVE:
+        return <StopOutlined />;
+      case UserStatus.SUSPENDED:
+        return <ExclamationCircleOutlined />;
+      default:
+        return null;
     }
   };
 
   const getActionMenuItems = (user: User) => [
     {
-      key: 'edit',
+      key: "edit",
       label: (
         <Space>
           <EditOutlined />
@@ -85,46 +98,58 @@ const UserTable: React.FC<UserTableProps> = ({
       onClick: () => onEdit(user),
     },
     {
-      type: 'divider' as const,
+      type: "divider" as const,
     },
-    ...(user.status !== UserStatus.ACTIVE ? [{
-      key: 'activate',
-      label: (
-        <Space>
-          <CheckCircleOutlined style={{ color: '#52c41a' }} />
-          Activate
-        </Space>
-      ),
-      onClick: () => onStatusChange(user, UserStatus.ACTIVE),
-    }] : []),
-    ...(user.status !== UserStatus.INACTIVE ? [{
-      key: 'deactivate',
-      label: (
-        <Space>
-          <StopOutlined style={{ color: '#faad14' }} />
-          Deactivate
-        </Space>
-      ),
-      onClick: () => onStatusChange(user, UserStatus.INACTIVE),
-    }] : []),
-    ...(user.status !== UserStatus.SUSPENDED ? [{
-      key: 'suspend',
-      label: (
-        <Space>
-          <ExclamationCircleOutlined style={{ color: '#ff4d4f' }} />
-          Suspend
-        </Space>
-      ),
-      onClick: () => onStatusChange(user, UserStatus.SUSPENDED),
-    }] : []),
+    ...(user.status !== UserStatus.ACTIVE
+      ? [
+          {
+            key: "activate",
+            label: (
+              <Space>
+                <CheckCircleOutlined style={{ color: "#52c41a" }} />
+                Activate
+              </Space>
+            ),
+            onClick: () => onStatusChange(user, UserStatus.ACTIVE),
+          },
+        ]
+      : []),
+    ...(user.status !== UserStatus.INACTIVE
+      ? [
+          {
+            key: "deactivate",
+            label: (
+              <Space>
+                <StopOutlined style={{ color: "#faad14" }} />
+                Deactivate
+              </Space>
+            ),
+            onClick: () => onStatusChange(user, UserStatus.INACTIVE),
+          },
+        ]
+      : []),
+    ...(user.status !== UserStatus.SUSPENDED
+      ? [
+          {
+            key: "suspend",
+            label: (
+              <Space>
+                <ExclamationCircleOutlined style={{ color: "#ff4d4f" }} />
+                Suspend
+              </Space>
+            ),
+            onClick: () => onStatusChange(user, UserStatus.SUSPENDED),
+          },
+        ]
+      : []),
     {
-      type: 'divider' as const,
+      type: "divider" as const,
     },
     {
-      key: 'delete',
+      key: "delete",
       label: (
         <Space>
-          <DeleteOutlined style={{ color: '#ff4d4f' }} />
+          <DeleteOutlined style={{ color: "#ff4d4f" }} />
           Delete User
         </Space>
       ),
@@ -134,11 +159,11 @@ const UserTable: React.FC<UserTableProps> = ({
 
   const columns = [
     {
-      title: 'User',
-      dataIndex: 'user',
-      key: 'user',
+      title: "User",
+      dataIndex: "user",
+      key: "user",
       render: (_: any, record: User) => (
-        <Space>
+        <Space size={8}>
           <Avatar
             size={40}
             icon={<UserOutlined />}
@@ -146,10 +171,12 @@ const UserTable: React.FC<UserTableProps> = ({
           />
           <div>
             <div>
-              <Text strong>{record.firstName} {record.lastName}</Text>
+              <Text strong>
+                {record.firstName} {record.lastName}
+              </Text>
             </div>
             <div>
-              <Text type="secondary" style={{ fontSize: '12px' }}>
+              <Text type="secondary" style={{ fontSize: "12px" }}>
                 @{record.username}
               </Text>
             </div>
@@ -157,91 +184,126 @@ const UserTable: React.FC<UserTableProps> = ({
         </Space>
       ),
       sorter: true,
-      sortOrder: filters.sortBy === 'firstName' ? 
-        (filters.sortDirection === 'asc' ? 'ascend' : 'descend') as SortOrder : undefined,
+      sortOrder:
+        filters.sortBy === "firstName"
+          ? ((filters.sortDirection === "asc"
+              ? "ascend"
+              : "descend") as SortOrder)
+          : undefined,
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
       sorter: true,
-      sortOrder: filters.sortBy === 'email' ? 
-        (filters.sortDirection === 'asc' ? 'ascend' : 'descend') as SortOrder : undefined,
+      sortOrder:
+        filters.sortBy === "email"
+          ? ((filters.sortDirection === "asc"
+              ? "ascend"
+              : "descend") as SortOrder)
+          : undefined,
+      render: (email: string) => (
+        <Tooltip title={email}>
+          <Text ellipsis style={{ maxWidth: 240, display: "inline-block" }}>
+            {email}
+          </Text>
+        </Tooltip>
+      ),
     },
     {
-      title: 'Role',
-      dataIndex: 'role',
-      key: 'role',
-      render: (role: UserRole) => (
-        <Tag color={getRoleColor(role)}>
-          {role}
-        </Tag>
-      ),
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
+      render: (role: UserRole) => <Tag color={getRoleColor(role)}>{role}</Tag>,
       filters: [
-        { text: 'Admin', value: UserRole.ADMIN },
-        { text: 'Manager', value: UserRole.MANAGER },
-        { text: 'User', value: UserRole.USER },
+        { text: "Admin", value: UserRole.ADMIN },
+        { text: "Manager", value: UserRole.MANAGER },
+        { text: "User", value: UserRole.USER },
       ],
       filteredValue: filters.role ? [filters.role] : null,
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
       render: (status: UserStatus) => (
         <Tag color={getStatusColor(status)} icon={getStatusIcon(status)}>
           {status}
         </Tag>
       ),
       filters: [
-        { text: 'Active', value: UserStatus.ACTIVE },
-        { text: 'Inactive', value: UserStatus.INACTIVE },
-        { text: 'Suspended', value: UserStatus.SUSPENDED },
+        { text: "Active", value: UserStatus.ACTIVE },
+        { text: "Inactive", value: UserStatus.INACTIVE },
+        { text: "Suspended", value: UserStatus.SUSPENDED },
       ],
       filteredValue: filters.status ? [filters.status] : null,
     },
     {
-      title: 'Last Login',
-      dataIndex: 'lastLogin',
-      key: 'lastLogin',
-      render: (date?: string) => (date ? new Date(date).toLocaleDateString() : 'Never'),
+      title: "Last Login",
+      dataIndex: "lastLogin",
+      key: "lastLogin",
+      render: (date?: string) =>
+        date ? new Date(date).toLocaleDateString() : "Never",
       sorter: true,
-      sortOrder: filters.sortBy === 'lastLogin' ? 
-        (filters.sortDirection === 'asc' ? 'ascend' : 'descend') as SortOrder : undefined,
+      sortOrder:
+        filters.sortBy === "lastLogin"
+          ? ((filters.sortDirection === "asc"
+              ? "ascend"
+              : "descend") as SortOrder)
+          : undefined,
     },
     {
-      title: 'Created',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date?: string) => (date ? new Date(date).toLocaleDateString() : '-'),
+      title: "Created",
+      dataIndex: "createdAt",
+      key: "createdAt",
+      render: (date?: string) =>
+        date ? new Date(date).toLocaleDateString() : "-",
       sorter: true,
-      sortOrder: filters.sortBy === 'createdAt' ? 
-        (filters.sortDirection === 'asc' ? 'ascend' : 'descend') as SortOrder : undefined,
+      sortOrder:
+        filters.sortBy === "createdAt"
+          ? ((filters.sortDirection === "asc"
+              ? "ascend"
+              : "descend") as SortOrder)
+          : undefined,
     },
     {
-      title: 'Actions',
-      key: 'actions',
-      width: 100,
+      title: "Actions",
+      key: "actions",
+      width: 120,
       render: (_: any, record: User) => (
-        <Space>
+        <Space size={8}>
           <Tooltip title="Edit User">
             <TTButton
               type="text"
               size="small"
               icon={<EditOutlined />}
               onClick={() => onEdit(record)}
+              style={{
+                width: 32,
+                height: 32,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             />
           </Tooltip>
-          
+
           <Dropdown
             menu={{ items: getActionMenuItems(record) }}
-            trigger={['click']}
+            trigger={["click"]}
             placement="bottomRight"
           >
             <TTButton
               type="text"
               size="small"
               icon={<MoreOutlined />}
+              style={{
+                width: 32,
+                height: 32,
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
             />
           </Dropdown>
         </Space>
@@ -256,7 +318,11 @@ const UserTable: React.FC<UserTableProps> = ({
     },
   };
 
-  const handleTableChange = (paginationInfo: any, filtersInfo: any, sorter: any) => {
+  const handleTableChange = (
+    paginationInfo: any,
+    filtersInfo: any,
+    sorter: any
+  ) => {
     const newFilters = { ...filters };
 
     // Handle pagination
@@ -271,7 +337,7 @@ const UserTable: React.FC<UserTableProps> = ({
     // Handle sorting
     if (sorter.field) {
       newFilters.sortBy = sorter.field;
-      newFilters.sortDirection = sorter.order === 'ascend' ? 'asc' : 'desc';
+      newFilters.sortDirection = sorter.order === "ascend" ? "asc" : "desc";
     } else {
       delete newFilters.sortBy;
       delete newFilters.sortDirection;
@@ -308,7 +374,7 @@ const UserTable: React.FC<UserTableProps> = ({
         showQuickJumper: true,
         showTotal: (total, range) =>
           `${range[0]}-${range[1]} of ${total} users`,
-        pageSizeOptions: ['10', '20', '50', '100'],
+        pageSizeOptions: ["10", "20", "50", "100"],
       }}
       onChange={handleTableChange}
       scroll={{ x: 800 }}

@@ -10,9 +10,10 @@ export interface CommentFormProps {
   mentionUsernames?: string[]; // initial suggestion list
   onMentionSearch?: (query: string) => Promise<string[]> | string[]; // async search hook
   initialValue?: string;
+  rows?: number; // textarea rows (default 3)
 }
 
-const CommentForm: React.FC<CommentFormProps> = ({ submitting, parentCommentId = null, onSubmit, onCancel, mentionUsernames = [], onMentionSearch, initialValue }) => {
+const CommentForm: React.FC<CommentFormProps> = ({ submitting, parentCommentId = null, onSubmit, onCancel, mentionUsernames = [], onMentionSearch, initialValue, rows = 3 }) => {
   const [form] = Form.useForm();
   const [comment, setComment] = useState(initialValue || '');
   const [mentionSearch, setMentionSearch] = useState('');
@@ -55,7 +56,7 @@ const CommentForm: React.FC<CommentFormProps> = ({ submitting, parentCommentId =
             .slice(0, 8)
             .map(u => ({ value: u, label: u }))}
           style={{ width: '100%' }}
-          rows={3}
+          rows={rows}
         />
       </Form.Item>
       <Form.Item style={{ marginBottom: 0 }}>

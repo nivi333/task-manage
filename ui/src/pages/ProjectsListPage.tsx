@@ -113,7 +113,7 @@ const ProjectsListPage: React.FC = () => {
   };
 
   return (
-    <AppLayout title={<HeaderTitle level={3}>Projects</HeaderTitle>} contentPadding={16}>
+    <AppLayout title={<HeaderTitle level={3}>Projects</HeaderTitle>}>
       <Space direction="vertical" size={16} style={{ width: '100%' }}>
         <Card>
           <Space direction="vertical" style={{ width: '100%' }}>

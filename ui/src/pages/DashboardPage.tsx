@@ -35,7 +35,7 @@ const DashboardPage: React.FC = () => {
   ];
 
   return (
-    <AppLayout title={<HeaderTitle level={3}>Dashboard</HeaderTitle>} contentPadding={16}>
+    <AppLayout title={<HeaderTitle level={3}>Dashboard</HeaderTitle>}>
       <Space direction="vertical" size={16} style={{ width: '100%' }}>
             <Row gutter={[16, 16]}>
               {kpis.map((k) => (

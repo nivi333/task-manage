@@ -57,7 +57,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
     {
       key: "/teams",
       icon: <TeamOutlined />,
-      label: <Link to="/teams">Team Creation & Management</Link>,
+      label: <Link to="/teams">Teams</Link>,
     },
     // Show Users only for admins
     ...(isAdmin
@@ -172,7 +172,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({
             background: colorBgContainer,
             borderRadius: 8,
             position: "relative",
-            paddingBottom: footer ? "80px" : undefined,
+            // Reserve extra space for fixed footer to prevent content overlap
+            paddingBottom: footer ? "96px" : undefined,
           }}
         >
           {children}
@@ -182,7 +183,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({
                 position: "fixed",
                 bottom: 0,
                 right: 0,
-                left: collapsed ? 80 : 200,
+                // Match Sider width exactly to avoid minor misalignment
+                left: collapsed ? 80 : 210,
                 background: colorBgContainer,
                 padding: "16px 24px",
                 borderTop: "1px solid #f0f0f0",

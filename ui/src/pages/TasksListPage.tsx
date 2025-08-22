@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Row, Col, Spin, Button, Tooltip, Drawer, Space } from 'antd';
-import { FilterOutlined, PlusOutlined } from '@ant-design/icons';
-import TaskFormDrawer from 'components/tasks/TaskFormDrawer';
-import taskService, { TaskFilters } from 'services/taskService';
-import { Task } from 'types/task';
-import TaskList from 'components/tasks/TaskList';
-import FilterSidebar from 'components/tasks/FilterSidebar';
-import AppLayout from 'components/layout/AppLayout';
-import { HeaderTitle } from 'components/common';
+import React, { useEffect, useState } from "react";
+import { Row, Col, Spin, Button, Tooltip, Drawer, Space } from "antd";
+import { FilterOutlined, PlusOutlined } from "@ant-design/icons";
+import TaskFormDrawer from "components/tasks/TaskFormDrawer";
+import taskService, { TaskFilters } from "services/taskService";
+import { Task } from "types/task";
+import TaskList from "components/tasks/TaskList";
+import FilterSidebar from "components/tasks/FilterSidebar";
+import AppLayout from "components/layout/AppLayout";
+import { HeaderTitle } from "components/common";
 
 const TasksListPage: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -48,21 +48,36 @@ const TasksListPage: React.FC = () => {
   };
 
   return (
-    <AppLayout title={<HeaderTitle level={3}>Task List</HeaderTitle>} contentPadding={24}>
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 16 }}>
+    <AppLayout
+      title={<HeaderTitle level={3}>Task List</HeaderTitle>}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: 16,
+        }}
+      >
         <Space>
           <Tooltip title="Filter tasks">
-            <Button icon={<FilterOutlined />} onClick={() => setFilterSidebarVisible(true)}>
+            <Button
+              icon={<FilterOutlined />}
+              onClick={() => setFilterSidebarVisible(true)}
+            >
               Filters
             </Button>
           </Tooltip>
-          <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateTask}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={handleCreateTask}
+          >
             Create Task
           </Button>
         </Space>
       </div>
       {loading ? (
-        <div style={{ textAlign: 'center', margin: '50px 0' }}>
+        <div style={{ textAlign: "center", margin: "50px 0" }}>
           <Spin size="large" />
         </div>
       ) : (
@@ -75,10 +90,12 @@ const TasksListPage: React.FC = () => {
         open={isFilterSidebarVisible}
         width={300}
       >
-        <FilterSidebar onFilterChange={(newFilters) => {
-          handleFilterChange(newFilters);
-          setFilterSidebarVisible(false);
-        }} />
+        <FilterSidebar
+          onFilterChange={(newFilters) => {
+            handleFilterChange(newFilters);
+            setFilterSidebarVisible(false);
+          }}
+        />
       </Drawer>
       <TaskFormDrawer
         open={isDrawerVisible}

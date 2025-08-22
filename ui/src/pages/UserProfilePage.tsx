@@ -128,7 +128,7 @@ const UserProfilePage: React.FC = () => {
   };
 
   return (
-    <AppLayout title="My Profile" contentPadding={24}>
+    <AppLayout title="My Profile">
         <Row gutter={[16, 16]}>
             <Col xs={24} lg={14}>
               <Card

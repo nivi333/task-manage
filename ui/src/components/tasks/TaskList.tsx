@@ -1,9 +1,10 @@
 import React from 'react';
-import { Table, Tag, Button, Space, Tooltip, Popconfirm } from 'antd';
+import { Tag, Button, Space, Tooltip, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { Task } from '../../types/task';
 import { ColumnsType } from 'antd/es/table';
+import TTTable from '../common/TTTable';
 
 interface TaskListProps {
   tasks: Task[];
@@ -108,7 +109,7 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, loading, onEdit }) => {
   ];
 
   return (
-    <Table
+    <TTTable
       columns={columns}
       dataSource={tasks}
       loading={loading}

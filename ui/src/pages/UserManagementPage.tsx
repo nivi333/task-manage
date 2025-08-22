@@ -1,22 +1,26 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Space, Modal } from 'antd';
-import { PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import UserTable from '../components/admin/UserTable';
-import UserFilters from '../components/admin/UserFilters';
-import BulkActions from '../components/admin/BulkActions';
-import UserModal from '../components/admin/UserModal';
-import { TTButton, HeaderTitle } from '../components/common';
-import { 
-  User, 
-  UserFilters as UserFiltersType, 
-  CreateUserRequest, 
-  UpdateUserRequest, 
+import React, { useState, useEffect, useCallback } from "react";
+import { Card, Space, Modal } from "antd";
+import {
+  PlusOutlined,
+  ExclamationCircleOutlined,
+  ExportOutlined,
+} from "@ant-design/icons";
+import UserTable from "../components/admin/UserTable";
+import UserFilters from "../components/admin/UserFilters";
+import BulkActions from "../components/admin/BulkActions";
+import UserModal from "../components/admin/UserModal";
+import { TTButton, HeaderTitle } from "../components/common";
+import {
+  User,
+  UserFilters as UserFiltersType,
+  CreateUserRequest,
+  UpdateUserRequest,
   BulkUserAction,
   UserStatus,
-  UserListResponse
-} from '../types/user';
-import { userService } from '../services/userService';
-import AppLayout from '../components/layout/AppLayout';
+  UserListResponse,
+} from "../types/user";
+import { userService } from "../services/userService";
+import AppLayout from "../components/layout/AppLayout";
 const { confirm } = Modal;
 
 const UserManagementPage: React.FC = () => {
@@ -33,24 +37,23 @@ const UserManagementPage: React.FC = () => {
   const [filters, setFilters] = useState<UserFiltersType>({
     page: 0,
     size: 20,
-    sortBy: 'createdAt',
-    sortDirection: 'desc' as const,
+    sortBy: "createdAt",
+    sortDirection: "desc" as const,
   });
-
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
       const response: UserListResponse = await userService.getUsers(filters);
       setUsers(response.users);
-      setPagination(prev => ({
+      setPagination((prev) => ({
         ...prev,
         current: response.currentPage + 1,
         pageSize: response.pageSize,
         total: response.totalElements,
       }));
     } catch (error) {
-      console.error('Error fetching users:', error);
+      console.error("Error fetching users:", error);
     } finally {
       setLoading(false);
     }
@@ -69,8 +72,8 @@ const UserManagementPage: React.FC = () => {
     const clearedFilters: UserFiltersType = {
       page: 0,
       size: filters.size,
-      sortBy: 'createdAt',
-      sortDirection: 'desc',
+      sortBy: "createdAt",
+      sortDirection: "desc",
     };
     setFilters(clearedFilters);
     setSelectedUserIds([]);
@@ -91,8 +94,6 @@ const UserManagementPage: React.FC = () => {
     setUserModalVisible(true);
   };
 
-  
-
   const handleEditUser = (user: User) => {
     setEditingUser(user);
     setUserModalVisible(true);
@@ -100,19 +101,19 @@ const UserManagementPage: React.FC = () => {
 
   const handleDeleteUser = (user: User) => {
     confirm({
-      title: 'Delete User',
+      title: "Delete User",
       icon: <ExclamationCircleOutlined />,
       content: `Are you sure you want to delete user "${user.firstName} ${user.lastName}"? This action cannot be undone.`,
-      okText: 'Delete',
-      okType: 'danger',
-      cancelText: 'Cancel',
+      okText: "Delete",
+      okType: "danger",
+      cancelText: "Cancel",
       onOk: async () => {
         try {
           await userService.deleteUser(user.id);
           await fetchUsers();
-          setSelectedUserIds(prev => prev.filter(id => id !== user.id));
+          setSelectedUserIds((prev) => prev.filter((id) => id !== user.id));
         } catch (error) {
-          console.error('Error deleting user:', error);
+          console.error("Error deleting user:", error);
         }
       },
     });
@@ -123,21 +124,26 @@ const UserManagementPage: React.FC = () => {
       await userService.updateUser(user.id, { status });
       await fetchUsers();
     } catch (error) {
-      console.error('Error updating user status:', error);
+      console.error("Error updating user status:", error);
     }
   };
 
-  const handleUserSubmit = async (userData: CreateUserRequest | UpdateUserRequest) => {
+  const handleUserSubmit = async (
+    userData: CreateUserRequest | UpdateUserRequest
+  ) => {
     try {
       if (editingUser) {
-        await userService.updateUser(editingUser.id, userData as UpdateUserRequest);
+        await userService.updateUser(
+          editingUser.id,
+          userData as UpdateUserRequest
+        );
       } else {
         await userService.createUser(userData as CreateUserRequest);
       }
       setUserModalVisible(false);
       await fetchUsers();
     } catch (error) {
-      console.error('Error saving user:', error);
+      console.error("Error saving user:", error);
     }
   };
 
@@ -147,7 +153,7 @@ const UserManagementPage: React.FC = () => {
       await fetchUsers();
       setSelectedUserIds([]);
     } catch (error) {
-      console.error('Error performing bulk action:', error);
+      console.error("Error performing bulk action:", error);
     }
   };
 
@@ -155,23 +161,28 @@ const UserManagementPage: React.FC = () => {
     try {
       const blob = await userService.exportUsers(filters);
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
+      const link = document.createElement("a");
       link.href = url;
-      link.download = `users-export-${new Date().toISOString().split('T')[0]}.csv`;
+      link.download = `users-export-${
+        new Date().toISOString().split("T")[0]
+      }.csv`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Error exporting users:', error);
+      console.error("Error exporting users:", error);
     }
   };
 
   return (
-    <AppLayout title={<HeaderTitle level={3}>User Management</HeaderTitle>} contentPadding={24}>
+    <AppLayout
+      title={<HeaderTitle level={3}>User Management</HeaderTitle>}
+      contentPadding={0}
+    >
       <div className="user-management-page">
-        <div className="tt-filters" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, marginBottom: 8, flexWrap: 'wrap' }}>
-          <div style={{ flex: 1 }}>
+        <div className="um-toolbar">
+          <div className="um-toolbar-left">
             <UserFilters
               filters={filters}
               onFiltersChange={handleFiltersChange}
@@ -179,25 +190,33 @@ const UserManagementPage: React.FC = () => {
               loading={loading}
             />
           </div>
-          <TTButton
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={handleCreateUser}
-          >
-            Add User
-          </TTButton>
+          <div className="um-toolbar-right">
+            <TTButton
+              icon={<ExportOutlined />}
+              onClick={handleExport}
+              aria-label="Export CSV"
+            />
+            <TTButton
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={handleCreateUser}
+            >
+              Add User
+            </TTButton>
+          </div>
         </div>
         <Card bordered={false}>
-          <Space direction="vertical" size={8} style={{ width: '100%' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <BulkActions
-                selectedUserIds={selectedUserIds}
-                onBulkAction={handleBulkAction}
-                onExport={handleExport}
-                loading={loading}
-              />
-            </div>
-            
+          <Space direction="vertical" size={8} style={{ width: "100%" }}>
+            {selectedUserIds.length > 0 && (
+              <div className="um-bulk-actions-row">
+                <BulkActions
+                  selectedUserIds={selectedUserIds}
+                  onBulkAction={handleBulkAction}
+                  loading={loading}
+                />
+              </div>
+            )}
+
             <UserTable
               users={users}
               loading={loading}

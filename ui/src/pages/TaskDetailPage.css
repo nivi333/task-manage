@@ -1,0 +1,149 @@
+.task-detail-card {
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f0f0f0;
+  height: 100%;
+}
+
+/* Full-height white background container */
+.task-detail-container {
+  background: #fff;
+  border-radius: 8px;
+  min-height: 100vh; /* full viewport height */
+  box-sizing: border-box;
+  position: relative;
+  z-index: 1;
+}
+
+/* Ensure direct children of layout stretch to fill container */
+.task-detail-container > .ant-row {
+  min-height: 100vh; /* fill full viewport height */
+  align-items: stretch; /* stretch children to fill height */
+}
+
+/* Ensure both columns fill available height */
+.task-detail-container .ant-col {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Fix for Ant Design layout */
+.ant-layout {
+  background: #fff;
+}
+
+.task-detail-card .ant-card-body {
+  padding: 16px 20px; /* tighter spacing for a compact look */
+}
+
+.task-header .ant-typography {
+  color: #1f1f1f;
+}
+
+.task-detail-container .ant-list-item {
+  padding: 8px 10px; /* compact list row */
+  transition: background 0.2s ease, border-color 0.2s ease;
+  border-radius: 8px;
+  margin: 4px 10px; /* adjusted horizontal margin */
+}
+
+.task-detail-container .ant-list-item:hover {
+  background: #fafafa;
+}
+
+/* Selected task styling */
+.task-detail-container .task-list-item.selected {
+  background: #f5f7ff;
+  border: 1px solid #d6e4ff;
+}
+
+/* Compact typography in list */
+.task-detail-container .task-list-title {
+  font-weight: 600;
+  font-size: 13.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.task-detail-container .task-list-meta {
+  color: #8c8c8c;
+  font-size: 12px;
+}
+
+/* Override Ant Design Row/Col gutters to remove negative margins and side paddings */
+.task-detail-container > .ant-row {
+  margin: 0 !important; /* remove negative margins from Row */
+}
+
+.task-detail-container > .ant-row > .ant-col {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Left Task List card vertical divider */
+.task-list-card {
+  border-right: 1px solid #e8e8e8; /* subtle divider between columns */
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Remove default end margin on priority tags within the Task List only */
+.task-detail-container .ant-list-item .ant-tag {
+  margin-inline-end: 0 !important;
+}
+
+/* Right card: compact table-style detail layout */
+.task-detail-table {
+  width: 100%;
+  border: 1px solid #cfcfcf; /* slightly darker outer border */
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.task-detail-table .row {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  align-items: center; /* vertically center content */
+  border-bottom: 1px solid #d9d9d9; /* requested separator shade */
+}
+.task-detail-table .row:last-child {
+  border-bottom: none;
+}
+
+.task-detail-table .cell {
+  display: flex;
+  align-items: center; /* vertically center per screenshot */
+  padding: 14px 16px; /* comfortable spacing */
+  text-align: left;
+}
+
+/* Two-column layout: left heading, right value */
+.task-detail-table .cell-left {
+  background: transparent; /* remove heading background */
+  color: #1f1f1f;
+  border-right: 1px solid #d9d9d9; /* vertical separator between label and value */
+}
+
+.task-detail-table .cell-right {
+  background: transparent; /* keep values on white */
+}
+
+.task-detail-table .cell-heading {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-weight: 600;
+  font-size: 13px;
+  color: #2d2d2d;
+  margin: 0;
+}
+
+.task-detail-table .cell-value {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 14px;
+  color: #1f1f1f;
+}

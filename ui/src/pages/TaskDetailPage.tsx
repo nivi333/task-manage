@@ -17,29 +17,34 @@ import {
   ArrowLeftOutlined,
   ClockCircleOutlined,
   UserOutlined,
-  FlagOutlined,
   PaperClipOutlined,
-  LinkOutlined,
   CalendarOutlined,
 } from "@ant-design/icons";
+import { Input, List, Tooltip } from "antd";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import AppLayout from "components/layout/AppLayout";
 import { HeaderTitle } from "components/common";
 import taskService from "services/taskService";
 import { Task } from "types/task";
-import TaskDescription from "components/tasks/TaskDescription";
-import CommentSection from "components/tasks/CommentSection";
 import FileAttachmentViewer from "components/tasks/FileAttachmentViewer";
 import SubtaskManagement from "components/tasks/SubtaskManagement";
+import "./TaskDetailPage.css";
 
 const { Title, Text } = Typography;
+
+// Enable fromNow() usage
+dayjs.extend(relativeTime);
 
 const TaskDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [task, setTask] = useState<Task | null>(null);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchText, setSearchText] = useState<string>("");
 
   useEffect(() => {
     setLoading(true);
@@ -53,6 +58,19 @@ const TaskDetailPage: React.FC = () => {
       })
       .finally(() => setLoading(false));
   }, [id]);
+
+  // Load list for the left panel
+  useEffect(() => {
+    taskService
+      .getTasks({ limit: 50 })
+      .then((res: any) => {
+        const list = Array.isArray(res) ? res : res?.content ?? [];
+        setTasks(list);
+      })
+      .catch(() => {
+        // keep page usable even if sidebar list fails
+      });
+  }, []);
 
   // Helper functions for status and priority colors
   const getPriorityColor = (priority: string) => {
@@ -97,25 +115,7 @@ const TaskDetailPage: React.FC = () => {
     );
   }
 
-  const handleSave = () => {
-    // TODO: Implement save functionality
-    message.success("Task saved successfully");
-  };
-
-  const handleCancel = () => {
-    navigate(-1); // Go back to previous page
-  };
-
-  const footer = (
-    <div className="footer-actions">
-      <Button onClick={handleCancel} style={{ minWidth: 100 }}>
-        Cancel
-      </Button>
-      <Button type="primary" onClick={handleSave} style={{ minWidth: 150 }}>
-        Save Changes
-      </Button>
-    </div>
-  );
+  // Footer actions removed per request
 
   return (
     <AppLayout
@@ -124,187 +124,285 @@ const TaskDetailPage: React.FC = () => {
           level={3}
           style={{ display: "flex", alignItems: "center" }}
         >
-          <Button
-            type="text"
-            icon={<ArrowLeftOutlined />}
-            onClick={() => navigate(-1)}
-            style={{ marginRight: "16px" }}
-          >
-            Back to Tasks
-          </Button>
+          Task Details
         </HeaderTitle>
       }
-      contentPadding={24}
-      footer={footer}
     >
-      <div
-        className="task-detail-container"
-        style={{ maxWidth: 1200, margin: "0 auto" }}
-      >
-        <Row gutter={[24, 24]}>
-          {/* Main Content */}
-          <Col xs={24} lg={16}>
-            <Card className="task-detail-card">
-              <div className="task-header">
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "flex-start",
-                  }}
-                >
-                  <Title level={3} style={{ margin: 0, fontWeight: 600 }}>
-                    {task.title}
-                  </Title>
-                  <Space>
-                    <Tag
-                      color={getStatusColor(task.status)}
-                      style={{ fontWeight: 500 }}
-                    >
-                      {task.status?.replace(/_/g, " ")}
-                    </Tag>
-                    <Tag
-                      color={getPriorityColor(task.priority)}
-                      style={{ fontWeight: 500 }}
-                    >
-                      {task.priority}
-                    </Tag>
-                  </Space>
+      <div className="task-detail-container">
+        <Row gutter={[0, 24]} wrap={false}>
+          {/* Left panel: Task List */}
+          <Col xs={24} lg={8} style={{ background: "#fff", borderRadius: 6 }}>
+            <Card
+              className="task-list-card"
+              bodyStyle={{ padding: 0, background: "#fff" }}
+              style={{
+                borderRadius: 6,
+                overflow: "hidden",
+                background: "#fff",
+              }}
+            >
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 8,
+                  padding: "0 16px 8px",
+                  borderBottom: "1px solid #f0f0f0",
+                  background: "#fff",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 8 }}>
+                  <Tooltip title="Back to Task List">
+                    <Button
+                      type="text"
+                      icon={<ArrowLeftOutlined />}
+                      onClick={() => navigate(-1)}
+                      style={{ marginRight: 4 }}
+                    />
+                  </Tooltip>
+                  <Text strong style={{ fontSize: 16, color: "#1f1f1f" }}>
+                    All Tasks
+                  </Text>
                 </div>
-
-                <div style={{ margin: "16px 0" }}>
-                  <Space size="middle">
-                    <Text type="secondary">
-                      <UserOutlined />{" "}
-                      {task.assignedTo?.username || "Unassigned"}
-                    </Text>
-                    {task.dueDate && (
-                      <Text type="secondary">
-                        <CalendarOutlined />{" "}
-                        {dayjs(task.dueDate).format("MMM D, YYYY")}
-                      </Text>
-                    )}
-                    <Text type="secondary">
-                      <ClockCircleOutlined /> {dayjs(task.createdAt).fromNow()}
-                    </Text>
-                  </Space>
+                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                  <Input
+                    allowClear
+                    placeholder="Search tasks"
+                    prefix={<SearchOutlined />}
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    size="small"
+                  />
+                  <Tooltip title="Add New Task">
+                    <Button
+                      size="small"
+                      type="primary"
+                      icon={<PlusOutlined />}
+                      onClick={() => navigate("/tasks/create")}
+                    >
+                      New
+                    </Button>
+                  </Tooltip>
                 </div>
               </div>
 
-              <Divider style={{ margin: "16px 0" }} />
-
-              <div className="task-content">
-                <TaskDescription task={task} />
-
-                <div style={{ marginTop: 24 }}>
-                  <SubtaskManagement
-                    subtasks={task.subtasks || []}
-                    parentTaskId={task.id}
-                  />
-                </div>
-
-                <div style={{ marginTop: 24 }}>
-                  <Title level={5} style={{ marginBottom: 12 }}>
-                    <PaperClipOutlined /> Attachments
-                  </Title>
-                  <FileAttachmentViewer attachments={task.attachments || []} />
-                </div>
-
-                <div style={{ marginTop: 24 }}>
-                  <CommentSection taskId={task.id} />
-                </div>
+              <div style={{ padding: 0 }}>
+                {(() => {
+                  const taskList: Task[] = Array.isArray(tasks)
+                    ? (tasks as Task[])
+                    : (tasks as any)?.content ?? [];
+                  return (
+                    <List
+                      dataSource={taskList.filter(
+                        (t: Task) =>
+                          t.title
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase()) ||
+                          (t.description || "")
+                            .toLowerCase()
+                            .includes(searchText.toLowerCase())
+                      )}
+                      renderItem={(item: Task) => (
+                        <List.Item
+                          onClick={() => navigate(`/tasks/${item.id}`)}
+                          className={`task-list-item${
+                            item.id === task.id ? " selected" : ""
+                          }`}
+                          style={{ cursor: "pointer" }}
+                        >
+                          <List.Item.Meta
+                            title={
+                              <div
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  minWidth: 0,
+                                  gap: 8,
+                                }}
+                              >
+                                {/* Left: Task title */}
+                                <span style={{ flex: 1, minWidth: 0 }}>
+                                  <span
+                                    className="task-list-title"
+                                    style={{ minWidth: 0 }}
+                                  >
+                                    {item.title}
+                                  </span>
+                                </span>
+                                {/* Center: Project name */}
+                                <span style={{ flex: 1, textAlign: "center" }}>
+                                  <span
+                                    className="task-list-project"
+                                    style={{ fontSize: 12, color: "#666" }}
+                                  >
+                                    {(item as any)?.projectName ||
+                                      (item as any)?.project?.name ||
+                                      ""}
+                                  </span>
+                                </span>
+                                {/* Right: Priority tag */}
+                                <span
+                                  style={{
+                                    flex: 1,
+                                    display: "flex",
+                                    justifyContent: "flex-end",
+                                  }}
+                                >
+                                  <Tag
+                                    style={{
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      height: 22,
+                                      fontSize: 12,
+                                      padding: "0 6px",
+                                    }}
+                                    color={
+                                      item.priority === "HIGH"
+                                        ? "red"
+                                        : item.priority === "MEDIUM"
+                                        ? "orange"
+                                        : "green"
+                                    }
+                                  >
+                                    {item.priority}
+                                  </Tag>
+                                </span>
+                              </div>
+                            }
+                            // single-line item, no secondary description
+                          />
+                        </List.Item>
+                      )}
+                    />
+                  );
+                })()}
               </div>
             </Card>
           </Col>
 
-          {/* Sidebar */}
-          <Col xs={24} lg={8}>
+          {/* Right panel: Task Details */}
+          <Col xs={24} lg={16} style={{ marginLeft: 10 }}>
             <Card
-              className="task-sidebar"
-              bordered={false}
-              style={{
-                borderRadius: 12,
-                boxShadow: "0 2px 12px rgba(0,0,0,0.05)",
-                marginBottom: 24,
-              }}
+              className="task-detail-card"
+              style={{ background: "#fff" }}
+              bodyStyle={{ padding: 15, background: "#fff" }}
             >
-              <Title level={5} style={{ marginBottom: 16 }}>
-                Task Details
-              </Title>
-
-              <div style={{ marginBottom: 16 }}>
-                <Text
-                  type="secondary"
-                  style={{ display: "block", fontSize: 12, marginBottom: 4 }}
-                >
-                  Status
-                </Text>
-                <Tag
-                  color={getStatusColor(task.status)}
-                  style={{ fontSize: 13, padding: "4px 8px" }}
-                >
-                  {task.status?.replace(/_/g, " ")}
-                </Tag>
-              </div>
-
-              <div style={{ marginBottom: 16 }}>
-                <Text
-                  type="secondary"
-                  style={{ display: "block", fontSize: 12, marginBottom: 4 }}
-                >
-                  Priority
-                </Text>
-                <Tag
-                  color={getPriorityColor(task.priority)}
-                  style={{ fontSize: 13, padding: "4px 8px" }}
-                >
-                  {task.priority}
-                </Tag>
-              </div>
-
-              <div style={{ marginBottom: 16 }}>
-                <Text
-                  type="secondary"
-                  style={{ display: "block", fontSize: 12, marginBottom: 4 }}
-                >
-                  Assignee
-                </Text>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <Avatar
-                    size="small"
-                    icon={<UserOutlined />}
-                    style={{ marginRight: 8 }}
-                  />
-                  <Text>{task.assignedTo?.username || "Unassigned"}</Text>
+              <div className="task-detail-table">
+                {/* Title */}
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Title</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <span className="cell-value">
+                      <strong>{task.title}</strong>
+                    </span>
+                  </div>
                 </div>
-              </div>
-
-              {task.dueDate && (
-                <div style={{ marginBottom: 16 }}>
-                  <Text
-                    type="secondary"
-                    style={{ display: "block", fontSize: 12, marginBottom: 4 }}
-                  >
-                    Due Date
-                  </Text>
-                  <Text>
-                    <CalendarOutlined style={{ marginRight: 8 }} />
-                    {dayjs(task.dueDate).format("MMM D, YYYY")}
-                  </Text>
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Assignee</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <span className="cell-value">
+                      {task.assignedTo?.username || "Unassigned"}
+                    </span>
+                  </div>
                 </div>
-              )}
-
-              <div style={{ marginBottom: 16 }}>
-                <Text
-                  type="secondary"
-                  style={{ display: "block", fontSize: 12, marginBottom: 4 }}
-                >
-                  Created
-                </Text>
-                <Text>
-                  <ClockCircleOutlined style={{ marginRight: 8 }} />
-                  {dayjs(task.createdAt).format("MMM D, YYYY")}
-                </Text>
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Due Date</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <span className="cell-value">
+                      {task.dueDate
+                        ? dayjs(task.dueDate).format("MMM D, YYYY")
+                        : "—"}
+                    </span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Created</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <span className="cell-value">
+                      {dayjs(task.createdAt).fromNow()}
+                    </span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Status</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <Tag
+                      color={getStatusColor(task.status)}
+                      style={{ marginInlineEnd: 0 }}
+                    >
+                      {task.status?.replace(/_/g, " ")}
+                    </Tag>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Priority</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <Tag
+                      color={getPriorityColor(task.priority)}
+                      style={{ marginInlineEnd: 0 }}
+                    >
+                      {task.priority}
+                    </Tag>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Project</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <span className="cell-value">
+                      {(task as any)?.projectName ||
+                        (task as any)?.project?.name ||
+                        "—"}
+                    </span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Description</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <span className="cell-value">
+                      {task.description || "No description provided."}
+                    </span>
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Subtasks</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <SubtaskManagement
+                      subtasks={task.subtasks || []}
+                      parentTaskId={task.id}
+                      compact
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="cell cell-left">
+                    <span className="cell-heading">Attachments</span>
+                  </div>
+                  <div className="cell cell-right">
+                    <FileAttachmentViewer
+                      attachments={task.attachments || []}
+                      compact
+                    />
+                  </div>
+                </div>
+                {/* Comments section removed per request */}
               </div>
             </Card>
           </Col>

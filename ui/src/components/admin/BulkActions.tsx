@@ -6,8 +6,7 @@ import {
   CheckCircleOutlined, 
   StopOutlined, 
   ExclamationCircleOutlined,
-  DownOutlined,
-  ExportOutlined
+  DownOutlined
 } from '@ant-design/icons';
 import { BulkUserAction } from '../../types/user';
 import { TTButton } from '../common';
@@ -18,14 +17,12 @@ const { confirm } = Modal;
 interface BulkActionsProps {
   selectedUserIds: string[];
   onBulkAction: (action: BulkUserAction) => void;
-  onExport: () => void;
   loading?: boolean;
 }
 
 const BulkActions: React.FC<BulkActionsProps> = ({
   selectedUserIds,
   onBulkAction,
-  onExport,
   loading = false
 }) => {
   const selectedCount = selectedUserIds.length;
@@ -113,14 +110,6 @@ const BulkActions: React.FC<BulkActionsProps> = ({
             </Dropdown>
           </>
         )}
-        
-        <TTButton
-          icon={<ExportOutlined />}
-          onClick={onExport}
-          disabled={loading}
-        >
-          Export CSV
-        </TTButton>
       </Space>
     </div>
   );

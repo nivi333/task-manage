@@ -199,7 +199,6 @@ const ProjectDashboardPage: React.FC = () => {
           {project?.name || "Project Dashboard"}
         </HeaderTitle>
       }
-      contentPadding={16}
     >
       {content}
     </AppLayout>

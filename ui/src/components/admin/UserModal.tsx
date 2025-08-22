@@ -1,8 +1,14 @@
-import React, { useEffect } from 'react';
-import { Modal, Form, Input, Row, Col, Avatar, Upload } from 'antd';
-import { UserOutlined, UploadOutlined } from '@ant-design/icons';
-import { User, CreateUserRequest, UpdateUserRequest, UserRole, UserStatus } from '../../types/user';
-import { TTButton, TTSelect } from '../common';
+import React, { useEffect } from "react";
+import { Modal, Form, Input, Row, Col, Avatar, Upload } from "antd";
+import { UserOutlined, UploadOutlined } from "@ant-design/icons";
+import {
+  User,
+  CreateUserRequest,
+  UpdateUserRequest,
+  UserRole,
+  UserStatus,
+} from "../../types/user";
+import { TTButton, TTSelect } from "../common";
 
 interface UserModalProps {
   visible: boolean;
@@ -17,7 +23,7 @@ const UserModal: React.FC<UserModalProps> = ({
   user,
   onCancel,
   onSubmit,
-  loading = false
+  loading = false,
 }) => {
   const [form] = Form.useForm();
   const isEditing = !!user;
@@ -48,7 +54,7 @@ const UserModal: React.FC<UserModalProps> = ({
       const values = await form.validateFields();
       onSubmit(values);
     } catch (error) {
-      console.error('Validation failed:', error);
+      console.error("Validation failed:", error);
     }
   };
 
@@ -59,15 +65,11 @@ const UserModal: React.FC<UserModalProps> = ({
 
   return (
     <Modal
-      title={isEditing ? 'Edit User' : 'Create New User'}
+      title={isEditing ? "Edit User" : "Create New User"}
       open={visible}
       onCancel={handleCancel}
       footer={[
-        <TTButton
-          key="cancel"
-          onClick={handleCancel}
-          disabled={loading}
-        >
+        <TTButton key="cancel" onClick={handleCancel} disabled={loading}>
           Cancel
         </TTButton>,
         <TTButton
@@ -76,17 +78,13 @@ const UserModal: React.FC<UserModalProps> = ({
           onClick={handleSubmit}
           loading={loading}
         >
-          {isEditing ? 'Update User' : 'Create User'}
+          {isEditing ? "Update User" : "Create User"}
         </TTButton>,
       ]}
       width={600}
       destroyOnClose
     >
-      <Form
-        form={form}
-        layout="vertical"
-        requiredMark={false}
-      >
+      <Form form={form} layout="vertical" requiredMark={false}>
         {isEditing && (
           <Row justify="center" style={{ marginBottom: 24 }}>
             <Col>
@@ -95,11 +93,8 @@ const UserModal: React.FC<UserModalProps> = ({
                 icon={<UserOutlined />}
                 src={user?.profilePicture}
               />
-              <div style={{ textAlign: 'center', marginTop: 8 }}>
-                <Upload
-                  showUploadList={false}
-                  beforeUpload={() => false}
-                >
+              <div style={{ textAlign: "center", marginTop: 8 }}>
+                <Upload showUploadList={false} beforeUpload={() => false}>
                   <TTButton type="text" size="small" icon={<UploadOutlined />}>
                     Change Photo
                   </TTButton>
@@ -115,8 +110,8 @@ const UserModal: React.FC<UserModalProps> = ({
               label="First Name"
               name="firstName"
               rules={[
-                { required: true, message: 'Please enter first name' },
-                { min: 2, message: 'First name must be at least 2 characters' }
+                { required: true, message: "Please enter first name" },
+                { min: 2, message: "First name must be at least 2 characters" },
               ]}
             >
               <Input placeholder="Enter first name" />
@@ -127,8 +122,8 @@ const UserModal: React.FC<UserModalProps> = ({
               label="Last Name"
               name="lastName"
               rules={[
-                { required: true, message: 'Please enter last name' },
-                { min: 2, message: 'Last name must be at least 2 characters' }
+                { required: true, message: "Please enter last name" },
+                { min: 2, message: "Last name must be at least 2 characters" },
               ]}
             >
               <Input placeholder="Enter last name" />
@@ -140,9 +135,13 @@ const UserModal: React.FC<UserModalProps> = ({
           label="Username"
           name="username"
           rules={[
-            { required: true, message: 'Please enter username' },
-            { min: 3, message: 'Username must be at least 3 characters' },
-            { pattern: /^[a-zA-Z0-9_]+$/, message: 'Username can only contain letters, numbers, and underscores' }
+            { required: true, message: "Please enter username" },
+            { min: 3, message: "Username must be at least 3 characters" },
+            {
+              pattern: /^[a-zA-Z0-9_]+$/,
+              message:
+                "Username can only contain letters, numbers, and underscores",
+            },
           ]}
         >
           <Input placeholder="Enter username" />
@@ -152,8 +151,8 @@ const UserModal: React.FC<UserModalProps> = ({
           label="Email"
           name="email"
           rules={[
-            { required: true, message: 'Please enter email' },
-            { type: 'email', message: 'Please enter a valid email' }
+            { required: true, message: "Please enter email" },
+            { type: "email", message: "Please enter a valid email" },
           ]}
         >
           <Input placeholder="Enter email address" />
@@ -164,8 +163,8 @@ const UserModal: React.FC<UserModalProps> = ({
             label="Password"
             name="password"
             rules={[
-              { required: true, message: 'Please enter password' },
-              { min: 8, message: 'Password must be at least 8 characters' }
+              { required: true, message: "Please enter password" },
+              { min: 8, message: "Password must be at least 8 characters" },
             ]}
           >
             <Input.Password placeholder="Enter password" />
@@ -177,14 +176,14 @@ const UserModal: React.FC<UserModalProps> = ({
             <Form.Item
               label="Role"
               name="role"
-              rules={[{ required: true, message: 'Please select a role' }]}
+              rules={[{ required: true, message: "Please select a role" }]}
             >
               <TTSelect
                 placeholder="Select role"
                 options={[
-                  { label: 'User', value: UserRole.USER },
-                  { label: 'Manager', value: UserRole.MANAGER },
-                  { label: 'Admin', value: UserRole.ADMIN },
+                  { label: "User", value: UserRole.USER },
+                  { label: "Manager", value: UserRole.MANAGER },
+                  { label: "Admin", value: UserRole.ADMIN },
                 ]}
               />
             </Form.Item>
@@ -193,14 +192,14 @@ const UserModal: React.FC<UserModalProps> = ({
             <Form.Item
               label="Status"
               name="status"
-              rules={[{ required: true, message: 'Please select status' }]}
+              rules={[{ required: true, message: "Please select status" }]}
             >
               <TTSelect
                 placeholder="Select status"
                 options={[
-                  { label: 'Active', value: UserStatus.ACTIVE },
-                  { label: 'Inactive', value: UserStatus.INACTIVE },
-                  { label: 'Suspended', value: UserStatus.SUSPENDED },
+                  { label: "Active", value: UserStatus.ACTIVE },
+                  { label: "Inactive", value: UserStatus.INACTIVE },
+                  { label: "Suspended", value: UserStatus.SUSPENDED },
                 ]}
               />
             </Form.Item>
