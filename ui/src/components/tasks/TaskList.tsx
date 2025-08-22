@@ -84,10 +84,9 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, loading, onEdit }) => {
         <Space size="middle">
           <Tooltip title="Edit">
             <Button 
-              type="text" 
-              icon={<EditOutlined style={{ color: 'black' }} />} 
+              className="icon-only-button"
+              icon={<EditOutlined />} 
               onClick={() => onEdit(record)} 
-              style={{ border: 'none' }}
             />
           </Tooltip>
           <Tooltip title="Delete">
@@ -98,10 +97,8 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, loading, onEdit }) => {
               cancelText="No"
             >
               <Button 
-                type="text" 
-                danger 
+                className="icon-only-button"
                 icon={<DeleteOutlined />} 
-                style={{ border: 'none' }}
               />
             </Popconfirm>
           </Tooltip>

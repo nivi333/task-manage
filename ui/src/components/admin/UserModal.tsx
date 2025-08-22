@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Modal, Form, Input, Row, Col, Avatar, Upload } from "antd";
 import { UserOutlined, UploadOutlined } from "@ant-design/icons";
+import { useLocation } from "react-router-dom";
 import {
   User,
   CreateUserRequest,
@@ -27,9 +28,14 @@ const UserModal: React.FC<UserModalProps> = ({
 }) => {
   const [form] = Form.useForm();
   const isEditing = !!user;
+  const location = useLocation();
 
   useEffect(() => {
+    console.groupCollapsed("[UserModal] visibility/useEffect");
+    console.log("visible:", visible, "isEditing:", isEditing, "user:", user);
     if (visible) {
+      // Opened: reset first, then populate
+      form.resetFields();
       if (user) {
         form.setFieldsValue({
           username: user.username,
@@ -39,15 +45,37 @@ const UserModal: React.FC<UserModalProps> = ({
           role: user.role,
           status: user.status,
         });
+        console.log("[UserModal] Set edit values:", form.getFieldsValue());
       } else {
-        form.resetFields();
         form.setFieldsValue({
+          firstName: "",
+          lastName: "",
+          username: "",
+          email: "",
+          password: "",
           role: UserRole.USER,
           status: UserStatus.ACTIVE,
         });
+        console.log("[UserModal] Set create defaults:", form.getFieldsValue());
       }
     }
-  }, [visible, user, form]);
+    console.groupEnd();
+    return () => {
+      console.log("[UserModal] cleanup (effect re-run/unmount)");
+    };
+  }, [visible, isEditing, user?.id]);
+
+  // Reset when navigating away to any other route
+  useEffect(() => {
+    console.log("[UserModal] route changed:", location.pathname);
+    if (visible) {
+      console.log(
+        "[UserModal] modal visible on route change -> resetting fields"
+      );
+      form.resetFields();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.pathname]);
 
   const handleSubmit = async () => {
     try {
@@ -59,6 +87,13 @@ const UserModal: React.FC<UserModalProps> = ({
   };
 
   const handleCancel = () => {
+    console.log("[UserModal] handleCancel -> resetting fields");
+    form.resetFields();
+    onCancel();
+  };
+
+  const handleModalClose = () => {
+    console.log("[UserModal] handleModalClose -> resetting fields");
     form.resetFields();
     onCancel();
   };
@@ -68,6 +103,9 @@ const UserModal: React.FC<UserModalProps> = ({
       title={isEditing ? "Edit User" : "Create New User"}
       open={visible}
       onCancel={handleCancel}
+      afterOpenChange={(open) => {
+        console.log("[UserModal] afterOpenChange:", open);
+      }}
       footer={[
         <TTButton key="cancel" onClick={handleCancel} disabled={loading}>
           Cancel
@@ -82,9 +120,10 @@ const UserModal: React.FC<UserModalProps> = ({
         </TTButton>,
       ]}
       width={600}
-      destroyOnClose
+      destroyOnHidden
+      forceRender={false}
     >
-      <Form form={form} layout="vertical" requiredMark={false}>
+      <Form form={form} layout="vertical" requiredMark={false} autoComplete="off">
         {isEditing && (
           <Row justify="center" style={{ marginBottom: 24 }}>
             <Col>
@@ -114,7 +153,7 @@ const UserModal: React.FC<UserModalProps> = ({
                 { min: 2, message: "First name must be at least 2 characters" },
               ]}
             >
-              <Input placeholder="Enter first name" />
+              <Input placeholder="Enter first name" autoComplete="off" name="um_firstName" inputMode="text" />
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -126,7 +165,7 @@ const UserModal: React.FC<UserModalProps> = ({
                 { min: 2, message: "Last name must be at least 2 characters" },
               ]}
             >
-              <Input placeholder="Enter last name" />
+              <Input placeholder="Enter last name" autoComplete="off" name="um_lastName" inputMode="text" />
             </Form.Item>
           </Col>
         </Row>
@@ -144,7 +183,7 @@ const UserModal: React.FC<UserModalProps> = ({
             },
           ]}
         >
-          <Input placeholder="Enter username" />
+          <Input placeholder="Enter username" autoComplete="new-username" name="um_username" inputMode="text" />
         </Form.Item>
 
         <Form.Item
@@ -155,7 +194,7 @@ const UserModal: React.FC<UserModalProps> = ({
             { type: "email", message: "Please enter a valid email" },
           ]}
         >
-          <Input placeholder="Enter email address" />
+          <Input placeholder="Enter email address" autoComplete="off" name="um_email" inputMode="email" />
         </Form.Item>
 
         {!isEditing && (
@@ -167,7 +206,7 @@ const UserModal: React.FC<UserModalProps> = ({
               { min: 8, message: "Password must be at least 8 characters" },
             ]}
           >
-            <Input.Password placeholder="Enter password" />
+            <Input.Password placeholder="Enter password" autoComplete="new-password" name="um_password" />
           </Form.Item>
         )}
 

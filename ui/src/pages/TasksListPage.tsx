@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Spin, Button, Tooltip, Drawer, Space, Typography } from "antd";
+import { Spin, Button, Tooltip, Drawer, Space, Typography, Empty } from "antd";
 import { FilterOutlined, PlusOutlined } from "@ant-design/icons";
 import TaskFormDrawer from "components/tasks/TaskFormDrawer";
 import taskService, { TaskFilters } from "services/taskService";
@@ -72,6 +72,11 @@ const TasksListPage: React.FC = () => {
         <div style={{ textAlign: "center", margin: "50px 0" }}>
           <Spin size="large" />
         </div>
+      ) : tasks.length === 0 ? (
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          description="No tasks found"
+        />
       ) : (
         <TaskList tasks={tasks} loading={false} onEdit={handleEditTask} />
       )}

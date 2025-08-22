@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Spin, Alert, Modal } from "antd";
+import { Card, Button, Spin, Alert, Modal, Empty } from "antd";
 import TeamSettingsDrawer from "../components/team/TeamSettingsDrawer";
 import TTTable from "../components/common/TTTable";
 import AppLayout from "../components/layout/AppLayout";
@@ -43,7 +43,7 @@ const TeamListPage: React.FC = () => {
 
   return (
     <AppLayout title="Teams">
-      <Card>
+      <Card variant="borderless">
         <div
           style={{
             display: "flex",
@@ -60,7 +60,7 @@ const TeamListPage: React.FC = () => {
           open={createModalOpen}
           onCancel={() => setCreateModalOpen(false)}
           footer={null}
-          destroyOnClose
+          destroyOnHidden
           title="Create Team"
         >
           <TeamCreateForm
@@ -70,57 +70,64 @@ const TeamListPage: React.FC = () => {
             onCancel={() => setCreateModalOpen(false)}
           />
         </Modal>
-        <TTTable
-          dataSource={teams.filter((t) => t && t.id && t.name)}
-          rowKey="id"
-          columns={[
-            {
-              title: "Team Name",
-              dataIndex: "name",
-              key: "name",
-              render: (text: string, record: Team) => (
-                <span style={{ fontWeight: 500 }}>{text}</span>
-              ),
-            },
-            {
-              title: "Description",
-              dataIndex: "description",
-              key: "description",
-              render: (desc: string) =>
-                desc || <span style={{ color: "#aaa" }}>No description</span>,
-            },
-            {
-              title: "Members",
-              dataIndex: "memberCount",
-              key: "memberCount",
-              align: "center" as const,
-              render: (count: number) => <span>{count ?? 0}</span>,
-            },
-            {
-              title: "Actions",
-              key: "actions",
-              align: "center" as const,
-              render: (_: any, record: Team) => (
-                <Button
-                  type="link"
-                  onClick={() => {
-                    setSelectedTeam(record);
-                    setSettingsDrawerOpen(true);
-                  }}
-                >
-                  Manage
-                </Button>
-              ),
-            },
-          ]}
-          locale={{ emptyText: "No teams found." }}
-          style={{
-            background: "white",
-            borderRadius: 8,
-            boxShadow: "0 2px 8px #f0f1f2",
-            marginTop: 8,
-          }}
-        />
+{teams.filter((t) => t && t.id && t.name).length === 0 ? (
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description="No teams found"
+          />
+        ) : (
+          <TTTable
+            dataSource={teams.filter((t) => t && t.id && t.name)}
+            rowKey="id"
+            columns={[
+              {
+                title: "Team Name",
+                dataIndex: "name",
+                key: "name",
+                render: (text: string, record: Team) => (
+                  <span style={{ fontWeight: 500 }}>{text}</span>
+                ),
+              },
+              {
+                title: "Description",
+                dataIndex: "description",
+                key: "description",
+                render: (desc: string) =>
+                  desc || <span style={{ color: "#aaa" }}>No description</span>,
+              },
+              {
+                title: "Members",
+                dataIndex: "memberCount",
+                key: "memberCount",
+                align: "center" as const,
+                render: (count: number) => <span>{count ?? 0}</span>,
+              },
+              {
+                title: "Actions",
+                key: "actions",
+                align: "center" as const,
+                render: (_: any, record: Team) => (
+                  <Button
+                    type="link"
+                    onClick={() => {
+                      setSelectedTeam(record);
+                      setSettingsDrawerOpen(true);
+                    }}
+                  >
+                    Manage
+                  </Button>
+                ),
+              },
+            ]}
+            locale={{ emptyText: "No teams found." }}
+            style={{
+              background: "white",
+              borderRadius: 8,
+              boxShadow: "0 2px 8px #f0f1f2",
+              marginTop: 8,
+            }}
+          />
+        )}
       </Card>
       <TeamSettingsDrawer
         open={settingsDrawerOpen}

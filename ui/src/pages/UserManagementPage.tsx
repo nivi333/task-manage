@@ -205,7 +205,7 @@ const UserManagementPage: React.FC = () => {
             </TTButton>
           </div>
         </div>
-        <Card bordered={false}>
+        <Card variant="borderless">
           <Space direction="vertical" size={8} style={{ width: "100%" }}>
             {selectedUserIds.length > 0 && (
               <div className="um-bulk-actions-row">
