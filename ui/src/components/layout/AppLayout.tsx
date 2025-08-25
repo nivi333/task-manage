@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu, Button, Typography, Space, theme } from "antd";
+import { Layout, Menu, Button, Typography, Space, theme, Tooltip } from "antd";
 import {
   AppstoreOutlined,
   TeamOutlined,
@@ -7,10 +7,13 @@ import {
   UnorderedListOutlined,
   LogoutOutlined,
   BarChartOutlined,
+  MoonOutlined,
+  SunOutlined,
   BellOutlined,
   SearchOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
+import { useTheme } from "../../context/ThemeContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/authService";
 import logo from "../../logo.svg";
@@ -37,6 +40,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
   const {
     token: { colorBgContainer },
   } = theme.useToken();
+  const { isDark, toggleTheme } = useTheme();
 
   const roles = authAPI.getUserRoles();
   const isAdmin = roles.includes("ADMIN");
@@ -167,6 +171,15 @@ const AppLayout: React.FC<AppLayoutProps> = ({
               ) : null}
             </div>
             <Space style={{ marginLeft: "auto" }}>
+              <Tooltip title={isDark ? "Switch to light mode" : "Switch to dark mode"}>
+                <Button
+                  className="icon-only-button"
+                  aria-label="Toggle theme"
+                  onClick={toggleTheme}
+                >
+                  {isDark ? <SunOutlined /> : <MoonOutlined />}
+                </Button>
+              </Tooltip>
               <Button
                 icon={<BarChartOutlined />}
                 onClick={() => navigate("/tasks/stats")}
@@ -180,7 +193,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
                   authAPI.logout();
                   window.location.href = "/login";
                 }}
-                style={{ border: "1.5px solid #ff4d4f" }}
+                style={{ border: "1px solid var(--color-error)" }}
               >
                 Logout
               </Button>
@@ -210,7 +223,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
                 left: collapsed ? 80 : 210,
                 background: colorBgContainer,
                 padding: "16px 24px",
-                borderTop: "1px solid rgba(140, 146, 160, 0.25)",
+                borderTop: "1px solid var(--color-border)",
                 display: "flex",
                 justifyContent: "flex-end",
                 gap: "12px",

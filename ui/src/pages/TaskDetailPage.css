@@ -1,13 +1,13 @@
 .task-detail-card {
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
-  border: 1px solid #f0f0f0;
-  height: 100%;
+  border: none; /* remove to avoid double border with inner table */
+  /* height removed to avoid extra bottom whitespace */
 }
 
 /* Full-height white background container */
 .task-detail-container {
-  background: #fff;
+  background: var(--color-background);
   border-radius: 8px;
   min-height: 100vh; /* full viewport height */
   box-sizing: border-box;
@@ -29,7 +29,7 @@
 
 /* Fix for Ant Design layout */
 .ant-layout {
-  background: #fff;
+  background: var(--color-background);
 }
 
 .task-detail-card .ant-card-body {
@@ -37,7 +37,7 @@
 }
 
 .task-header .ant-typography {
-  color: #1f1f1f;
+  color: var(--color-text-primary);
 }
 
 .task-detail-container .ant-list-item {
@@ -48,13 +48,13 @@
 }
 
 .task-detail-container .ant-list-item:hover {
-  background: #fafafa;
+  background: var(--color-surface);
 }
 
 /* Selected task styling */
 .task-detail-container .task-list-item.selected {
-  background: #f5f7ff;
-  border: 1px solid #d6e4ff;
+  background: rgba(var(--color-primary-rgb), 0.12);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.35);
 }
 
 /* Compact typography in list */
@@ -67,7 +67,7 @@
 }
 
 .task-detail-container .task-list-meta {
-  color: #8c8c8c;
+  color: var(--color-text-light);
   font-size: 12px;
 }
 
@@ -83,7 +83,7 @@
 
 /* Left Task List card vertical divider */
 .task-list-card {
-  border-right: 1px solid #e8e8e8; /* subtle divider between columns */
+  border-right: 1px solid var(--color-border); /* subtle divider between columns */
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
 }
@@ -96,17 +96,17 @@
 /* Right card: compact table-style detail layout */
 .task-detail-table {
   width: 100%;
-  border: 1px solid #cfcfcf; /* slightly darker outer border */
+  border: none; /* remove outer border as requested */
   border-radius: 8px;
   overflow: hidden;
-  background: #fff;
+  background: var(--color-card-background);
 }
 
 .task-detail-table .row {
   display: grid;
   grid-template-columns: 30% 70%;
-  align-items: center; /* vertically center content */
-  border-bottom: 1px solid #d9d9d9; /* requested separator shade */
+  align-items: stretch; /* stretch cells so the left border spans full row height */
+  border-bottom: 1px solid var(--color-border); /* requested separator shade */
 }
 .task-detail-table .row:last-child {
   border-bottom: none;
@@ -122,8 +122,8 @@
 /* Two-column layout: left heading, right value */
 .task-detail-table .cell-left {
   background: transparent; /* remove heading background */
-  color: #1f1f1f;
-  border-right: 1px solid #d9d9d9; /* vertical separator between label and value */
+  color: var(--color-text-primary);
+  border-right: 1px solid var(--color-border); /* vertical separator between label and value */
 }
 
 .task-detail-table .cell-right {
@@ -136,7 +136,7 @@
   justify-content: flex-start;
   font-weight: 600;
   font-size: 13px;
-  color: #2d2d2d;
+  color: var(--color-text-primary);
   margin: 0;
 }
 
@@ -145,5 +145,35 @@
   align-items: center;
   justify-content: flex-start;
   font-size: 14px;
-  color: #1f1f1f;
+  color: var(--color-text-primary);
+}
+
+/* Align Task Title value (Title row) to the top */
+.task-detail-table .row:first-child,
+.task-detail-table .row.row-title { /* Title row */
+  align-items: start !important; /* override row vertical centering */
+}
+
+.task-detail-table .row:first-child .cell,
+.task-detail-table .row.row-title .cell { /* both cells in first row */
+  align-items: flex-start !important; /* override flex alignment inside cell */
+}
+
+/* Ensure left label also top-aligns for the Title row so both sides align from top */
+.task-detail-table .row:first-child .cell-left,
+.task-detail-table .row.row-title .cell-left {
+  align-items: flex-start !important;
+}
+
+.task-detail-table .row:first-child .cell-right,
+.task-detail-table .row.row-title .cell-right { /* right grid item only */
+  align-self: start !important; /* top-align this grid item */
+  display: block !important; /* avoid flex vertical centering from parent */
+  padding-top: 10px; /* slight nudge to visually anchor to top */
+}
+
+.task-detail-table .row:first-child .cell-right .cell-value,
+.task-detail-table .row.row-title .cell-right .cell-value {
+  align-items: flex-start !important; /* ensure inner flex wraps from top */
+  display: block !important; /* make content flow from top */
 }

@@ -88,6 +88,7 @@ const TasksListPage: React.FC = () => {
         onClose={() => setFilterSidebarVisible(false)}
         open={isFilterSidebarVisible}
         width={300}
+        bodyStyle={{ padding: 0 }}
       >
         <FilterSidebar
           onFilterChange={(newFilters) => {

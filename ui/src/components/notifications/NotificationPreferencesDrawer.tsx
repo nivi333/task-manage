@@ -159,7 +159,7 @@ const NotificationPreferencesDrawer: React.FC<Props> = ({ open, onClose }) => {
       open={open}
       onClose={onClose}
       destroyOnClose
-      bodyStyle={{ paddingBottom: 24 }}
+      bodyStyle={{ padding: 0, paddingBottom: 24 }}
       footer={
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
           <Button onClick={onClose}>Cancel</Button>
@@ -169,10 +169,12 @@ const NotificationPreferencesDrawer: React.FC<Props> = ({ open, onClose }) => {
         </div>
       }
     >
-      <Typography.Paragraph type="secondary" style={{ marginBottom: 12 }}>
-        Configure how you’d like to receive notifications.
-      </Typography.Paragraph>
-      {content}
+      <div style={{ padding: '24px 32px' }}>
+        <Typography.Paragraph type="secondary" style={{ marginBottom: 12 }}>
+          Configure how you’d like to receive notifications.
+        </Typography.Paragraph>
+        {content}
+      </div>
     </Drawer>
   );
 };

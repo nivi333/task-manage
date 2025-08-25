@@ -33,9 +33,9 @@
   font-weight: 700;
 }
 .pill.primary {
-  background: #e9d5ff; /* purple-200 */
-  color: #5b21b6; /* purple-800 */
-  border: 1px solid #d8b4fe; /* purple-300 */
+  background: rgba(var(--color-primary-rgb), 0.12); /* tinted by primary */
+  color: var(--color-primary);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
 }
 
 .chips {
@@ -46,9 +46,9 @@
 }
 .chip {
   display: inline-block;
-  border: 1px solid #e5e7eb; /* gray-200 */
-  color: #111827; /* gray-900 */
-  background: #fff;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  background: var(--color-card-background);
   border-radius: 6px;
   padding: 2px 8px;
   font-size: 12px;
@@ -71,7 +71,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #111827;
+  color: var(--color-text-primary);
 }
 .issue-icon {
   display: inline-flex;
@@ -81,10 +81,10 @@
   justify-content: center;
 }
 .issue-icon.bug {
-  color: #ef4444; /* red-500 */
+  color: var(--color-error);
 }
 .issue-icon.feature {
-  color: #10b981; /* green-500 */
+  color: var(--color-success);
 }
 .issue-code {
   font-weight: 600;
@@ -102,26 +102,26 @@
   border-radius: 999px;
   align-items: center;
   justify-content: center;
-  border: 1px solid #fee2e2; /* default red tint */
-  color: #ef4444;
-  background: #fff;
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  background: var(--color-card-background);
 }
 .priority.high {
-  border-color: #fee2e2;
-  color: #ef4444;
+  border-color: var(--priority-high-bg);
+  color: var(--priority-high-fg);
 }
 .priority.medium {
-  border-color: #fde68a;
-  color: #f59e0b;
+  border-color: var(--priority-medium-bg);
+  color: var(--priority-medium-fg);
 }
 .priority.low {
-  border-color: #bbf7d0;
-  color: #10b981;
+  border-color: var(--priority-low-bg);
+  color: var(--priority-low-fg);
 }
 
 .assignee-initials {
-  background: #f59e0b; /* amber */
-  color: #fff;
+  background: var(--color-warning); /* amber */
+  color: var(--color-on-primary);
   font-weight: 700;
 }
 .task-card-top {
@@ -140,7 +140,7 @@
 
 .title-and-desc .title {
   font-weight: 600;
-  color: #0f172a;
+  color: var(--color-text-primary);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -148,7 +148,7 @@
 
 .title-and-desc .desc {
   margin-top: 2px;
-  color: #637083;
+  color: var(--color-text-secondary);
   font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -172,16 +172,16 @@
 }
 
 .assignee-name {
-  color: #111827;
+  color: var(--color-text-primary);
 }
 
 .due {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: #334155;
+  color: var(--color-text-secondary);
 }
 
 .due.no-due {
-  color: #94a3b8;
+  color: var(--color-text-light);
 }

@@ -163,10 +163,9 @@ const TaskDetailPage: React.FC = () => {
                 <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 8 }}>
                   <Tooltip title="Back to Task List">
                     <Button
-                      type="text"
+                      className="icon-only-button"
                       icon={<ArrowLeftOutlined />}
-                      onClick={() => navigate(-1)}
-                      style={{ marginRight: 4 }}
+                      onClick={() => navigate('/tasks')}
                     />
                   </Tooltip>
                   <Text strong style={{ fontSize: 16, color: "#1f1f1f" }}>
@@ -233,7 +232,7 @@ const TaskDetailPage: React.FC = () => {
                                 }}
                               >
                                 {/* Left: Task title */}
-                                <span style={{ flex: "1 1 auto", minWidth: 0 }}>
+                                <span style={{ flex: "1 1 auto", minWidth: 0, display: "flex" }}>
                                   <span
                                     className="task-list-title"
                                     style={{ minWidth: 0, display: "block" }}
@@ -299,6 +298,7 @@ const TaskDetailPage: React.FC = () => {
               className="task-detail-card"
               style={{ background: "#fff" }}
               bodyStyle={{ padding: 15, background: "#fff" }}
+              bordered={false}
             >
               {loading ? (
                 <>
@@ -312,14 +312,12 @@ const TaskDetailPage: React.FC = () => {
               ) : (
                 <div className="task-detail-table">
                   {/* Title */}
-                  <div className="row">
+                  <div className="row row-title">
                     <div className="cell cell-left">
                       <span className="cell-heading">Title</span>
                     </div>
                     <div className="cell cell-right">
-                      <span className="cell-value">
-                        <strong>{task.title}</strong>
-                      </span>
+                      <strong className="cell-value">{task.title}</strong>
                     </div>
                   </div>
                   <div className="row">
@@ -425,8 +423,14 @@ const TaskDetailPage: React.FC = () => {
                       />
                     </div>
                   </div>
-                  <div ref={commentsRef} style={{ marginTop: 16 }}>
-                    <TaskComments taskId={task.id} />
+                  {/* Comments */}
+                  <div className="row" ref={commentsRef}>
+                    <div className="cell cell-left">
+                      <span className="cell-heading">Comments</span>
+                    </div>
+                    <div className="cell cell-right">
+                      <TaskComments taskId={task.id} />
+                    </div>
                   </div>
                 </div>
               )}

@@ -75,12 +75,12 @@ const GlobalSearchPage: React.FC = () => {
 
   return (
     <AppLayout title={<HeaderTitle level={3}>Global Search</HeaderTitle>} contentPadding={16}>
-      <Space direction="vertical" style={{ width: '100%' }} size={12}>
-        <Space wrap>
+      <div>
+        <div style={{ width: '100%', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'nowrap' }}>
           <SearchBar value={query} onChange={setQuery} onSearch={onSearch} width={400} placeholder="Search tasks, projects, users, comments..." />
           {headerExtras}
-        </Space>
-        <FilterChips filters={filters} onChange={setFilters} />
+          <FilterChips filters={filters} onChange={setFilters} />
+        </div>
         <Divider style={{ margin: '12px 0' }} />
         <Row gutter={16}>
           <Col xs={24} md={16}>
@@ -92,7 +92,7 @@ const GlobalSearchPage: React.FC = () => {
             <SearchHistory items={history} loading={historyLoading} onSelect={onUseSaved} />
           </Col>
         </Row>
-      </Space>
+      </div>
 
       <Modal
         title="Save Search"

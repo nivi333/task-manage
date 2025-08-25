@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ConfigProvider, App as AntdApp } from 'antd';
+import { ConfigProvider, App as AntdApp, theme as antdTheme } from 'antd';
 import LoginPage from './pages/LoginPage';
 import RegistrationPage from './pages/RegistrationPage';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
@@ -31,53 +31,18 @@ import './styles/components/auth.css';
 import './styles/components/forms.css';
 import './styles/components/admin.css';
 import { colors } from './styles/colors';
+import { ThemeProvider, useTheme } from './context/ThemeContext';
 import CreateTaskPage from './pages/CreateTaskPage';
 
-// Theme configuration for Ant Design
-const theme = {
-  token: {
-    colorPrimary: colors.primary,
-    colorSecondary: colors.secondary,
-    colorBgContainer: colors.background,
-    colorAccent: colors.accent,
-    borderRadius: 8,
-    // Input field styling
-    colorBgBase: '#ffffff',
-    colorBgElevated: '#ffffff',
-    colorFillAlter: '#ffffff',
-    colorFillSecondary: '#fafafa',
-    colorFillTertiary: '#f5f5f5',
-    colorFillQuaternary: '#f0f0f0',
-  },
-  components: {
-    Input: {
-      colorBgContainer: '#ffffff',
-      colorBorder: '#d9d9d9',
-      colorBorderHover: '#4096ff',
-      colorBgContainerDisabled: '#f5f5f5',
+// Theme configuration builder (light/dark)
+const buildTheme = (isDark: boolean) => {
+  return {
+    algorithm: [isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm],
+    token: {
+      colorPrimary: colors.primary,
+      borderRadius: 8,
     },
-    Select: {
-      colorBgContainer: '#ffffff',
-      colorBorder: '#d9d9d9',
-      colorBorderHover: '#4096ff',
-    },
-    DatePicker: {
-      colorBgContainer: '#ffffff',
-      colorBorder: '#d9d9d9',
-      colorBorderHover: '#4096ff',
-    },
-    TextArea: {
-      colorBgContainer: '#ffffff',
-      colorBorder: '#d9d9d9',
-      colorBorderHover: '#4096ff',
-    },
-    // Ensure cards are pure white with a slightly darker border for clear separation
-    Card: {
-      colorBgContainer: '#ffffff',
-      // slightly darker than default grey to differentiate from page background
-      colorBorderSecondary: '#d0d5dd',
-    },
-  },
+  } as const;
 };
 
 // Protected Route component
@@ -132,6 +97,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 // Inner App component that uses the App context
 const AppContent: React.FC = () => {
+  const { isDark } = useTheme();
   const { message } = AntdApp.useApp();
   const initializedRef = useRef(false);
 
@@ -143,8 +109,10 @@ const AppContent: React.FC = () => {
     console.log('[NOTIFICATION] Service initialized with App context');
   }, [message]);
 
+  const themeCfg = buildTheme(isDark);
+
   return (
-    <ConfigProvider theme={theme}>
+    <ConfigProvider theme={themeCfg as any}>
       <Router>
         <div className="App">
           <Routes>
@@ -304,9 +272,11 @@ const AppContent: React.FC = () => {
 
 function App() {
   return (
-    <AntdApp>
-      <AppContent />
-    </AntdApp>
+    <ThemeProvider>
+      <AntdApp>
+        <AppContent />
+      </AntdApp>
+    </ThemeProvider>
   );
 }
 

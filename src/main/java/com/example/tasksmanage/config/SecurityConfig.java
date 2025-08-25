@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/v1/auth/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
                 .requestMatchers("/api/v1/health").permitAll()
+                .requestMatchers("/ws/**").permitAll() // allow SockJS/STOMP handshake
                 .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/avatars/**").permitAll()
                 .anyRequest().authenticated()
@@ -84,6 +85,7 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/api/**", config);
         source.registerCorsConfiguration("/actuator/**", config);
+        source.registerCorsConfiguration("/ws/**", config); // enable CORS for websockets
         return source;
     }
 }

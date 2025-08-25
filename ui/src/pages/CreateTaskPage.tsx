@@ -77,7 +77,7 @@ const CreateTaskPage: React.FC = () => {
         onClose={handleClose}
         open={open}
         styles={{
-          body: { paddingBottom: 80 },
+          body: { padding: 0, paddingBottom: 80 },
         }}
         footer={
           <div style={{ textAlign: "right" }}>

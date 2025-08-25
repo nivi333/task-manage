@@ -336,6 +336,11 @@ const RegistrationForm: React.FC = () => {
           </TTButton>
         </Form.Item>
       </StyledForm>
+
+      {/* Auth footer link for parity with Login page */}
+      <div className="back-to-login-container">
+        Already have an account? <a className="link-primary" href="/login">Sign in</a>
+      </div>
       <TermsModal
         visible={showTerms}
         onOk={handleAcceptTerms}

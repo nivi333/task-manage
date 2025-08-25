@@ -1,22 +1,22 @@
 .tt-table-dense .ant-table {
   border: none !important;
   border-radius: 8px;
-  background: #fff !important;
+  background: var(--color-card-background) !important;
 }
 
 /* Header and cell borders */
 .tt-table-dense .ant-table-thead > tr > th {
-  border-color: var(--tt-border-color, #e5e7eb);
-  background: #fff !important;
+  border-color: var(--tt-border-color, var(--color-border));
+  background: var(--color-card-background) !important;
 }
 
 .tt-table-dense .ant-table-tbody > tr > td {
-  border-color: var(--tt-border-color, #e5e7eb);
+  border-color: var(--tt-border-color, var(--color-border));
 }
 
 /* Optional: subtle row hover */
 .tt-table-dense .ant-table-tbody > tr:hover > td {
-  background: #fff !important;
+  background: var(--color-surface) !important;
 }
 
 /* Pagination spacing */

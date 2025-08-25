@@ -2,7 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  color: rgba(0, 0, 0, 0.88);
+  color: var(--color-text-primary);
   font-size: 14px;
   line-height: 1.5714285714285714;
   list-style: none;
@@ -11,5 +11,5 @@
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   position: relative;
   border-radius: 10px;
-  background: #fff !important;
+  background: var(--color-card-background) !important;
 }

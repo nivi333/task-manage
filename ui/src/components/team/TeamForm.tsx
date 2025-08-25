@@ -38,8 +38,9 @@ const TeamForm: React.FC<{
       layout="vertical"
       onFinish={onFinish}
       initialValues={{ name: "", description: "" }}
-      style={{ minWidth: 350 }}
+      style={{ minWidth: 350, padding: 0 }}
     >
+      <div style={{ fontWeight: 600, fontSize: 20, marginBottom: 12, textAlign: 'left' }}>Create Team</div>
       <Form.Item
         label="Team Name"
         name="name"
@@ -47,17 +48,18 @@ const TeamForm: React.FC<{
           { required: true, message: "Please enter a team name" },
           { min: 3, message: "Team name must be at least 3 characters" },
         ]}
+        style={{ marginBottom: 10 }}
       >
-        <Input placeholder="e.g. Platform Engineering" />
+        <Input placeholder="e.g. Platform Engineering" style={{ width: '100%' }} />
       </Form.Item>
-      <Form.Item label="Description" name="description">
-        <Input.TextArea rows={3} placeholder="Optional description" />
+      <Form.Item label="Description" name="description" style={{ marginBottom: 10 }}>
+        <Input.TextArea rows={2} placeholder="Optional description" style={{ width: '100%' }} />
       </Form.Item>
-      <div style={{ display: "flex", gap: 12 }}>
-        <Button htmlType="submit" type="primary">
+      <div style={{ display: "flex", gap: 10, justifyContent: 'flex-end', marginTop: 8 }}>
+        <Button htmlType="submit" type="primary" style={{ minWidth: 100 }}>
           Create Team
         </Button>
-        <Button onClick={typeof onCancel === "function" ? onCancel : undefined}>
+        <Button onClick={typeof onCancel === "function" ? onCancel : undefined} style={{ minWidth: 80 }}>
           Cancel
         </Button>
       </div>

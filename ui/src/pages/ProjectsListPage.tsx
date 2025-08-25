@@ -183,79 +183,74 @@ const ProjectsListPage: React.FC = () => {
   return (
     <AppLayout title={<HeaderTitle level={3}>Projects</HeaderTitle>}>
       <Space direction="vertical" size={16} style={{ width: "100%" }}>
-        <Card bordered={false} className="tt-card-flat">
-          <Space direction="vertical" style={{ width: "100%" }}>
-            <Space
-              align="center"
-              style={{ width: "100%", justifyContent: "space-between" }}
-            >
-              <HeaderTitle level={4}>All Projects</HeaderTitle>
-              <Space className="tt-toolbar" align="center">
-                <SearchBar
-                  value={query}
-                  onChange={setQuery}
-                  placeholder="Search projects..."
-                  width={240}
-                />
-                <TTSelect
-                  allowClear
-                  placeholder="Status"
-                  width={160}
-                  value={status}
-                  onChange={(v) => setStatus(v as string | undefined)}
-                  options={[
-                    { label: "Active", value: "ACTIVE" },
-                    { label: "On Hold", value: "ON_HOLD" },
-                    { label: "Completed", value: "COMPLETED" },
-                  ]}
-                />
-                <TTSelect
-                  allowClear
-                  placeholder="Team"
-                  width={200}
-                  value={teamId}
-                  onChange={(v) => setTeamId(v as string | undefined)}
-                  options={(teams || []).map((t) => ({ label: t.name, value: t.id }))}
-                />
-                <TTDateRangePicker onChange={(v) => setDateRange(v as any)} />
-                <TTButton
-                  icon={<UnorderedListOutlined />}
-                  type={viewMode === "list" ? "primary" : "default"}
-                  onClick={() => setViewMode("list")}
-                />
-                <TTButton
-                  icon={<GridIcon />}
-                  type={viewMode === "grid" ? "primary" : "default"}
-                  onClick={() => setViewMode("grid")}
-                />
-                <TTButton
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => setCreating(true)}
-                >
-                  New Project
+        <div style={{ width: '100%', background: 'var(--color-card-background)', borderRadius: 8, padding: '16px 24px', marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <HeaderTitle level={5} style={{ fontSize: 16, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 180, lineHeight: 1.2 }}>All Projects</HeaderTitle>
+            <div className="tt-toolbar" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <SearchBar
+                value={query}
+                onChange={setQuery}
+                placeholder="Search projects..."
+                width={240}
+              />
+              <TTSelect
+                allowClear
+                placeholder="Status"
+                width={160}
+                value={status}
+                onChange={(v) => setStatus(v as string | undefined)}
+                options={[
+                  { label: "Active", value: "ACTIVE" },
+                  { label: "On Hold", value: "ON_HOLD" },
+                  { label: "Completed", value: "COMPLETED" },
+                ]}
+              />
+              <TTSelect
+                allowClear
+                placeholder="Team"
+                width={200}
+                value={teamId}
+                onChange={(v) => setTeamId(v as string | undefined)}
+                options={(teams || []).map((t) => ({ label: t.name, value: t.id }))}
+              />
+              <TTDateRangePicker onChange={(v) => setDateRange(v as any)} />
+              <TTButton
+                icon={<UnorderedListOutlined />}
+                type={viewMode === "list" ? "primary" : "default"}
+                onClick={() => setViewMode("list")}
+              />
+              <TTButton
+                icon={<GridIcon />}
+                type={viewMode === "grid" ? "primary" : "default"}
+                onClick={() => setViewMode("grid")}
+              />
+              <TTButton
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setCreating(true)}
+              >
+                New Project
+              </TTButton>
+            </div>
+          </div>
+          {selectedIds.size > 0 && (
+            <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+              <Text type="secondary">Selected: {selectedIds.size}</Text>
+              <Popconfirm
+                title="Delete selected projects?"
+                onConfirm={handleBulkDelete}
+                okText="Delete"
+                okButtonProps={{ danger: true }}
+              >
+                <TTButton danger icon={<DeleteOutlined />}>
+                  Delete Selected
                 </TTButton>
-              </Space>
-            </Space>
-            {selectedIds.size > 0 && (
-              <Space style={{ justifyContent: "space-between", width: "100%" }}>
-                <Text type="secondary">Selected: {selectedIds.size}</Text>
-                <Popconfirm
-                  title="Delete selected projects?"
-                  onConfirm={handleBulkDelete}
-                  okText="Delete"
-                  okButtonProps={{ danger: true }}
-                >
-                  <TTButton danger icon={<DeleteOutlined />}>
-                    Delete Selected
-                  </TTButton>
-                </Popconfirm>
-              </Space>
-            )}
-          </Space>
-        </Card>
+              </Popconfirm>
+            </div>
+          )}
+        </div>
 
-        <Card bordered={false} className="tt-card-flat">
+        <div style={{ width: '100%', background: 'var(--color-card-background)', borderRadius: 8, padding: '16px 24px', marginBottom: 16 }}>
           {loading ? (
             <>
               <Skeleton active paragraph={{ rows: 2 }} />
@@ -337,7 +332,7 @@ const ProjectsListPage: React.FC = () => {
           ) : (
             <Empty description="No projects found" />
           )}
-        </Card>
+        </div>
 
         <CreateProjectModal
           open={creating}
@@ -464,7 +459,7 @@ const ProjectsTable: React.FC<{
       rowKey={(r) => r.id}
       columns={columns as any}
       dataSource={data}
-      pagination={false}
+      pagination={{ pageSize: 10 }}
       dense
     />
   );

@@ -7,7 +7,7 @@
 
 .password-strength-bar {
   height: 4px;
-  background-color: #f0f0f0;
+  background-color: var(--color-border);
   border-radius: 2px;
   overflow: hidden;
   margin-bottom: var(--spacing-xs);
@@ -140,12 +140,12 @@
 }
 
 .ant-select-item-option-selected {
-  background-color: rgba(102, 126, 234, 0.1);
+  background-color: rgba(var(--color-primary-rgb), 0.1);
   color: var(--color-primary);
 }
 
 .ant-select-item-option-active {
-  background-color: rgba(102, 126, 234, 0.05);
+  background-color: rgba(var(--color-primary-rgb), 0.05);
 }
 
 /* Date Picker Styles */
@@ -168,19 +168,19 @@
   border-radius: var(--border-radius-md);
   padding: var(--spacing-xl);
   text-align: center;
-  background-color: #fafafa;
+  background-color: var(--color-card-background);
   transition: all 0.3s ease;
   cursor: pointer;
 }
 
 .upload-area:hover {
   border-color: var(--color-primary);
-  background-color: rgba(102, 126, 234, 0.05);
+  background-color: rgba(var(--color-primary-rgb), 0.05);
 }
 
 .upload-area.dragover {
   border-color: var(--color-primary);
-  background-color: rgba(102, 126, 234, 0.1);
+  background-color: rgba(var(--color-primary-rgb), 0.1);
 }
 
 .upload-icon {
@@ -232,7 +232,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--overlay-scrim);
   display: flex;
   align-items: center;
   justify-content: center;

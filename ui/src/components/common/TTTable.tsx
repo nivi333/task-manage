@@ -15,8 +15,10 @@ function TTTable<RecordType extends object = any>({ dense = true, className, pag
         showSizeChanger: true,
         pageSizeOptions: ['10', '20', '50', '100'],
         showQuickJumper: true,
+        className: 'tt-pagination-visible',
       }
-    : pagination;
+    : { ...pagination, className: 'tt-pagination-visible' };
+
   return (
     <Table<RecordType>
       size={dense ? 'middle' : 'large'}

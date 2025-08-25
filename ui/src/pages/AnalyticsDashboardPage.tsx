@@ -76,13 +76,13 @@ const AnalyticsDashboardPage: React.FC = () => {
   return (
     <AppLayout title={<HeaderTitle level={3}>Analytics Dashboard</HeaderTitle>} contentPadding={0}>
       <Space direction="vertical" size={12} style={{ width: '100%' }}>
-        {/* Filters row: label + picker inline, no card wrapper/border */}
-        <Row align="middle" justify="space-between" style={{ marginBottom: 4 }}>
+        {/* Filters row: label + picker inline */}
+        <Row align="middle" justify="start" style={{ marginBottom: 4 }}>
           <Col>
-            <Typography.Text type="secondary">Select a date range to analyze performance.</Typography.Text>
-          </Col>
-          <Col>
-            <TTDateRangePicker onChange={onRangeChange} />
+            <Space size={8} align="center">
+              <Typography.Text type="secondary">Select a date range to analyze performance</Typography.Text>
+              <TTDateRangePicker onChange={onRangeChange} />
+            </Space>
           </Col>
         </Row>
 

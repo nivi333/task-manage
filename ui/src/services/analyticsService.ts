@@ -11,7 +11,12 @@ export const getSummary = async (filters: AnalyticsFilters): Promise<AnalyticsSu
   } catch (e: any) {
     if (e?.response?.status === 404) {
       // Return an empty summary shape
-      return { totalTasks: 0, activeProjects: 0, openTasks: 0 } as unknown as AnalyticsSummary;
+      return {
+        totalTasksCompleted: 0,
+        avgCycleTimeDays: 0,
+        activeProjects: 0,
+        openTasks: 0,
+      } as AnalyticsSummary;
     }
     notificationService.error('Failed to load analytics summary');
     throw e;

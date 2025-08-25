@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Form, Input, Row, Col, Divider, Typography } from 'antd';
+import { Card, Form, Input, Row, Col, Divider, Typography, Switch, Select, Checkbox } from 'antd';
 import type { FormInstance } from 'antd';
 import settingsService from '../../services/settingsService';
 import type { UserSettings } from '../../types/settings';
@@ -26,6 +26,20 @@ const DEFAULTS: UserSettings = {
     enabledTypes: ['TASK_ASSIGNED', 'TASK_UPDATED', 'COMMENT_ADDED', 'MENTION', 'PROJECT_UPDATED'],
   },
 };
+
+const batchFrequencyOptions = [
+  { label: 'Hourly', value: 'HOURLY' },
+  { label: 'Daily', value: 'DAILY' },
+  { label: 'Weekly', value: 'WEEKLY' },
+];
+
+const notificationTypeOptions = [
+  { label: 'Task Assigned', value: 'TASK_ASSIGNED' },
+  { label: 'Task Updated', value: 'TASK_UPDATED' },
+  { label: 'Comment Added', value: 'COMMENT_ADDED' },
+  { label: 'Mention', value: 'MENTION' },
+  { label: 'Project Updated', value: 'PROJECT_UPDATED' },
+];
 
 const SettingsForm: React.FC<SettingsFormProps> = ({ onFormReady }) => {
   const [form] = Form.useForm<UserSettings>();
@@ -65,50 +79,71 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ onFormReady }) => {
   };
 
   return (
-    <Card bordered className="tt-card-flat">
-      <Form<UserSettings> form={form} layout="vertical" onFinish={onFinish}>
-        <Typography.Title level={5} style={{ marginTop: 0 }}>Profile</Typography.Title>
-        <Row gutter={16}>
-          <Col xs={24} md={12}>
+    <div style={{ background: 'var(--color-card-background)', borderRadius: 10, padding: '32px 40px', width: '100%' }}>
+      <Form<UserSettings> form={form} layout="vertical" onFinish={onFinish} style={{ width: '100%' }}>
+        <Typography.Title level={5} style={{ margin: 0, color: 'var(--color-text-secondary)', fontWeight: 600 }}>Profile</Typography.Title>
+        <Row gutter={16} style={{ marginBottom: 0 }}>
+          <Col xs={24} md={8}>
             <Form.Item name={["profile", "fullName"]} label="Full Name" rules={[{ required: true, message: 'Full name is required' }]}>
               <Input placeholder="Your full name" />
             </Form.Item>
           </Col>
-          <Col xs={24} md={12}>
+          <Col xs={24} md={8}>
             <Form.Item name={["profile", "displayName"]} label="Display Name">
               <Input placeholder="Public display name (optional)" />
             </Form.Item>
           </Col>
-          <Col xs={24} md={12}>
+          <Col xs={24} md={8}>
             <Form.Item name={["profile", "timezone"]} label="Timezone">
               <Input placeholder="e.g. Asia/Kolkata" />
             </Form.Item>
           </Col>
         </Row>
-
-        <Divider />
-        <Typography.Title level={5} style={{ marginTop: 0 }}>Appearance & Language</Typography.Title>
-        <Row gutter={16}>
-          <Col xs={24} md={12}>
+        <Divider style={{ margin: '18px 0 16px' }} />
+        <Typography.Title level={5} style={{ margin: 0, color: 'var(--color-text-secondary)', fontWeight: 600 }}>Appearance & Language</Typography.Title>
+        <Row gutter={16} style={{ marginBottom: 0 }}>
+          <Col xs={24} md={8}>
             <Form.Item name={["theme"]} label="Theme" rules={[{ required: true }]}>
               <ThemeSelector />
             </Form.Item>
           </Col>
-          <Col xs={24} md={12}>
+          <Col xs={24} md={8}>
             <Form.Item name={["language"]} label="Language" rules={[{ required: true }]}>
               <LanguageSelector />
             </Form.Item>
           </Col>
         </Row>
-
-        <Divider />
-        <Typography.Title level={5} style={{ marginTop: 0 }}>Notifications</Typography.Title>
-        <NotificationSettings name="notifications" />
-
-        <Divider style={{ margin: '8px 0 0' }} />
+        <Divider style={{ margin: '18px 0 16px' }} />
+        <Typography.Title level={5} style={{ margin: 0, color: 'var(--color-text-secondary)', fontWeight: 600 }}>Notifications</Typography.Title>
+        <Row gutter={16} style={{ marginBottom: 0 }}>
+          <Col xs={24} md={8}>
+            <Form.Item name={["notifications", "emailEnabled"]} valuePropName="checked">
+              <Switch /> Email Notifications
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={8}>
+            <Form.Item name={["notifications", "webEnabled"]} valuePropName="checked">
+              <Switch /> Web Notifications
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={8}>
+            <Form.Item name={["notifications", "batchEnabled"]} valuePropName="checked">
+              <Switch /> Batch Notifications
+            </Form.Item>
+          </Col>
+        </Row>
+        <Row gutter={16} style={{ marginBottom: 0 }}>
+          <Col xs={24} md={8}>
+            <Form.Item name={["notifications", "batchFrequency"]} label="Batch Frequency">
+              <Select style={{ width: 180 }} options={batchFrequencyOptions} />
+            </Form.Item>
+          </Col>
+        </Row>
+        <Form.Item name={["notifications", "enabledTypes"]} label="Notification Types">
+          <Checkbox.Group options={notificationTypeOptions} />
+        </Form.Item>
       </Form>
-      {/* Use AppLayout footer slot; page will pass actual footer */}
-    </Card>
+    </div>
   );
 };
 

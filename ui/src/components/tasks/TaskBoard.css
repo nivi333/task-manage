@@ -3,20 +3,20 @@
 }
 
 .task-board-column {
-  background-color: #f7f9fc;
+  background-color: var(--color-surface);
   border-radius: 8px;
   min-height: 420px;
 }
 
 .task-board-column.modern {
-  background: #fafbff;
-  border: 1px solid #eef1f6;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
   border-radius: 10px;
 }
 
 .task-board-column.modern .ant-card-head {
-  background: #f6f8fc;
-  border-bottom: 1px solid #eef1f6;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
 }
 
 .task-board-column.modern .ant-card-head-title {
@@ -40,7 +40,7 @@
 
 /* Divider line between tasks (wrapper divs), independent of card margins */
 .task-board-column .task-card-draggable + .task-card-draggable {
-  border-top: 1px solid #eceff5;
+  border-top: 1px solid var(--color-border);
   margin-top: 8px;
 }
 
@@ -50,16 +50,16 @@
 
 /* Lane accents */
 .lane-open {
-  border-top: 3px solid #3b82f6; /* blue */
+  border-top: 3px solid var(--color-info); /* blue */
 }
 .lane-inprogress {
-  border-top: 3px solid #a855f7; /* purple */
+  border-top: 3px solid var(--color-secondary); /* purple */
 }
 .lane-testing {
-  border-top: 3px solid #f59e0b; /* amber */
+  border-top: 3px solid var(--color-warning); /* amber */
 }
 .lane-done {
-  border-top: 3px solid #10b981; /* green */
+  border-top: 3px solid var(--color-success); /* green */
 }
 
 /* Drag affordance */
@@ -85,9 +85,9 @@
   letter-spacing: 0.2px;
 }
 .lane-title .lane-count {
-  background: #eef2ff;
-  color: #3730a3;
-  border: 1px solid #e0e7ff;
+  background: rgba(var(--color-primary-rgb), 0.12);
+  color: var(--color-primary);
+  border: 1px solid rgba(var(--color-primary-rgb), 0.3);
   border-radius: 999px;
   padding: 0 8px;
   font-size: 12px;
@@ -96,15 +96,15 @@
 
 /* Drag-over visual */
 .task-board-column.drag-over {
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.18) inset;
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.18) inset;
 }
 
 /* Kanban board specific card styles */
 .tt-kanban-card.ant-card-bordered {
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--color-border);
 }
 
 .task-board-column
   .ant-table-wrapper.tt-table-dense.css-dev-only-do-not-override-1hfsdkp {
-  box-shadow: rgb(240, 241, 242) 0px 2px 8px;
+  box-shadow: var(--color-border) 0px 2px 8px;
 }

@@ -120,11 +120,11 @@ const TeamListPage: React.FC = () => {
               },
             ]}
             locale={{ emptyText: "No teams found." }}
+            pagination={{ pageSize: 10 }}
             style={{
-              background: "white",
               borderRadius: 8,
-              boxShadow: "0 2px 8px #f0f1f2",
               marginTop: 8,
+              padding: '24px 32px',
             }}
           />
         )}
