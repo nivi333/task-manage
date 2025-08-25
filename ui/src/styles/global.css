@@ -221,6 +221,25 @@ body {
   opacity: 0.6;
 }
 
+/* Compact utilities to reduce whitespace on forms and modals */
+.tt-form-compact.ant-form-vertical .ant-form-item {
+  margin-bottom: 12px !important;
+}
+.tt-form-compact .ant-row {
+  row-gap: 8px !important;
+}
+.tt-modal-tight .ant-modal-body {
+  padding-top: 16px !important;
+  padding-bottom: 16px !important;
+}
+.tt-modal-tight .ant-divider-horizontal {
+  margin: 8px 0 !important;
+}
+.tt-modal-tight .ant-list-item {
+  padding-top: 8px !important;
+  padding-bottom: 8px !important;
+}
+
 /* Avatar Upload tweaks */
 .avatar-upload .ant-upload {
   border: none !important; /* remove dotted/dashed border */

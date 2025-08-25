@@ -22,6 +22,7 @@ import NotificationCenterPage from './pages/NotificationCenterPage';
 import GlobalSearchPage from './pages/GlobalSearchPage';
 import AnalyticsDashboardPage from './pages/AnalyticsDashboardPage';
 import SettingsPage from './pages/SettingsPage';
+import AdminDashboardPage from './pages/AdminDashboardPage';
 import { authAPI } from './services/authService';
 import { initNotificationService, notificationService } from './services/notificationService';
 import './App.css';
@@ -192,6 +193,14 @@ const AppContent: React.FC = () => {
                 <ProtectedRoute>
                   <SettingsPage />
                 </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <AdminRoute>
+                  <AdminDashboardPage />
+                </AdminRoute>
               }
             />
             <Route

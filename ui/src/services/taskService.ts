@@ -14,6 +14,7 @@ export interface TaskFilters {
   sortOrder?: 'asc' | 'desc';
   page?: number;
   limit?: number;
+  tags?: string[];
 }
 
 const getTasks = async (filters: TaskFilters = {}): Promise<Task[]> => {

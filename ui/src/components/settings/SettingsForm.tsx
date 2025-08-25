@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Form, Input, Row, Col, Divider, Tabs } from 'antd';
+import { Card, Form, Input, Row, Col, Divider, Typography } from 'antd';
 import type { FormInstance } from 'antd';
 import settingsService from '../../services/settingsService';
 import type { UserSettings } from '../../types/settings';
@@ -67,60 +67,44 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ onFormReady }) => {
   return (
     <Card bordered className="tt-card-flat">
       <Form<UserSettings> form={form} layout="vertical" onFinish={onFinish}>
-        <Tabs
-          items={[
-            {
-              key: 'profile',
-              label: 'Profile',
-              children: (
-                <Row gutter={16}>
-                  <Col xs={24} md={12}>
-                    <Form.Item name={["profile", "fullName"]} label="Full Name" rules={[{ required: true, message: 'Full name is required' }]}>
-                      <Input placeholder="Your full name" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} md={12}>
-                    <Form.Item name={["profile", "displayName"]} label="Display Name">
-                      <Input placeholder="Public display name (optional)" />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} md={12}>
-                    <Form.Item name={["profile", "timezone"]} label="Timezone">
-                      <Input placeholder="e.g. Asia/Kolkata" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              ),
-            },
-            {
-              key: 'appearance',
-              label: 'Appearance & Language',
-              children: (
-                <Row gutter={16}>
-                  <Col xs={24} md={12}>
-                    <Form.Item name={["theme"]} label="Theme" rules={[{ required: true }]}>
-                      <ThemeSelector />
-                    </Form.Item>
-                  </Col>
-                  <Col xs={24} md={12}>
-                    <Form.Item name={["language"]} label="Language" rules={[{ required: true }]}>
-                      <LanguageSelector />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              ),
-            },
-            {
-              key: 'notifications',
-              label: 'Notifications',
-              children: (
-                <>
-                  <NotificationSettings name="notifications" />
-                </>
-              ),
-            },
-          ]}
-        />
+        <Typography.Title level={5} style={{ marginTop: 0 }}>Profile</Typography.Title>
+        <Row gutter={16}>
+          <Col xs={24} md={12}>
+            <Form.Item name={["profile", "fullName"]} label="Full Name" rules={[{ required: true, message: 'Full name is required' }]}>
+              <Input placeholder="Your full name" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item name={["profile", "displayName"]} label="Display Name">
+              <Input placeholder="Public display name (optional)" />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item name={["profile", "timezone"]} label="Timezone">
+              <Input placeholder="e.g. Asia/Kolkata" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Divider />
+        <Typography.Title level={5} style={{ marginTop: 0 }}>Appearance & Language</Typography.Title>
+        <Row gutter={16}>
+          <Col xs={24} md={12}>
+            <Form.Item name={["theme"]} label="Theme" rules={[{ required: true }]}>
+              <ThemeSelector />
+            </Form.Item>
+          </Col>
+          <Col xs={24} md={12}>
+            <Form.Item name={["language"]} label="Language" rules={[{ required: true }]}>
+              <LanguageSelector />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Divider />
+        <Typography.Title level={5} style={{ marginTop: 0 }}>Notifications</Typography.Title>
+        <NotificationSettings name="notifications" />
+
         <Divider style={{ margin: '8px 0 0' }} />
       </Form>
       {/* Use AppLayout footer slot; page will pass actual footer */}

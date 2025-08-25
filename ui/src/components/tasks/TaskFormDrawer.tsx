@@ -19,6 +19,7 @@ import { projectService } from "services/projectService";
 import { User } from "types/user";
 import { Project } from "types/project";
 import { Task } from "types/task";
+import TagsManageButton from "components/tags/TagsManageButton";
 
 const { Option } = Select;
 
@@ -103,7 +104,8 @@ const TaskFormDrawer: React.FC<TaskFormDrawerProps> = ({
       width="40%"
       onClose={onClose}
       open={open}
-      bodyStyle={{ paddingBottom: 24 }}
+      className="tt-modal-tight"
+      bodyStyle={{ paddingBottom: 16 }}
       footer={
         <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
           <Button onClick={onClose}>Cancel</Button>
@@ -120,6 +122,7 @@ const TaskFormDrawer: React.FC<TaskFormDrawerProps> = ({
       <Form
         form={form}
         layout="vertical"
+        className="tt-form-compact"
         onFinish={onFinish}
         initialValues={{
           description: "",
@@ -143,7 +146,7 @@ const TaskFormDrawer: React.FC<TaskFormDrawerProps> = ({
           />
         </Form.Item>
 
-        <Row gutter={16}>
+        <Row gutter={12}>
           <Col xs={24} md={12}>
             <Form.Item
               name="status"
@@ -222,8 +225,13 @@ const TaskFormDrawer: React.FC<TaskFormDrawerProps> = ({
           </Col>
         </Row>
 
-        <Form.Item name="tags" label="Tags">
-          <Select mode="tags" placeholder="Add tags" />
+        {/* Tags header row with action aligned to the far right */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+          <span style={{ fontWeight: 500 }}>Tags</span>
+          <TagsManageButton label="Manage Tags" buttonProps={{ type: "link", size: "small" }} />
+        </div>
+        <Form.Item name="tags" help="Type and press Enter to create new tags">
+          <Select mode="tags" placeholder="Add tags" tokenSeparators={[","]} style={{ width: "100%" }} />
         </Form.Item>
       </Form>
     </Drawer>

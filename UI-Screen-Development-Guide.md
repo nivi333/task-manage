@@ -259,81 +259,81 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 
   > **Status:** Task Detail View fully implemented with modular components, API integration, validation, and error handling. Ready for QA and user feedback.
 
-- [ ] **Task 25: Tags Management (Modal)**
+- [x] **Task 25: Tags Management (Modal)** | **✅ COMPLETED**
 
   - **Priority:** MEDIUM | **Estimated:** 1.5 days
   - **Components:** TagsManageButton, TagsManageModal, TagList, TagSearch, TagActions
   - **Features:**
-    - [ ] Show distinct tags with usage count (e.g., "bug (12)")
-    - [ ] Search/filter tags in-modal
-    - [ ] Rename tag (cascades across all tasks)
-    - [ ] Merge tags (from → to) with preview of affected count
-    - [ ] Delete tag (remove from all tasks) with confirmation
-    - [ ] Case-insensitive de-duplication and normalization (trim, single spaces)
-    - [ ] Integrate with Task filters and `TagInput` suggestions automatically
+    - [x] Show distinct tags with usage count (e.g., "bug (12)")
+    - [x] Search/filter tags in-modal
+    - [x] Rename tag (cascades across all tasks)
+    - [x] Merge tags (from → to) with preview of affected count
+    - [x] Delete tag (remove from all tasks) with confirmation
+    - [x] Case-insensitive de-duplication and normalization (trim, single spaces)
+    - [x] Integrate with Task filters and `TagInput` suggestions automatically
   - **API Integration:**
-    - [ ] `GET /api/v1/tags` — list distinct tags with usage counts
-    - [ ] `PATCH /api/v1/tags/{name}/rename` — rename a tag across tasks
-    - [ ] `POST /api/v1/tags/merge` — merge tags `{ from: string; to: string }`
-    - [ ] `DELETE /api/v1/tags/{name}` — delete (remove from all tasks)
+    - [x] `GET /api/v1/tags` — list distinct tags with usage counts
+    - [x] `PATCH /api/v1/tags/{name}/rename` — rename a tag across tasks
+    - [x] `POST /api/v1/tags/merge` — merge tags `{ from: string; to: string }`
+    - [x] `DELETE /api/v1/tags/{name}` — delete (remove from all tasks)
   - **Validation:**
-    - [ ] Tag name rules: length 1–32, no leading/trailing spaces, no double spaces
-    - [ ] Prevent duplicates after normalization (case-insensitive)
-    - [ ] Confirm destructive actions (merge/delete)
+    - [x] Tag name rules: length 1–32, no leading/trailing spaces, no double spaces
+    - [x] Prevent duplicates after normalization (case-insensitive)
+    - [x] Confirm destructive actions (merge/delete)
   - **Error Handling:**
-    - [ ] API errors (global notifications)
-    - [ ] Conflict/duplicate name on rename/merge
-    - [ ] Unauthorized access
+    - [x] API errors (global notifications)
+    - [x] Conflict/duplicate name on rename/merge
+    - [x] Unauthorized access
   - **Routes & Placement:**
-    - [ ] No standalone route; launch modal from Task List header toolbar near Tags filter
-    - [ ] Also link from Tags filter dropdown empty state: "Manage Tags"
-  - **Status:** Planned — lightweight governance without a full page. Upgrade to dedicated screen later if tag volume/governance grows.
+    - [x] No standalone route; launch modal from Task List header toolbar near Tags filter
+    - [x] Also link from Tags filter dropdown empty state: "Manage Tags"
+  - **Status:** ✅ COMPLETE — Implemented modal with list/search/rename/merge/delete, normalization and duplicate prevention, global notifications, and integration with Task filters and `TagInput`. Modal accessible from header toolbar and tags filter dropdown.
 
 - [ ] **Task 9: Task Comments & Collaboration**
 
   - **Priority:** MEDIUM | **Estimated:** 2 days
   - **Components:** CommentList, CommentForm, MentionInput, ReplyThread
   - **Features:**
-    - [ ] Threaded comments with replies
-    - [ ] @mention functionality with user search
-    - [ ] Rich text formatting
-    - [ ] Comment editing/deletion
-    - [ ] Real-time updates (WebSocket)
+    - [x] Threaded comments with replies (fully recursive with expand/collapse)
+    - [x] @mention functionality with user search (Antd Mentions + async search)
+    - [ ] Rich text formatting (pending)
+    - [x] Comment editing/deletion (inline edit + delete with confirmation)
+    - [x] Real-time updates (Socket.io + STOMP) with fallback polling
   - **API Integration:**
     - [x] `GET /api/v1/tasks/{taskId}/comments`
     - [x] `POST /api/v1/tasks/{taskId}/comments`
     - [x] `PUT /api/v1/tasks/{taskId}/comments/{commentId}`
     - [x] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid mentions
-    - [ ] WebSocket connection
+    - [x] Required fields (non-empty content; client-side)
+    - [ ] Valid mentions (pending stricter validation rules)
+    - [ ] WebSocket connection indicator (optional UI; pending)
   - **Error Handling:**
     - [x] API errors (global notifications)
     - [x] Validation errors
     - [x] Unauthorized access (auth interceptor)
 
-  > **Status:** In Progress — Backend CRUD for comments is implemented (`CommentController`, `CommentServiceImpl`, `CommentRepository`). Frontend UI (CommentList/Form, ReplyThread), mentions, rich text editor + sanitization, and realtime (WebSocket + fallback polling) are pending. Will integrate into `TaskDetailPage` with `?tab=comments` deep link and optimistic updates.
+  > **Status:** In Progress — Frontend now includes fully recursive threaded comments with inline reply/edit/delete, live updates via Socket.io and STOMP, optimistic UI with rollback, mentions with async user search, fallback polling, and accessibility (`aria-live`). Remaining: rich text formatting + HTML sanitization, stricter mentions validation, optional connection indicator, and tests.
   - **Routes & Placement:**
-    - [ ] `/tasks/:id` — Comments tab/section inside `TaskDetailPage`
-    - [ ] Deep link support: `/tasks/:id?tab=comments`
+    - [x] `/tasks/:id` — Comments section inside `TaskDetailPage`
+    - [x] Deep link support: `/tasks/:id?tab=comments`
   - **Real-time & Delivery:**
-    - [ ] Establish WebSocket channel (or Socket.io) for `task:{id}:comments`
-    - [ ] Fallback to polling every 15–30s if socket unavailable
-    - [ ] Optimistic UI for create/edit/delete with rollback on failure
-    - [ ] In-app toast via `notificationService` for mentions and failures
+    - [x] Establish WebSocket channel (Socket.io) and STOMP topic for comments
+    - [x] Fallback polling every 20s
+    - [x] Optimistic UI for create/edit/delete with rollback on failure
+    - [x] In-app toast via `notificationService` for mentions and failures
   - **UI/UX Details:**
     - [ ] Rich text editor with basic formatting (bold, italic, code, lists)
-    - [ ] `@mention` dropdown with debounce search against `userService.list`
-    - [ ] Inline edit with ESC to cancel, Enter/Cmd+Enter to save
-    - [ ] Reply threads collapsed by default beyond 2 replies ("Show more")
-    - [ ] Empty state with helpful prompt and shortcuts
-    - [ ] Accessibility: aria-live region for new comment announcements
+    - [x] `@mention` dropdown with async search against `userService`
+    - [x] Inline edit with ESC to cancel, Enter/Cmd+Enter to save
+    - [x] Reply threads collapsed by default beyond 2 replies ("Show more")
+    - [x] Empty state with helpful prompt
+    - [x] Accessibility: aria-live region for new comment announcements
   - **Security & Moderation:**
     - [ ] Sanitize HTML output; only allow a safe subset of tags/marks
-    - [ ] Rate-limit client submissions to prevent spam (debounce/throttle)
-    - [ ] Permissions: author or admin can edit/delete within policy window
-  - **Status:** Planned — pending backend WebSocket topic confirmation and RTE selection
+    - [x] Rate-limit client submissions to prevent spam (client-side 1.5s)
+    - [x] Permissions: author or admin can edit/delete
+  - **Status:** Updated — Backend CRUD done; websockets integrated on frontend; pending RTE selection and sanitization
 
 - [x] **Task 10: Project Dashboard** | **✅ COMPLETED**
 

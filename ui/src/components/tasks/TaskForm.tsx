@@ -5,11 +5,12 @@ import UserSelector from './UserSelector';
 import TagInput from './TagInput';
 import { projectService } from '../../services/projectService';
 import { Project } from '../../types/project';
+import tagsService from '../../services/tagsService';
 
 const { Option } = Select;
 const { TextArea } = Input;
 
-const availableTags = ['Frontend', 'Backend', 'Bug', 'Feature', 'Urgent']; // TODO: fetch from backend
+// Fetch from backend via tagsService
 
 interface TaskFormProps {
   form: FormInstance<TaskCreateDTO | TaskUpdateDTO>;
@@ -19,6 +20,7 @@ interface TaskFormProps {
 
 const TaskForm: React.FC<TaskFormProps> = ({ form, onFinish, initialValues }) => {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [availableTags, setAvailableTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -30,7 +32,27 @@ const TaskForm: React.FC<TaskFormProps> = ({ form, onFinish, initialValues }) =>
       }
     };
 
+    const fetchTags = async () => {
+      try {
+        const names = await tagsService.names();
+        setAvailableTags(names);
+      } catch (e) {
+        // notifications handled globally
+      }
+    };
+
     fetchProjects();
+    fetchTags();
+  }, []);
+  useEffect(() => {
+    const handler = () => {
+      tagsService
+        .names()
+        .then(setAvailableTags)
+        .catch(() => {});
+    };
+    window.addEventListener('taglist:changed', handler);
+    return () => window.removeEventListener('taglist:changed', handler);
   }, []);
   return (
     <Form

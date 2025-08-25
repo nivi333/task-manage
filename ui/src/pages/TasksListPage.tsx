@@ -6,6 +6,7 @@ import taskService, { TaskFilters } from "services/taskService";
 import { Task } from "types/task";
 import TaskList from "components/tasks/TaskList";
 import FilterSidebar from "components/tasks/FilterSidebar";
+import TagsManageButton from "components/tags/TagsManageButton";
 // removed HeaderTitle as page-level title is handled by TasksPage
 
 const TasksListPage: React.FC = () => {
@@ -63,6 +64,7 @@ const TasksListPage: React.FC = () => {
               Filters
             </Button>
           </Tooltip>
+          <TagsManageButton label="Create/Manage Tags" />
           <Button type="primary" icon={<PlusOutlined />} onClick={handleCreateTask}>
             Create Task
           </Button>

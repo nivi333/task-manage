@@ -5,6 +5,7 @@ import { commentService } from 'services/commentService';
 import CommentList from './CommentList';
 import CommentForm from './CommentForm';
 import { webSocketService } from 'services/webSocketService';
+import { stompService } from 'services/stompService';
 import { notificationService } from 'services/notificationService';
 import { userService } from 'services/userService';
 import { authAPI } from 'services/authService';
@@ -56,7 +57,7 @@ const TaskComments: React.FC<TaskCommentsProps> = ({ taskId }) => {
     return () => { mounted = false; };
   }, []);
 
-  // Socket lifecycle
+  // Socket.io lifecycle (optional backend support)
   useEffect(() => {
     webSocketService.connect();
     webSocketService.joinTaskRoom(taskId);
@@ -95,6 +96,32 @@ const TaskComments: React.FC<TaskCommentsProps> = ({ taskId }) => {
       setSocketConnected(false);
     };
   }, [taskId]);
+
+  // STOMP (Spring) subscription lifecycle
+  useEffect(() => {
+    const unsubscribe = stompService.subscribeComments(taskId, (evt: any) => {
+      if (!evt || !evt.type) return;
+      if (evt.type === 'new' && evt.comment) {
+        setComments(prev => {
+          if (prev.some(p => String(p.id) === String(evt.comment.id))) return prev;
+          return [...prev, evt.comment as Comment];
+        });
+        try {
+          const uname = currentUser?.username;
+          if (uname && typeof evt.comment?.content === 'string' && evt.comment.content.includes(`@${uname}`)) {
+            notificationService.success('You were mentioned in a comment');
+          }
+        } catch {}
+      } else if (evt.type === 'update' && evt.comment) {
+        setComments(prev => prev.map(p => String(p.id) === String(evt.comment.id) ? (evt.comment as Comment) : p));
+      } else if (evt.type === 'delete' && evt.id) {
+        setComments(prev => prev.filter(p => String(p.id) !== String(evt.id)));
+      }
+    });
+    return () => {
+      try { unsubscribe && unsubscribe(); } catch {}
+    };
+  }, [taskId, currentUser?.username]);
 
   // Fallback polling
   useEffect(() => {

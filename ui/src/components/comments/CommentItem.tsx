@@ -14,9 +14,10 @@ export interface CommentItemProps {
   mentionUsernames?: string[];
   currentUserId?: string;
   isAdmin?: boolean;
+  childrenOf?: (id?: string) => Comment[];
 }
 
-const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [], onReply, onEdit, onDelete, mentionUsernames = [], currentUserId, isAdmin }) => {
+const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [], onReply, onEdit, onDelete, mentionUsernames = [], currentUserId, isAdmin, childrenOf }) => {
   const [replying, setReplying] = useState(false);
   const [editing, setEditing] = useState(false);
   const [showAllReplies, setShowAllReplies] = useState(false);
@@ -87,7 +88,8 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [
             <CommentItem
               key={String(child.id)}
               comment={child}
-              childrenComments={[]}
+              childrenComments={childrenOf ? childrenOf(String(child.id)) : []}
+              childrenOf={childrenOf}
               onReply={onReply}
               onEdit={onEdit}
               onDelete={onDelete}

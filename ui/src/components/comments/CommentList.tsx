@@ -40,6 +40,7 @@ const CommentList: React.FC<CommentListProps> = ({ comments, onReply, onEdit, on
           key={String(c.id)}
           comment={c}
           childrenComments={childrenOf(String(c.id))}
+          childrenOf={childrenOf}
           onReply={onReply}
           onEdit={onEdit}
           onDelete={onDelete}
