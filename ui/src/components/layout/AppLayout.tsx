@@ -73,11 +73,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({
       label: <Link to="/notifications">Notifications</Link>,
     },
     {
-      key: "/notification-preferences",
-      icon: <SettingOutlined />,
-      label: <Link to="/notification-preferences">Notification Preferences</Link>,
-    },
-    {
       key: "/teams",
       icon: <TeamOutlined />,
       label: <Link to="/teams">Teams</Link>,

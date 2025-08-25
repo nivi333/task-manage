@@ -19,7 +19,6 @@ import ProjectTeamPage from './pages/ProjectTeamPage';
 import TeamListPage from './pages/TeamListPage';
 import DashboardPage from './pages/DashboardPage';
 import NotificationCenterPage from './pages/NotificationCenterPage';
-import NotificationPreferencesPage from './pages/NotificationPreferencesPage';
 import GlobalSearchPage from './pages/GlobalSearchPage';
 import AnalyticsDashboardPage from './pages/AnalyticsDashboardPage';
 import { authAPI } from './services/authService';
@@ -178,14 +177,6 @@ const AppContent: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <AnalyticsDashboardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/notification-preferences"
-              element={
-                <ProtectedRoute>
-                  <NotificationPreferencesPage />
                 </ProtectedRoute>
               }
             />

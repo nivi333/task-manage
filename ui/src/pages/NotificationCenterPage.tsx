@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Empty, Spin, Space, Typography } from 'antd';
+import { Empty, Spin, Space, Typography, Button } from 'antd';
 import AppLayout from '../components/layout/AppLayout';
 import { HeaderTitle } from '../components/common';
 import NotificationList from 'components/notifications/NotificationList';
@@ -9,6 +9,9 @@ import notificationsService, { NotificationFilter } from 'services/notifications
 import { Notification } from 'types/notification';
 import { authAPI } from 'services/authService';
 import { notificationService } from 'services/notificationService';
+import { SettingOutlined } from '@ant-design/icons';
+import { useSearchParams } from 'react-router-dom';
+import NotificationPreferencesDrawer from 'components/notifications/NotificationPreferencesDrawer';
 
 const POLL_INTERVAL_MS = 30000;
 
@@ -19,6 +22,8 @@ const NotificationCenterPage: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [userId, setUserId] = useState<string | null>(null);
   const pollRef = useRef<number | null>(null);
+  const [openSettings, setOpenSettings] = useState(false);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   // Load current user once to get userId
   useEffect(() => {
@@ -51,6 +56,12 @@ const NotificationCenterPage: React.FC = () => {
   useEffect(() => {
     fetchNotifications(true);
   }, [fetchNotifications]);
+
+  // Deep link support: /notifications?settings=1
+  useEffect(() => {
+    const shouldOpen = searchParams.get('settings') === '1';
+    if (shouldOpen) setOpenSettings(true);
+  }, [searchParams]);
 
   // Poll for real-time updates
   useEffect(() => {
@@ -149,9 +160,25 @@ const NotificationCenterPage: React.FC = () => {
       }
     >
       <Space direction="vertical" style={{ width: '100%' }} size={12}>
-        <FilterTabs value={filter} onChange={setFilter} />
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <FilterTabs value={filter} onChange={setFilter} />
+          <Button icon={<SettingOutlined />} onClick={() => setOpenSettings(true)}>
+            Preferences
+          </Button>
+        </div>
         {content}
       </Space>
+
+      <NotificationPreferencesDrawer
+        open={openSettings}
+        onClose={() => {
+          setOpenSettings(false);
+          if (searchParams.get('settings') === '1') {
+            searchParams.delete('settings');
+            setSearchParams(searchParams, { replace: true });
+          }
+        }}
+      />
     </AppLayout>
   );
 };

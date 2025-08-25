@@ -259,6 +259,36 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 
   > **Status:** Task Detail View fully implemented with modular components, API integration, validation, and error handling. Ready for QA and user feedback.
 
+- [ ] **Task 25: Tags Management (Modal)**
+
+  - **Priority:** MEDIUM | **Estimated:** 1.5 days
+  - **Components:** TagsManageButton, TagsManageModal, TagList, TagSearch, TagActions
+  - **Features:**
+    - [ ] Show distinct tags with usage count (e.g., "bug (12)")
+    - [ ] Search/filter tags in-modal
+    - [ ] Rename tag (cascades across all tasks)
+    - [ ] Merge tags (from → to) with preview of affected count
+    - [ ] Delete tag (remove from all tasks) with confirmation
+    - [ ] Case-insensitive de-duplication and normalization (trim, single spaces)
+    - [ ] Integrate with Task filters and `TagInput` suggestions automatically
+  - **API Integration:**
+    - [ ] `GET /api/v1/tags` — list distinct tags with usage counts
+    - [ ] `PATCH /api/v1/tags/{name}/rename` — rename a tag across tasks
+    - [ ] `POST /api/v1/tags/merge` — merge tags `{ from: string; to: string }`
+    - [ ] `DELETE /api/v1/tags/{name}` — delete (remove from all tasks)
+  - **Validation:**
+    - [ ] Tag name rules: length 1–32, no leading/trailing spaces, no double spaces
+    - [ ] Prevent duplicates after normalization (case-insensitive)
+    - [ ] Confirm destructive actions (merge/delete)
+  - **Error Handling:**
+    - [ ] API errors (global notifications)
+    - [ ] Conflict/duplicate name on rename/merge
+    - [ ] Unauthorized access
+  - **Routes & Placement:**
+    - [ ] No standalone route; launch modal from Task List header toolbar near Tags filter
+    - [ ] Also link from Tags filter dropdown empty state: "Manage Tags"
+  - **Status:** Planned — lightweight governance without a full page. Upgrade to dedicated screen later if tag volume/governance grows.
+
 - [ ] **Task 9: Task Comments & Collaboration**
 
   - **Priority:** MEDIUM | **Estimated:** 2 days
@@ -449,7 +479,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access
 
-  > **Status:** ✅ COMPLETED — Implemented `NotificationPreferencesPage` at `/notification-preferences` using Ant Design Form with Switches, Select, and Checkbox.Group. Wired to `notificationPreferencesService.get` and `.update`, leveraging global `notificationService` for feedback. Sider navigation link added.
+  > **Status:** ✅ COMPLETED — Preferences are now embedded in the Notification Center as a Settings drawer opened via a gear icon. No separate route in the sidebar. Deep-link supported via `/notifications?settings=1`. The legacy route `/notification-preferences` redirects to `/notifications?settings=1` for backward compatibility. Integrated with `notificationPreferencesService.get` and `.update`, using the global `notificationService` for feedback.
 
 - [x] **Task 17: Global Search Interface**
 
