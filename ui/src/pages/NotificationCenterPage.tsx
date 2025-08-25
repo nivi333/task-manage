@@ -30,6 +30,7 @@ const NotificationCenterPage: React.FC = () => {
     let mounted = true;
     (async () => {
       try {
+        if (!authAPI.isAuthenticated()) return;
         const user = await authAPI.getCurrentUser();
         if (mounted) setUserId(user?.id || user?.userId || null);
       } catch (e) {
@@ -146,7 +147,7 @@ const NotificationCenterPage: React.FC = () => {
   return (
     <AppLayout
       title={<HeaderTitle level={3}>Notification Center</HeaderTitle>}
-      contentPadding={16}
+      contentPadding={0}
       footer={
         <Space>
           <Typography.Text type="secondary">Selected: {selectedIds.length}</Typography.Text>

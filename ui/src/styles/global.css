@@ -7,6 +7,74 @@ body,
   padding: 0;
 }
 
+/* Dark theme (minimal) */
+body.tt-theme-dark {
+  --color-background: #0f1115;
+  --color-surface: #141821;
+  --color-card-background: #161b26;
+  --color-text-primary: #e6e8ee;
+  --color-text-secondary: #b0b6c3;
+  --color-text-light: #8690a3;
+  --color-border: #2a3140;
+  background-color: var(--color-background) !important;
+  color: var(--color-text-primary) !important;
+}
+body.tt-theme-dark .ant-layout-content,
+body.tt-theme-dark .ant-layout,
+body.tt-theme-dark .ant-layout-header {
+  background: var(--color-surface) !important;
+}
+body.tt-theme-dark .ant-card,
+body.tt-theme-dark .ant-card-bordered,
+body.tt-theme-dark .ant-card .ant-card-head {
+  background: var(--color-card-background) !important;
+  border-color: var(--color-border) !important;
+}
+body.tt-theme-dark .ant-input,
+body.tt-theme-dark .ant-input-affix-wrapper,
+body.tt-theme-dark .ant-select-selector,
+body.tt-theme-dark .ant-picker {
+  background: #0f141d !important;
+  border-color: var(--color-border) !important;
+  color: var(--color-text-primary) !important;
+}
+body.tt-theme-dark .ant-input::placeholder,
+body.tt-theme-dark .ant-input-affix-wrapper input::placeholder {
+  color: var(--color-text-light) !important;
+}
+
+/* Dark theme typography and labels */
+body.tt-theme-dark, 
+body.tt-theme-dark .ant-typography, 
+body.tt-theme-dark .ant-form-item, 
+body.tt-theme-dark .ant-form-item .ant-form-item-control-input, 
+body.tt-theme-dark .ant-form-item .ant-form-item-control-input input, 
+body.tt-theme-dark .ant-select,
+body.tt-theme-dark .ant-select-item,
+body.tt-theme-dark .ant-select-selection-item {
+  color: var(--color-text-primary) !important;
+}
+body.tt-theme-dark .ant-form-item-label > label {
+  color: var(--color-text-secondary) !important;
+}
+body.tt-theme-dark .ant-divider-horizontal {
+  border-top-color: var(--color-border) !important;
+}
+
+/* Tabs contrast in dark */
+body.tt-theme-dark .ant-tabs-nav::before {
+  border-color: var(--color-border) !important;
+}
+body.tt-theme-dark .ant-tabs-ink-bar {
+  background: #8b5cf6 !important; /* violet accent */
+}
+body.tt-theme-dark .ant-tabs-tab {
+  color: var(--color-text-secondary) !important;
+}
+body.tt-theme-dark .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+  color: var(--color-text-primary) !important;
+}
+
 /* Compact Modal: force header to a single line and align custom close */
 .tt-compact-modal .ant-modal-header {
   display: flex !important;
@@ -61,7 +129,7 @@ body {
   --color-accent: #f093fb;
   --color-background: #fff;
   --color-surface: #fff;
-  --color-card-background: #f7f7f7;
+  --color-card-background: #ffffff; /* cards should be pure white */
   --color-text-primary: #333333;
   --color-text-secondary: #666666;
   --color-text-light: #999999;
@@ -209,11 +277,12 @@ body {
 
 /* Task Detail Page */
 .task-detail-card {
-  background: var(--color-card-background);
+  background: #fff; /* remove grey background */
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
   overflow: hidden;
+  border: 1px solid #d0d5dd; /* slightly darker border for separation */
 }
 
 .task-detail-card .ant-card-head {
@@ -232,11 +301,12 @@ body {
 }
 
 .task-sidebar {
-  background: var(--color-card-background);
+  background: #fff; /* remove grey background */
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
   overflow: hidden;
+  border: 1px solid #d0d5dd; /* slightly darker border for separation */
 }
 
 .task-sidebar .ant-card-head {
@@ -740,7 +810,17 @@ select:-moz-autofill {
   line-height: 32px !important;
 }
 
+.ant-table,
+.ant-table-container,
+.ant-table-content,
+.ant-table-body {
+  background: #fff !important; /* remove any grey backgrounds */
+}
 .ant-table-row {
+  background: #fff !important;
+}
+/* Empty state row background */
+.ant-table-wrapper .ant-table-tbody > tr.ant-table-placeholder > td {
   background: #fff !important;
 }
 
@@ -754,6 +834,17 @@ select:-moz-autofill {
    because it changes across environments. Use stable selectors instead. */
 .ant-card .ant-card-head {
   margin-bottom: 15px !important;
+}
+
+/* Global Card appearance: white background and clearer borders */
+.ant-card {
+  background: #fff !important;
+}
+.ant-card-bordered {
+  border-color: #d0d5dd !important; /* darker than default */
+}
+.ant-card .ant-card-head {
+  border-bottom-color: #d0d5dd !important; /* match border tone */
 }
 
 /* Buttons: exact vertical centering */

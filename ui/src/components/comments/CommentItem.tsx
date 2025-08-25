@@ -12,23 +12,39 @@ export interface CommentItemProps {
   onEdit: (commentId: string, content: string) => Promise<void>;
   onDelete: (commentId: string) => Promise<void>;
   mentionUsernames?: string[];
+  currentUserId?: string;
+  isAdmin?: boolean;
 }
 
-const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [], onReply, onEdit, onDelete, mentionUsernames = [] }) => {
+const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [], onReply, onEdit, onDelete, mentionUsernames = [], currentUserId, isAdmin }) => {
   const [replying, setReplying] = useState(false);
   const [editing, setEditing] = useState(false);
+  const [showAllReplies, setShowAllReplies] = useState(false);
   const createdAtStr = useMemo(() => (comment.createdAt ? new Date(comment.createdAt).toLocaleString() : ''), [comment.createdAt]);
+  const canModify = useMemo(() => {
+    const isAuthor = currentUserId && comment.author && String(comment.author.id) === String(currentUserId);
+    return Boolean(isAdmin || isAuthor);
+  }, [currentUserId, isAdmin, comment.author]);
+  const repliesToShow = useMemo(() => {
+    if (!childrenComments) return [] as Comment[];
+    if (showAllReplies) return childrenComments;
+    return childrenComments.slice(0, 2);
+  }, [childrenComments, showAllReplies]);
 
   return (
     <List.Item
       key={comment.id}
       actions={[
         <Button key="reply" type="link" size="small" onClick={() => setReplying((v) => !v)}>Reply</Button>,
-        <Button key="edit" type="link" size="small" onClick={() => setEditing((v) => !v)}>Edit</Button>,
-        <Popconfirm key="delete" title="Delete this comment?" onConfirm={() => onDelete(String(comment.id))}>
-          <Button type="link" size="small" danger>Delete</Button>
-        </Popconfirm>,
-      ]}
+        canModify ? (
+          <Button key="edit" type="link" size="small" onClick={() => setEditing((v) => !v)}>Edit</Button>
+        ) : null,
+        canModify ? (
+          <Popconfirm key="delete" title="Delete this comment?" onConfirm={() => onDelete(String(comment.id))}>
+            <Button type="link" size="small" danger>Delete</Button>
+          </Popconfirm>
+        ) : null,
+      ].filter(Boolean) as any}
     >
       <List.Item.Meta
         avatar={<Avatar>{(comment.author?.username || 'U').slice(0, 1).toUpperCase()}</Avatar>}
@@ -66,7 +82,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [
       {childrenComments.length > 0 && (
         <List
           style={{ marginTop: 8, marginLeft: 48 }}
-          dataSource={childrenComments}
+          dataSource={repliesToShow}
           renderItem={(child) => (
             <CommentItem
               key={String(child.id)}
@@ -76,9 +92,19 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [
               onEdit={onEdit}
               onDelete={onDelete}
               mentionUsernames={mentionUsernames}
+              currentUserId={currentUserId}
+              isAdmin={isAdmin}
             />
           )}
         />
+      )}
+
+      {childrenComments.length > 2 && (
+        <div style={{ marginTop: 4, marginLeft: 48 }}>
+          <Button type="link" size="small" onClick={() => setShowAllReplies((v) => !v)}>
+            {showAllReplies ? 'Show less' : `Show ${childrenComments.length - 2} more`}
+          </Button>
+        </div>
       )}
     </List.Item>
   );

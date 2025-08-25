@@ -8,7 +8,11 @@ export const getSummary = async (filters: AnalyticsFilters): Promise<AnalyticsSu
   try {
     const res = await apiClient.get<AnalyticsSummary>(`${base}/summary`, { params: filters.range });
     return res.data;
-  } catch (e) {
+  } catch (e: any) {
+    if (e?.response?.status === 404) {
+      // Return an empty summary shape
+      return { totalTasks: 0, activeProjects: 0, openTasks: 0 } as unknown as AnalyticsSummary;
+    }
     notificationService.error('Failed to load analytics summary');
     throw e;
   }
@@ -18,7 +22,10 @@ export const getTimeline = async (filters: AnalyticsFilters): Promise<TimelinePo
   try {
     const res = await apiClient.get<TimelinePoint[]>(`${base}/timeline`, { params: filters.range });
     return Array.isArray(res.data) ? res.data : [];
-  } catch (e) {
+  } catch (e: any) {
+    if (e?.response?.status === 404) {
+      return [];
+    }
     notificationService.error('Failed to load timeline');
     throw e;
   }
@@ -28,7 +35,10 @@ export const getTeamProductivity = async (filters: AnalyticsFilters): Promise<Te
   try {
     const res = await apiClient.get<TeamProductivityItem[]>(`${base}/team-productivity`, { params: filters.range });
     return Array.isArray(res.data) ? res.data : [];
-  } catch (e) {
+  } catch (e: any) {
+    if (e?.response?.status === 404) {
+      return [];
+    }
     notificationService.error('Failed to load team productivity');
     throw e;
   }

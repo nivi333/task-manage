@@ -57,6 +57,19 @@ const CommentForm: React.FC<CommentFormProps> = ({ submitting, parentCommentId =
             .map(u => ({ value: u, label: u }))}
           style={{ width: '100%' }}
           rows={rows}
+          onKeyDown={(e) => {
+            if ((e.key === 'Enter' && (e.metaKey || e.ctrlKey))) {
+              e.preventDefault();
+              form.submit();
+            } else if (e.key === 'Escape') {
+              e.preventDefault();
+              if (onCancel) onCancel();
+              else {
+                form.resetFields();
+                setComment('');
+              }
+            }
+          }}
         />
       </Form.Item>
       <Form.Item style={{ marginBottom: 0 }}>

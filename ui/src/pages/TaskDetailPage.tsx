@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Spin,
   message,
@@ -32,6 +32,7 @@ import { Task } from "types/task";
 import FileAttachmentViewer from "components/tasks/FileAttachmentViewer";
 import SubtaskManagement from "components/tasks/SubtaskManagement";
 import TaskFormDrawer from "components/tasks/TaskFormDrawer";
+import TaskComments from "components/comments/TaskComments";
 import "./TaskDetailPage.css";
 
 const { Title, Text } = Typography;
@@ -42,6 +43,7 @@ dayjs.extend(relativeTime);
 const TaskDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [task, setTask] = useState<Task | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -49,6 +51,7 @@ const TaskDetailPage: React.FC = () => {
   const [searchText, setSearchText] = useState<string>("");
   const [isDrawerVisible, setDrawerVisible] = useState<boolean>(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const commentsRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     setLoading(true);
@@ -79,6 +82,16 @@ const TaskDetailPage: React.FC = () => {
   useEffect(() => {
     fetchSidebarTasks();
   }, []);
+
+  // Deep link support: /tasks/:id?tab=comments -> scroll to comments
+  useEffect(() => {
+    if (!loading && task) {
+      const tab = searchParams.get("tab");
+      if (tab === "comments" && commentsRef.current) {
+        commentsRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  }, [loading, task, searchParams]);
 
   // Helper functions for status and priority colors
   const getPriorityColor = (priority: string) => {
@@ -412,7 +425,9 @@ const TaskDetailPage: React.FC = () => {
                       />
                     </div>
                   </div>
-                  {/* Comments section removed per request */}
+                  <div ref={commentsRef} style={{ marginTop: 16 }}>
+                    <TaskComments taskId={task.id} />
+                  </div>
                 </div>
               )}
             </Card>

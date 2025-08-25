@@ -50,18 +50,25 @@ apiClient.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status;
+    const url = error.config?.url || "";
+    if (status === 401) {
       // Token expired or invalid
       localStorage.removeItem("authToken");
       localStorage.removeItem("rememberMe");
       // DO NOT redirect to login here. Let the app handle navigation if needed.
     } else {
-      const message =
-        error.response?.data?.message ||
-        error.message ||
-        "Request failed. Please try again.";
-      console.log("[NOTIFICATION] Error:", message);
-      notificationService.error(message);
+      // Suppress noisy 404 popups for unimplemented analytics/settings endpoints
+      const suppress404 =
+        status === 404 && (url.includes("/analytics") || url.includes("/settings"));
+      if (!suppress404) {
+        const message =
+          error.response?.data?.message ||
+          error.message ||
+          "Request failed. Please try again.";
+        console.log("[NOTIFICATION] Error:", message);
+        notificationService.error(message);
+      }
     }
     return Promise.reject(error);
   }

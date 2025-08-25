@@ -11,22 +11,22 @@ const MetricCards: React.FC<MetricCardsProps> = ({ summary, loading }) => {
   return (
     <Row gutter={16}>
       <Col xs={12} md={6}>
-        <Card loading={loading}>
+        <Card loading={loading} bodyStyle={{ padding: '8px 12px' }}>
           <Statistic title="Tasks Completed" value={summary?.totalTasksCompleted ?? 0} />
         </Card>
       </Col>
       <Col xs={12} md={6}>
-        <Card loading={loading}>
+        <Card loading={loading} bodyStyle={{ padding: '8px 12px' }}>
           <Statistic title="Avg Cycle Time (days)" value={summary?.avgCycleTimeDays ?? 0} precision={1} />
         </Card>
       </Col>
       <Col xs={12} md={6}>
-        <Card loading={loading}>
+        <Card loading={loading} bodyStyle={{ padding: '8px 12px' }}>
           <Statistic title="Active Projects" value={summary?.activeProjects ?? 0} />
         </Card>
       </Col>
       <Col xs={12} md={6}>
-        <Card loading={loading}>
+        <Card loading={loading} bodyStyle={{ padding: '8px 12px' }}>
           <Statistic title="Open Tasks" value={summary?.openTasks ?? 0} />
         </Card>
       </Col>

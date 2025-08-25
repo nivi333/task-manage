@@ -289,29 +289,49 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [ ] Also link from Tags filter dropdown empty state: "Manage Tags"
   - **Status:** Planned — lightweight governance without a full page. Upgrade to dedicated screen later if tag volume/governance grows.
 
-- [ ] **Task 9: Task Comments & Collaboration**
+- [x] **Task 9: Task Comments & Collaboration** | **✅ COMPLETED (RTE & sanitization pending)**
 
   - **Priority:** MEDIUM | **Estimated:** 2 days
   - **Components:** CommentList, CommentForm, MentionInput, ReplyThread
   - **Features:**
-    - [ ] Threaded comments with replies
-    - [ ] @mention functionality with user search
-    - [ ] Rich text formatting
-    - [ ] Comment editing/deletion
-    - [ ] Real-time updates (WebSocket)
+    - [x] Threaded comments with replies
+    - [x] @mention functionality with user search
+    - [ ] Rich text formatting (pending RTE selection)
+    - [x] Comment editing/deletion (permissions applied)
+    - [x] Real-time updates (WebSocket) with fallback polling
   - **API Integration:**
-    - [ ] `GET /api/v1/tasks/{taskId}/comments`
-    - [ ] `POST /api/v1/tasks/{taskId}/comments`
-    - [ ] `PUT /api/v1/tasks/{taskId}/comments/{commentId}`
-    - [ ] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
+    - [x] `GET /api/v1/tasks/{taskId}/comments`
+    - [x] `POST /api/v1/tasks/{taskId}/comments`
+    - [x] `PUT /api/v1/tasks/{taskId}/comments/{commentId}`
+    - [x] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid mentions
-    - [ ] WebSocket connection
+    - [x] Required fields
+    - [x] Valid mentions (debounced user search)
+    - [x] WebSocket connection with error handling
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors (global notifications)
+    - [x] Validation errors
+    - [x] Unauthorized access
+  - **Routes & Placement:**
+    - [x] `/tasks/:id` — Comments section inside `TaskDetailPage`
+    - [x] Deep link support: `/tasks/:id?tab=comments`
+  - **Real-time & Delivery:**
+    - [x] WebSocket channel via Socket.io task room join/leave
+    - [x] Fallback to polling every 20s if socket unavailable
+    - [x] Optimistic UI for create/edit/delete with rollback on failure
+    - [x] In-app toast via `notificationService` for mentions and failures
+  - **UI/UX Details:**
+    - [ ] Rich text editor with basic formatting (bold, italic, code, lists) — pending
+    - [x] `@mention` dropdown with debounce search against `userService.getUsers`
+    - [x] Inline edit with ESC to cancel, Enter/Cmd+Enter to save
+    - [x] Reply threads collapsed by default beyond 2 replies ("Show more")
+    - [x] Empty state with helpful prompt and shortcuts
+    - [x] Accessibility: aria-live region for new comment announcements
+  - **Security & Moderation:**
+    - [ ] Sanitize HTML output; only allow a safe subset of tags/marks (pending with RTE)
+    - [x] Rate-limit client submissions to prevent spam (throttle)
+    - [x] Permissions: author or admin can edit/delete (policy window TBD)
+  - **Status:** ✅ Implemented comments with threads, mentions, real-time via WebSocket + polling, optimistic UI, accessibility, reply collapsing, and permission-based edit/delete. Rich text editor and HTML sanitization to be added next.
 
 - [x] **Task 10: Project Dashboard** | **✅ COMPLETED**
 
@@ -337,7 +357,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access
 
-- [ ] **Task 11: Project List & Management**
+- [x] **Task 11: Project List & Management**
 
   - **Priority:** MEDIUM | **Estimated:** 3 days
   - **Components:** ProjectGrid, ProjectCard, ProjectFilters, CreateProjectModal
@@ -658,17 +678,21 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   - `POST /api/v1/tasks/{taskId}/comments`
   - `POST /api/v1/task-time-tracking`
 
-### Task 9: Task Comments & Collaboration
+### Task 9: Task Comments & Collaboration | **✅ COMPLETED (RTE & sanitization pending)**
 
 **Priority: MEDIUM** | **Estimated: 2 days**
 
-- **Components**: CommentList, CommentForm, MentionInput, ReplyThread
+- **Components**: `TaskComments`, `CommentList`, `CommentItem`, `CommentForm`
 - **Features**:
-  - Threaded comments with replies
+  - Threaded comments with replies (with collapse >2 replies)
   - @mention functionality with user search
-  - Rich text formatting
-  - Comment editing/deletion
-  - Real-time updates (WebSocket)
+  - Comment editing/deletion with optimistic UI and rollback
+  - Real-time updates via WebSocket + 20s polling fallback
+  - Deep link `?tab=comments` support in `TaskDetailPage`
+  - Accessibility: aria-live announcements and keyboard shortcuts
+- **Pending**:
+  - Rich text editor (RTE) with formatting
+  - HTML sanitization for rendered comment content
 - **API Integration**:
   - `GET /api/v1/tasks/{taskId}/comments`
   - `POST /api/v1/tasks/{taskId}/comments`
@@ -704,8 +728,6 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 - [x] Unauthorized access (auth interceptor)
 
 > **Status:** Implemented `ProjectDashboardPage` composing `ProjectHeader`, `ProjectStats`, `TaskSummary`, `TeamMembers`, charts, timeline, and recent activity. Data is fetched via `projectService.getDashboard` and `projectService.getBurndown`. Route added at `/projects/:id/dashboard` and integrated with global notification system.
-
-
 
 ### Task 12: Project Team Management
 
@@ -960,7 +982,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 
 - **Frontend**: React 18+ with TypeScript
 - **UI Library**: Ant Design 5.x
-- **Styling**: Styled Components
+- **Styling**: Global CSS architecture (global.css, auth.css, forms.css) with Ant Design overrides; Custom Button component
 - **State Management**: Redux Toolkit or Zustand
 - **HTTP Client**: Axios
 - **Real-time**: Socket.io or WebSocket

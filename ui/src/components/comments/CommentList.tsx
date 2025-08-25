@@ -9,9 +9,11 @@ export interface CommentListProps {
   onEdit: (commentId: string, content: string) => Promise<void>;
   onDelete: (commentId: string) => Promise<void>;
   mentionUsernames?: string[];
+  currentUserId?: string;
+  isAdmin?: boolean;
 }
 
-const CommentList: React.FC<CommentListProps> = ({ comments, onReply, onEdit, onDelete, mentionUsernames = [] }) => {
+const CommentList: React.FC<CommentListProps> = ({ comments, onReply, onEdit, onDelete, mentionUsernames = [], currentUserId, isAdmin }) => {
   const tree = useMemo(() => {
     const byParent: Record<string, Comment[]> = {};
     const roots: Comment[] = [];
@@ -42,6 +44,8 @@ const CommentList: React.FC<CommentListProps> = ({ comments, onReply, onEdit, on
           onEdit={onEdit}
           onDelete={onDelete}
           mentionUsernames={mentionUsernames}
+          currentUserId={currentUserId}
+          isAdmin={isAdmin}
         />
       )}
     />

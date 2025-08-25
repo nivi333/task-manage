@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Card, Col, Divider, Row, Space, Table, Typography } from 'antd';
+import { Col, Row, Space, Table, Typography } from 'antd';
 import AppLayout from '../components/layout/AppLayout';
 import { HeaderTitle, TTDateRangePicker } from '../components/common';
 import MetricCards from '../components/analytics/MetricCards';
@@ -44,6 +44,11 @@ const AnalyticsDashboardPage: React.FC = () => {
       setSummary(s);
       setTimeline(t);
       setTeam(tp);
+    } catch (e) {
+      // On error, ensure safe UI state
+      setSummary(undefined);
+      setTimeline([]);
+      setTeam([]);
     } finally {
       setLoading(false);
     }
@@ -69,14 +74,17 @@ const AnalyticsDashboardPage: React.FC = () => {
   ];
 
   return (
-    <AppLayout title={<HeaderTitle level={3}>Analytics Dashboard</HeaderTitle>} contentPadding={16}>
+    <AppLayout title={<HeaderTitle level={3}>Analytics Dashboard</HeaderTitle>} contentPadding={0}>
       <Space direction="vertical" size={12} style={{ width: '100%' }}>
-        <Card bodyStyle={{ paddingTop: 12 }}>
-          <Space direction="vertical" style={{ width: '100%' }} size={8}>
+        {/* Filters row: label + picker inline, no card wrapper/border */}
+        <Row align="middle" justify="space-between" style={{ marginBottom: 4 }}>
+          <Col>
             <Typography.Text type="secondary">Select a date range to analyze performance.</Typography.Text>
+          </Col>
+          <Col>
             <TTDateRangePicker onChange={onRangeChange} />
-          </Space>
-        </Card>
+          </Col>
+        </Row>
 
         <MetricCards summary={summary} loading={loading} />
 

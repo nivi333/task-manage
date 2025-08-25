@@ -9,6 +9,7 @@ import {
   BarChartOutlined,
   BellOutlined,
   SearchOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/authService";
@@ -70,6 +71,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({
       key: "/notifications",
       icon: <BellOutlined />,
       label: <Link to="/notifications">Notifications</Link>,
+    },
+    {
+      key: "/settings",
+      icon: <SettingOutlined />,
+      label: <Link to="/settings">Settings</Link>,
     },
     {
       key: "/teams",
@@ -186,8 +192,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({
             margin: "24px 16px",
             padding: contentPadding,
             minHeight: 280,
-            background: colorBgContainer,
-            borderRadius: 8,
+            background: "transparent",
+            borderRadius: 0,
             position: "relative",
             // Reserve extra space for fixed footer to prevent content overlap
             paddingBottom: footer ? "96px" : undefined,
@@ -204,7 +210,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
                 left: collapsed ? 80 : 210,
                 background: colorBgContainer,
                 padding: "16px 24px",
-                borderTop: "1px solid #f0f0f0",
+                borderTop: "1px solid rgba(140, 146, 160, 0.25)",
                 display: "flex",
                 justifyContent: "flex-end",
                 gap: "12px",

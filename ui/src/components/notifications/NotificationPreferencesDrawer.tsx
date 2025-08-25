@@ -1,15 +1,31 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { Drawer, Form, Switch, Select, Checkbox, Space, Typography, Spin, Button, Row, Col } from 'antd';
-import { authAPI } from '../../services/authService';
-import notificationPreferencesService from '../../services/notificationPreferencesService';
-import { BatchFrequency, NotificationPreferences, NotificationTypeKey } from '../../types/notificationPreferences';
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  Drawer,
+  Form,
+  Switch,
+  Select,
+  Checkbox,
+  Space,
+  Typography,
+  Spin,
+  Button,
+  Row,
+  Col,
+} from "antd";
+import { authAPI } from "../../services/authService";
+import notificationPreferencesService from "../../services/notificationPreferencesService";
+import {
+  BatchFrequency,
+  NotificationPreferences,
+  NotificationTypeKey,
+} from "../../types/notificationPreferences";
 
 const ALL_TYPES: { label: string; value: NotificationTypeKey }[] = [
-  { label: 'Task Assigned', value: 'TASK_ASSIGNED' },
-  { label: 'Task Updated', value: 'TASK_UPDATED' },
-  { label: 'Comment Added', value: 'COMMENT_ADDED' },
-  { label: 'Mention', value: 'MENTION' },
-  { label: 'Project Updated', value: 'PROJECT_UPDATED' },
+  { label: "Task Assigned", value: "TASK_ASSIGNED" },
+  { label: "Task Updated", value: "TASK_UPDATED" },
+  { label: "Comment Added", value: "COMMENT_ADDED" },
+  { label: "Mention", value: "MENTION" },
+  { label: "Project Updated", value: "PROJECT_UPDATED" },
 ];
 
 interface Props {
@@ -26,6 +42,10 @@ const NotificationPreferencesDrawer: React.FC<Props> = ({ open, onClose }) => {
     let mounted = true;
     (async () => {
       try {
+        if (!authAPI.isAuthenticated()) {
+          if (mounted) setLoading(false);
+          return;
+        }
         const user = await authAPI.getCurrentUser();
         const uid = user?.id || user?.userId || null;
         if (!uid) return;
@@ -36,18 +56,22 @@ const NotificationPreferencesDrawer: React.FC<Props> = ({ open, onClose }) => {
           emailEnabled: true,
           webEnabled: true,
           batchEnabled: false,
-          batchFrequency: 'DAILY',
-          enabledTypes: ALL_TYPES.map(t => t.value),
+          batchFrequency: "DAILY",
+          enabledTypes: ALL_TYPES.map((t) => t.value),
         };
         form.setFieldsValue(initial);
+      } catch (e) {
+        // handled globally by interceptor
       } finally {
         if (mounted) setLoading(false);
       }
     })();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, [form]);
 
-  const batchDisabled = Form.useWatch('batchEnabled', form) === false;
+  const batchDisabled = Form.useWatch("batchEnabled", form) === false;
 
   const onFinish = async (values: NotificationPreferences) => {
     if (!userId) return;
@@ -57,38 +81,60 @@ const NotificationPreferencesDrawer: React.FC<Props> = ({ open, onClose }) => {
   };
 
   const content = useMemo(() => {
-    if (loading) return <div style={{ textAlign: 'center', margin: '48px 0' }}><Spin size="large" /></div>;
+    if (loading)
+      return (
+        <div style={{ textAlign: "center", margin: "48px 0" }}>
+          <Spin size="large" />
+        </div>
+      );
     return (
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        {/* Email Notifications toggle inline with title */}
-        <Row align="middle" justify="space-between" style={{ marginBottom: 16 }}>
-          <Col><Typography.Text strong>Email Notifications</Typography.Text></Col>
-          <Col>
-            <Form.Item name="emailEnabled" valuePropName="checked" noStyle>
-              <Switch />
-            </Form.Item>
-          </Col>
-        </Row>
+        {/* Email Notifications toggle inline with title, perfectly aligned */}
+        <div
+          style={{ display: "flex", alignItems: "center", marginBottom: 12 }}
+        >
+          <Typography.Text strong style={{ width: 220, marginRight: 12 }}>
+            Email Notifications
+          </Typography.Text>
+          <Form.Item name="emailEnabled" valuePropName="checked" noStyle>
+            <Switch />
+          </Form.Item>
+        </div>
 
-        {/* Web Notifications toggle inline with title */}
-        <Row align="middle" justify="space-between" style={{ marginBottom: 16 }}>
-          <Col><Typography.Text strong>Web Notifications</Typography.Text></Col>
-          <Col>
-            <Form.Item name="webEnabled" valuePropName="checked" noStyle>
-              <Switch />
-            </Form.Item>
-          </Col>
-        </Row>
+        {/* Web Notifications toggle inline with title, perfectly aligned */}
+        <div
+          style={{ display: "flex", alignItems: "center", marginBottom: 12 }}
+        >
+          <Typography.Text strong style={{ width: 220, marginRight: 12 }}>
+            Web Notifications
+          </Typography.Text>
+          <Form.Item name="webEnabled" valuePropName="checked" noStyle>
+            <Switch />
+          </Form.Item>
+        </div>
 
-        {/* Batch Notifications toggle inline with title */}
-        <Row align="middle" justify="space-between" style={{ marginBottom: 16 }}>
-          <Col><Typography.Text strong>Batch Notifications</Typography.Text></Col>
-          <Col>
-            <Form.Item name="batchEnabled" valuePropName="checked" noStyle>
-              <Switch />
-            </Form.Item>
-          </Col>
-        </Row>
+        {/* Batch Notifications toggle inline with title, perfectly aligned */}
+        <div
+          style={{ display: "flex", alignItems: "center", marginBottom: 12 }}
+        >
+          <Typography.Text strong style={{ width: 220, marginRight: 12 }}>
+            Batch Notifications
+          </Typography.Text>
+          <Form.Item name="batchEnabled" valuePropName="checked" noStyle>
+            <Switch />
+          </Form.Item>
+        </div>
+        {/* Batch Frequency placed above Notification Types */}
+        <Form.Item name="batchFrequency" label="Batch Frequency">
+          <Select
+            disabled={batchDisabled}
+            options={[
+              { label: "Hourly", value: "HOURLY" as BatchFrequency },
+              { label: "Daily", value: "DAILY" as BatchFrequency },
+              { label: "Weekly", value: "WEEKLY" as BatchFrequency },
+            ]}
+          />
+        </Form.Item>
 
         {/* Notification Types in invisible grid */}
         <Form.Item name="enabledTypes" label="Notification Types">
@@ -101,15 +147,6 @@ const NotificationPreferencesDrawer: React.FC<Props> = ({ open, onClose }) => {
               ))}
             </Row>
           </Checkbox.Group>
-        </Form.Item>
-
-        {/* Batch Frequency moved to bottom */}
-        <Form.Item name="batchFrequency" label="Batch Frequency">
-          <Select disabled={batchDisabled} options={[
-            { label: 'Hourly', value: 'HOURLY' as BatchFrequency },
-            { label: 'Daily', value: 'DAILY' as BatchFrequency },
-            { label: 'Weekly', value: 'WEEKLY' as BatchFrequency },
-          ]} />
         </Form.Item>
       </Form>
     );
@@ -124,9 +161,11 @@ const NotificationPreferencesDrawer: React.FC<Props> = ({ open, onClose }) => {
       destroyOnClose
       bodyStyle={{ paddingBottom: 24 }}
       footer={
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+        <div style={{ display: "flex", justifyContent: "flex-end", gap: 8 }}>
           <Button onClick={onClose}>Cancel</Button>
-          <Button type="primary" onClick={() => form.submit()}>Save Preferences</Button>
+          <Button type="primary" onClick={() => form.submit()}>
+            Save Preferences
+          </Button>
         </div>
       }
     >

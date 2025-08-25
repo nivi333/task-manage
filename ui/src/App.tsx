@@ -21,6 +21,7 @@ import DashboardPage from './pages/DashboardPage';
 import NotificationCenterPage from './pages/NotificationCenterPage';
 import GlobalSearchPage from './pages/GlobalSearchPage';
 import AnalyticsDashboardPage from './pages/AnalyticsDashboardPage';
+import SettingsPage from './pages/SettingsPage';
 import { authAPI } from './services/authService';
 import { initNotificationService, notificationService } from './services/notificationService';
 import './App.css';
@@ -69,9 +70,14 @@ const theme = {
       colorBorder: '#d9d9d9',
       colorBorderHover: '#4096ff',
     },
+    // Ensure cards are pure white with a slightly darker border for clear separation
+    Card: {
+      colorBgContainer: '#ffffff',
+      // slightly darker than default grey to differentiate from page background
+      colorBorderSecondary: '#d0d5dd',
+    },
   },
 };
-
 
 // Protected Route component
 
@@ -177,6 +183,14 @@ const AppContent: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <AnalyticsDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <SettingsPage />
                 </ProtectedRoute>
               }
             />

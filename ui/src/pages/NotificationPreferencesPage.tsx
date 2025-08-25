@@ -23,6 +23,10 @@ const NotificationPreferencesPage: React.FC = () => {
     let mounted = true;
     (async () => {
       try {
+        if (!authAPI.isAuthenticated()) {
+          if (mounted) setLoading(false);
+          return;
+        }
         const user = await authAPI.getCurrentUser();
         const uid = user?.id || user?.userId || null;
         if (!uid) return;
@@ -37,6 +41,8 @@ const NotificationPreferencesPage: React.FC = () => {
           enabledTypes: ALL_TYPES.map(t => t.value),
         };
         form.setFieldsValue(initial);
+      } catch (e) {
+        // error surfaced globally via interceptor
       } finally {
         if (mounted) setLoading(false);
       }
