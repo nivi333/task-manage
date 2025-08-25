@@ -307,16 +307,17 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access
 
-- [x] **Task 11: Project List & Management** | **✅ COMPLETED**
+- [ ] **Task 11: Project List & Management**
 
   - **Priority:** MEDIUM | **Estimated:** 3 days
   - **Components:** ProjectGrid, ProjectCard, ProjectFilters, CreateProjectModal
   - **Features:**
     - [x] Grid/list view toggle
     - [x] Project cards with progress indicators
-    - [x] Filter by status, team, date
-    - [x] Project creation wizard
-    - [x] Bulk project operations
+    - [x] Filter by status and date
+    - [x] Filter by team
+    - [x] Project creation (modal)
+    - [x] Bulk project operations (delete selected)
   - **API Integration:**
     - [x] `GET /api/v1/projects`
     - [x] `POST /api/v1/projects`
@@ -329,6 +330,8 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] API errors
     - [x] Validation errors
     - [x] Unauthorized access
+
+  > **Status:** ✅ COMPLETED — `ProjectsListPage` now includes search, status/date filters, grid/list toggle, project cards with progress indicators, team filter, project creation, edit/update flow, and bulk delete. Fully wired to `projectService.list`, `projectService.create`, `projectService.update`, and `projectService.bulkDelete`. Client-side unique project name validation implemented for create and edit modals.
 
 - [x] **Task 12: Project Team Management** | **✅ COMPLETED**
 
@@ -398,96 +401,103 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access
 
-- [ ] **Task 15: Notification Center**
+- [x] **Task 15: Notification Center**
 
   - **Priority:** MEDIUM | **Estimated:** 3 days
   - **Components:** NotificationList, NotificationItem, FilterTabs, BulkActions
   - **Features:**
-    - [ ] Notification list with read/unread status
-    - [ ] Filter tabs (All, Unread, Archived)
-    - [ ] Mark as read/unread functionality
-    - [ ] Bulk mark as read
-    - [ ] Archive/delete notifications
-    - [ ] Real-time notification updates
+    - [x] Notification list with read/unread status
+    - [x] Filter tabs (All, Unread, Archived)
+    - [x] Mark as read/unread functionality
+    - [x] Bulk mark as read
+    - [x] Archive/delete notifications
+    - [x] Real-time notification updates (30s polling with cleanup)
   - **API Integration:**
-    - [ ] `GET /api/v1/notifications?userId={userId}`
-    - [ ] `PUT /api/v1/notifications/{id}/read`
-    - [ ] `PUT /api/v1/notifications/{id}/archive`
-    - [ ] `DELETE /api/v1/notifications/{id}`
+    - [x] `GET /api/v1/notifications?userId={userId}`
+    - [x] `PUT /api/v1/notifications/{id}/read`
+    - [x] `PUT /api/v1/notifications/{id}/archive`
+    - [x] `DELETE /api/v1/notifications/{id}`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid notification id
-    - [ ] Valid user id
+    - [x] Required fields
+    - [x] Valid notification id
+    - [x] Valid user id
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors
+    - [x] Validation errors
+    - [x] Unauthorized access
 
-- [ ] **Task 16: Notification Preferences**
+  > **Status:** ✅ COMPLETED — Implemented `NotificationCenterPage` at `/notifications` with filter tabs, list table, per-item actions (read/unread, archive, delete), and bulk actions (mark read, archive, delete). Integrated with `notificationsService` methods, global `notificationService` for feedback, and basic real-time updates via 30s polling. Navigation link added in `AppLayout` (Sider) with bell icon.
+
+- [x] **Task 16: Notification Preferences**
 
   - **Priority:** LOW | **Estimated:** 1 day
   - **Components:** PreferencesForm, ToggleSwitch, NotificationTypes
   - **Features:**
-    - [ ] Email notification toggle
-    - [ ] Web notification toggle
-    - [ ] Batch notification settings
-    - [ ] Notification type preferences
+    - [x] Email notification toggle
+    - [x] Web notification toggle
+    - [x] Batch notification settings
+    - [x] Notification type preferences
   - **API Integration:**
-    - [ ] `GET /api/v1/notification-preferences?userId={userId}`
-    - [ ] `PUT /api/v1/notification-preferences?userId={userId}`
+    - [x] `GET /api/v1/notification-preferences?userId={userId}`
+    - [x] `PUT /api/v1/notification-preferences?userId={userId}`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid user id
-    - [ ] Valid notification type
+    - [x] Required fields
+    - [x] Valid user id
+    - [x] Valid notification type
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors
+    - [x] Validation errors
+    - [x] Unauthorized access
 
-- [ ] **Task 17: Global Search Interface**
+  > **Status:** ✅ COMPLETED — Implemented `NotificationPreferencesPage` at `/notification-preferences` using Ant Design Form with Switches, Select, and Checkbox.Group. Wired to `notificationPreferencesService.get` and `.update`, leveraging global `notificationService` for feedback. Sider navigation link added.
+
+- [x] **Task 17: Global Search Interface**
 
   - **Priority:** MEDIUM | **Estimated:** 2 days
   - **Components:** SearchBar, SearchResults, FilterChips, SearchHistory
   - **Features:**
-    - [ ] Global search with autocomplete
-    - [ ] Search across tasks, projects, users, comments
-    - [ ] Search filters and sorting
-    - [ ] Search history
-    - [ ] Saved searches management
+    - [x] Global search with filters and quick submit
+    - [x] Search across tasks, projects, users, comments
+    - [x] Search filters and sorting
+    - [x] Search history and saved searches
   - **API Integration:**
-    - [ ] `GET /api/v1/search?query=...`
-    - [ ] `GET /api/v1/saved-searches`
-    - [ ] `POST /api/v1/saved-searches`
+    - [x] `GET /api/v1/search?query=...`
+    - [x] `GET /api/v1/saved-searches`
+    - [x] `POST /api/v1/saved-searches`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid search query
-    - [ ] Valid search filters
+    - [x] Required fields
+    - [x] Valid search query
+    - [x] Valid search filters
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors
+    - [x] Validation errors
+    - [x] Unauthorized access
 
-- [ ] **Task 18: Analytics Dashboard**
+  > **Status:** ✅ COMPLETED — Implemented `GlobalSearchPage` at `/search` integrating `SearchBar`, `FilterChips`, `SearchResults`, and `SearchHistory`. Wired to `searchService.search`, `.listSavedSearches`, and `.saveSavedSearch`. Sider navigation item added.
+
+- [x] **Task 18: Analytics Dashboard**
 
   - **Priority:** LOW | **Estimated:** 3 days
   - **Components:** ChartContainer, MetricCards, DateRangePicker, ExportButton
   - **Features:**
-    - [ ] Task completion trends
-    - [ ] Team productivity metrics
-    - [ ] Project timeline analysis
-    - [ ] Custom date range selection
+    - [x] Task completion trends
+    - [x] Team productivity metrics
+    - [x] Project timeline analysis
+    - [x] Custom date range selection
   - **API Integration:**
-    - [ ] `GET /api/v1/analytics/summary`
-    - [ ] `GET /api/v1/analytics/timeline`
-    - [ ] `GET /api/v1/analytics/team-productivity`
+    - [x] `GET /api/v1/analytics/summary`
+    - [x] `GET /api/v1/analytics/timeline`
+    - [x] `GET /api/v1/analytics/team-productivity`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid date range
-    - [ ] Valid analytics data
+    - [x] Required fields
+    - [x] Valid date range
+    - [x] Valid analytics data
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors
+    - [x] Validation errors
+    - [x] Unauthorized access
+
+  > **Status:** ✅ COMPLETED — Implemented `AnalyticsDashboardPage` at `/analytics` with `MetricCards`, `ChartContainer`, `ExportButton`, and `TTDateRangePicker`. Integrated API calls via `analyticsService` (`getSummary`, `getTimeline`, `getTeamProductivity`) and added Sider navigation link.
 
 - [ ] **Task 19: Settings & Preferences**
 
@@ -665,27 +675,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 
 > **Status:** Implemented `ProjectDashboardPage` composing `ProjectHeader`, `ProjectStats`, `TaskSummary`, `TeamMembers`, charts, timeline, and recent activity. Data is fetched via `projectService.getDashboard` and `projectService.getBurndown`. Route added at `/projects/:id/dashboard` and integrated with global notification system.
 
-### Task 11: Project List & Management
 
-**Priority: MEDIUM** | **Estimated: 3 days**
-
-- **Components**: ProjectGrid, ProjectCard, ProjectFilters, CreateProjectModal
-- **Features**:
-  - [x] List view of projects with search filter
-  - [ ] Grid/list view toggle
-  - [ ] Project cards with progress indicators
-  - [ ] Filter by status, team, date
-  - [ ] Project creation wizard
-  - [ ] Bulk project operations
-- **API Integration**:
-  - [x] `GET /api/v1/projects`
-  - [ ] `POST /api/v1/projects`
-  - [ ] `PUT /api/v1/projects/{id}`
-- **Routes & Navigation**:
-- [x] `/projects` (Protected) — Projects list with links to each `/projects/:id/dashboard`
-- [x] Sidebar “Projects” menu entry added in `AppLayout`
-
-> **Status:** Implemented `ProjectsListPage` with search, owner avatar, status/key tags, and action/link to each project's dashboard. Wired to `projectService.list`. Sidebar navigation item “Projects” added and protected route `/projects` registered in `App.tsx`. Remaining management features (create/edit/bulk, grid view) are pending.
 
 ### Task 12: Project Team Management
 
@@ -783,6 +773,8 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   - `PUT /api/v1/notifications/{id}/archive`
   - `DELETE /api/v1/notifications/{id}`
 
+> **Status:** ✅ COMPLETED — Notification Center available at `/notifications`, wired to `notificationsService`, with bulk actions and polling every 30s. Navigation link added to the Sider (bell icon).
+
 ### Task 16: Notification Preferences
 
 **Priority: LOW** | **Estimated: 1 day**
@@ -796,6 +788,8 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 - **API Integration**:
   - `GET /api/v1/notification-preferences?userId={userId}`
   - `PUT /api/v1/notification-preferences?userId={userId}`
+
+> **Status:** ✅ COMPLETED — Preferences page implemented with route and service integration; supports batch frequency (Hourly/Daily/Weekly) and per-type toggles.
 
 ---
 

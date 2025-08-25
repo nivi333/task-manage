@@ -11,6 +11,7 @@ import {
   Row,
   Col,
   Popconfirm,
+  Progress,
 } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import {
@@ -18,6 +19,7 @@ import {
   UnorderedListOutlined,
   AppstoreOutlined as GridIcon,
   PlusOutlined,
+  EditOutlined,
   DeleteOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -27,6 +29,7 @@ import { Project } from "../types/project";
 import { projectService } from "../services/projectService";
 import { notificationService } from "../services/notificationService";
 import CreateProjectModal from "../components/projects/CreateProjectModal";
+import EditProjectModal from "../components/projects/EditProjectModal";
 import dayjs, { Dayjs } from "dayjs";
 import {
   SearchBar,
@@ -36,6 +39,8 @@ import {
   HeaderTitle,
   TTTable,
 } from "../components/common";
+import { teamService } from "../services/teamService";
+import { Team } from "../types/team";
 
 const { Text } = Typography;
 
@@ -45,11 +50,14 @@ const ProjectsListPage: React.FC = () => {
   const [projects, setProjects] = useState<Project[] | null>(null);
   const [query, setQuery] = useState("");
   const [status, setStatus] = useState<string | undefined>(undefined);
+  const [teamId, setTeamId] = useState<string | undefined>(undefined);
   const [dateRange, setDateRange] = useState<[Dayjs, Dayjs] | null>(null);
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [creating, setCreating] = useState(false);
+  const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
+  const [teams, setTeams] = useState<Team[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -68,6 +76,18 @@ const ProjectsListPage: React.FC = () => {
     return () => {
       mounted = false;
     };
+  }, []);
+
+  useEffect(() => {
+    // load teams for filter; ignore errors and keep empty if fail
+    (async () => {
+      try {
+        const list = await teamService.list();
+        setTeams(list || []);
+      } catch {
+        setTeams([]);
+      }
+    })();
   }, []);
 
   const filtered = useMemo(() => {
@@ -99,8 +119,11 @@ const ProjectsListPage: React.FC = () => {
         );
       });
     }
+    if (teamId) {
+      list = list.filter((p) => (p as any).teamId === teamId);
+    }
     return list;
-  }, [projects, query, status, dateRange]);
+  }, [projects, query, status, dateRange, teamId]);
 
   const refresh = async () => {
     setLoading(true);
@@ -146,6 +169,17 @@ const ProjectsListPage: React.FC = () => {
     }
   };
 
+  const handleUpdate = async (id: string, payload: any) => {
+    try {
+      await projectService.update(id as any, payload);
+      notificationService.success("Project updated");
+      setEditingProject(null);
+      await refresh();
+    } catch (e: any) {
+      notificationService.error(e?.message || "Failed to update project");
+    }
+  };
+
   return (
     <AppLayout title={<HeaderTitle level={3}>Projects</HeaderTitle>}>
       <Space direction="vertical" size={16} style={{ width: "100%" }}>
@@ -174,6 +208,14 @@ const ProjectsListPage: React.FC = () => {
                     { label: "On Hold", value: "ON_HOLD" },
                     { label: "Completed", value: "COMPLETED" },
                   ]}
+                />
+                <TTSelect
+                  allowClear
+                  placeholder="Team"
+                  width={200}
+                  value={teamId}
+                  onChange={(v) => setTeamId(v as string | undefined)}
+                  options={(teams || []).map((t) => ({ label: t.name, value: t.id }))}
                 />
                 <TTDateRangePicker onChange={(v) => setDateRange(v as any)} />
                 <TTButton
@@ -226,6 +268,7 @@ const ProjectsListPage: React.FC = () => {
                 data={filtered}
                 selectedIds={selectedIds}
                 onToggleSelect={toggleSelect}
+                onEdit={(p) => setEditingProject(p)}
               />
             ) : (
               <Row gutter={[16, 16]}>
@@ -260,6 +303,9 @@ const ProjectsListPage: React.FC = () => {
                           />
                           <Text>{project.owner?.name || "Unknown Owner"}</Text>
                         </Space>
+                        {typeof (project as any)?.metrics?.completionPercent === "number" ? (
+                          <Progress percent={(project as any).metrics.completionPercent} size="small" status="active" />
+                        ) : null}
                         {project.status ? (
                           <Tag
                             color={
@@ -279,6 +325,9 @@ const ProjectsListPage: React.FC = () => {
                         <Link to={`/projects/${project.id}/dashboard`}>
                           Open Dashboard
                         </Link>
+                        <TTButton icon={<EditOutlined />} onClick={() => setEditingProject(project)}>
+                          Edit
+                        </TTButton>
                       </Space>
                     </Card>
                   </Col>
@@ -294,6 +343,14 @@ const ProjectsListPage: React.FC = () => {
           open={creating}
           onCancel={() => setCreating(false)}
           onCreate={handleCreate}
+          existingNames={(projects || []).map((p) => p.name)}
+        />
+        <EditProjectModal
+          open={!!editingProject}
+          project={editingProject}
+          onCancel={() => setEditingProject(null)}
+          onUpdate={handleUpdate}
+          existingNames={(projects || []).map((p) => p.name)}
         />
       </Space>
     </AppLayout>
@@ -307,7 +364,8 @@ const ProjectsTable: React.FC<{
   data: Project[];
   selectedIds: Set<string>;
   onToggleSelect: (id: string, checked: boolean) => void;
-}> = ({ data, selectedIds, onToggleSelect }) => {
+  onEdit: (p: Project) => void;
+}> = ({ data, selectedIds, onToggleSelect, onEdit }) => {
   const columns: ColumnsType<Project> = [
     {
       title: "",
@@ -336,6 +394,18 @@ const ProjectsTable: React.FC<{
           {record.key ? <Tag color="blue">{record.key}</Tag> : null}
         </Space>
       ),
+    },
+    {
+      title: "Progress",
+      dataIndex: "metrics",
+      key: "progress",
+      width: 160,
+      render: (_: any, record) =>
+        typeof (record as any)?.metrics?.completionPercent === "number" ? (
+          <Progress percent={(record as any).metrics.completionPercent} size="small" />
+        ) : (
+          <span>-</span>
+        ),
     },
     {
       title: "Status",
@@ -376,10 +446,15 @@ const ProjectsTable: React.FC<{
     {
       title: "Actions",
       key: "actions",
-      width: 180,
+      width: 220,
       align: "right" as const,
       render: (_: any, record) => (
-        <Link to={`/projects/${record.id}/dashboard`}>Open Dashboard</Link>
+        <Space>
+          <Link to={`/projects/${record.id}/dashboard`}>Open Dashboard</Link>
+          <TTButton size="small" icon={<EditOutlined />} onClick={() => onEdit(record)}>
+            Edit
+          </TTButton>
+        </Space>
       ),
     },
   ];
@@ -387,10 +462,11 @@ const ProjectsTable: React.FC<{
   return (
     <TTTable
       rowKey={(r) => r.id}
-      columns={columns}
+      columns={columns as any}
       dataSource={data}
       pagination={false}
       dense
     />
   );
-};
+}
+;

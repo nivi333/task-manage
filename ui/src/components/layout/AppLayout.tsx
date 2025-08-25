@@ -7,6 +7,9 @@ import {
   UnorderedListOutlined,
   LogoutOutlined,
   BarChartOutlined,
+  BellOutlined,
+  SettingOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/authService";
@@ -45,6 +48,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({
       label: <Link to="/dashboard">Dashboard</Link>,
     },
     {
+      key: "/search",
+      icon: <SearchOutlined />,
+      label: <Link to="/search">Search</Link>,
+    },
+    {
       key: "/projects",
       icon: <AppstoreOutlined />,
       label: <Link to="/projects">Projects</Link>,
@@ -53,6 +61,21 @@ const AppLayout: React.FC<AppLayoutProps> = ({
       key: "/tasks",
       icon: <UnorderedListOutlined />,
       label: <Link to="/tasks">Tasks</Link>,
+    },
+    {
+      key: "/analytics",
+      icon: <BarChartOutlined />,
+      label: <Link to="/analytics">Analytics</Link>,
+    },
+    {
+      key: "/notifications",
+      icon: <BellOutlined />,
+      label: <Link to="/notifications">Notifications</Link>,
+    },
+    {
+      key: "/notification-preferences",
+      icon: <SettingOutlined />,
+      label: <Link to="/notification-preferences">Notification Preferences</Link>,
     },
     {
       key: "/teams",

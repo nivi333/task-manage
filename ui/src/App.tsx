@@ -18,6 +18,10 @@ import TeamSettingsPage from './pages/TeamSettingsPage';
 import ProjectTeamPage from './pages/ProjectTeamPage';
 import TeamListPage from './pages/TeamListPage';
 import DashboardPage from './pages/DashboardPage';
+import NotificationCenterPage from './pages/NotificationCenterPage';
+import NotificationPreferencesPage from './pages/NotificationPreferencesPage';
+import GlobalSearchPage from './pages/GlobalSearchPage';
+import AnalyticsDashboardPage from './pages/AnalyticsDashboardPage';
 import { authAPI } from './services/authService';
 import { initNotificationService, notificationService } from './services/notificationService';
 import './App.css';
@@ -152,6 +156,38 @@ const AppContent: React.FC = () => {
                   <DashboardPage />
                 </ProtectedRoute>
               } 
+            />
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <NotificationCenterPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/search"
+              element={
+                <ProtectedRoute>
+                  <GlobalSearchPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/analytics"
+              element={
+                <ProtectedRoute>
+                  <AnalyticsDashboardPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/notification-preferences"
+              element={
+                <ProtectedRoute>
+                  <NotificationPreferencesPage />
+                </ProtectedRoute>
+              }
             />
             <Route
               path="/projects"

@@ -36,7 +36,47 @@ jest.mock('antd', () => {
       )) : null}
     </ul>
   );
-  return { Card, Space, Input, Empty, Skeleton, Tag, Avatar, Typography, List };
+  const Checkbox = ({ checked, onChange }: any) => (
+    <input type="checkbox" checked={checked} onChange={onChange} />
+  );
+  const Progress = ({ percent }: any) => <div data-testid="progress">{percent}%</div>;
+  const Row = ({ children }: any) => <div data-testid="row">{children}</div>;
+  const Col = ({ children }: any) => <div data-testid="col">{children}</div>;
+  const Popconfirm = ({ children, onConfirm }: any) => (
+    <span onClick={onConfirm} data-testid="popconfirm">{children}</span>
+  );
+  const Button = ({ children, onClick }: any) => (
+    <button onClick={onClick}>{children}</button>
+  );
+  const Select = ({ options = [], onChange, value, placeholder }: any) => (
+    <select data-testid="select" onChange={(e: any) => onChange?.(e.target.value)} value={value}>
+      <option value="" hidden>{placeholder}</option>
+      {options.map((opt: any) => (
+        <option key={opt.value} value={opt.value}>{opt.label}</option>
+      ))}
+    </select>
+  );
+  const Table = ({ dataSource = [], columns = [] }: any) => (
+    <div data-testid="table">
+      {dataSource.map((record: any, idx: number) => (
+        <div key={idx} data-testid="table-row">
+          {columns.map((col: any, cidx: number) => {
+            const text = col.dataIndex ? record[col.dataIndex] : undefined;
+            const node = col.render ? col.render(text, record) : text;
+            return <span key={col.key || col.dataIndex || cidx}>{node}</span>;
+          })}
+        </div>
+      ))}
+    </div>
+  );
+  // Minimal DatePicker mock with RangePicker to satisfy destructuring
+  const DatePicker: any = ({ onChange }: any) => (
+    <input data-testid="datepicker" onChange={onChange} />
+  );
+  DatePicker.RangePicker = ({ onChange }: any) => (
+    <input data-testid="range-picker" onChange={onChange} />
+  );
+  return { Card, Space, Input, Empty, Skeleton, Tag, Avatar, Typography, List, Checkbox, Progress, Row, Col, Popconfirm, DatePicker, Button, Select, Table };
 });
 
 jest.mock('../services/projectService', () => ({
@@ -44,6 +84,23 @@ jest.mock('../services/projectService', () => ({
   projectService: {
     list: jest.fn(),
   },
+}));
+
+jest.mock('../services/teamService', () => ({
+  __esModule: true,
+  teamService: {
+    list: jest.fn().mockResolvedValue([]),
+  },
+}));
+
+// Stub modals to avoid importing heavy AntD form internals
+jest.mock('../components/projects/CreateProjectModal', () => ({
+  __esModule: true,
+  default: () => null,
+}));
+jest.mock('../components/projects/EditProjectModal', () => ({
+  __esModule: true,
+  default: () => null,
 }));
 
 describe('ProjectsListPage', () => {

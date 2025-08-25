@@ -9,6 +9,11 @@ export interface CreateProjectModalProps {
   open: boolean;
   onCancel: () => void;
   onCreate: (payload: ProjectCreateRequest) => Promise<void> | void;
+  /**
+   * Existing project names for uniqueness validation (case-insensitive).
+   * Optional: if omitted, uniqueness validation is skipped.
+   */
+  existingNames?: string[];
 }
 
 const { RangePicker } = DatePicker;
@@ -17,6 +22,7 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
   open,
   onCancel,
   onCreate,
+  existingNames,
 }) => {
   const [form] = Form.useForm<
     ProjectCreateRequest & { dateRange?: [dayjs.Dayjs, dayjs.Dayjs] }
@@ -127,7 +133,19 @@ const CreateProjectModal: React.FC<CreateProjectModalProps> = ({
         <Form.Item
           label="Name"
           name="name"
-          rules={[{ required: true, message: "Please enter project name" }]}
+          rules={[
+            { required: true, message: "Please enter project name" },
+            ({ getFieldValue }) => ({
+              async validator() {
+                const value = (getFieldValue("name") || "").trim();
+                if (!value || !existingNames || existingNames.length === 0) return Promise.resolve();
+                const exists = existingNames.some((n) => n.toLowerCase() === value.toLowerCase());
+                return exists
+                  ? Promise.reject(new Error("A project with this name already exists"))
+                  : Promise.resolve();
+              },
+            }),
+          ]}
           style={{ marginBottom: 8 }}
         >
           <Input placeholder="Project name" autoComplete="off" name="pm_name" />
