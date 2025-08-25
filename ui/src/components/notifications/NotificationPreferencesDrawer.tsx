@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Drawer, Form, Switch, Select, Checkbox, Space, Typography, Spin } from 'antd';
+import { Drawer, Form, Switch, Select, Checkbox, Space, Typography, Spin, Button, Row, Col } from 'antd';
 import { authAPI } from '../../services/authService';
 import notificationPreferencesService from '../../services/notificationPreferencesService';
 import { BatchFrequency, NotificationPreferences, NotificationTypeKey } from '../../types/notificationPreferences';
@@ -60,15 +60,50 @@ const NotificationPreferencesDrawer: React.FC<Props> = ({ open, onClose }) => {
     if (loading) return <div style={{ textAlign: 'center', margin: '48px 0' }}><Spin size="large" /></div>;
     return (
       <Form form={form} layout="vertical" onFinish={onFinish}>
-        <Form.Item name="emailEnabled" label="Email Notifications" valuePropName="checked">
-          <Switch />
+        {/* Email Notifications toggle inline with title */}
+        <Row align="middle" justify="space-between" style={{ marginBottom: 16 }}>
+          <Col><Typography.Text strong>Email Notifications</Typography.Text></Col>
+          <Col>
+            <Form.Item name="emailEnabled" valuePropName="checked" noStyle>
+              <Switch />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Web Notifications toggle inline with title */}
+        <Row align="middle" justify="space-between" style={{ marginBottom: 16 }}>
+          <Col><Typography.Text strong>Web Notifications</Typography.Text></Col>
+          <Col>
+            <Form.Item name="webEnabled" valuePropName="checked" noStyle>
+              <Switch />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Batch Notifications toggle inline with title */}
+        <Row align="middle" justify="space-between" style={{ marginBottom: 16 }}>
+          <Col><Typography.Text strong>Batch Notifications</Typography.Text></Col>
+          <Col>
+            <Form.Item name="batchEnabled" valuePropName="checked" noStyle>
+              <Switch />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        {/* Notification Types in invisible grid */}
+        <Form.Item name="enabledTypes" label="Notification Types">
+          <Checkbox.Group>
+            <Row gutter={[12, 8]}>
+              {ALL_TYPES.map((opt) => (
+                <Col xs={24} sm={12} md={12} lg={8} key={opt.value}>
+                  <Checkbox value={opt.value}>{opt.label}</Checkbox>
+                </Col>
+              ))}
+            </Row>
+          </Checkbox.Group>
         </Form.Item>
-        <Form.Item name="webEnabled" label="Web Notifications" valuePropName="checked">
-          <Switch />
-        </Form.Item>
-        <Form.Item name="batchEnabled" label="Batch Notifications" valuePropName="checked">
-          <Switch />
-        </Form.Item>
+
+        {/* Batch Frequency moved to bottom */}
         <Form.Item name="batchFrequency" label="Batch Frequency">
           <Select disabled={batchDisabled} options={[
             { label: 'Hourly', value: 'HOURLY' as BatchFrequency },
@@ -76,21 +111,25 @@ const NotificationPreferencesDrawer: React.FC<Props> = ({ open, onClose }) => {
             { label: 'Weekly', value: 'WEEKLY' as BatchFrequency },
           ]} />
         </Form.Item>
-        <Form.Item name="enabledTypes" label="Notification Types">
-          <Checkbox.Group options={ALL_TYPES} />
-        </Form.Item>
-        <Form.Item>
-          <Space>
-            <button type="submit" className="tt-btn tt-btn-primary">Save Preferences</button>
-            <button type="button" className="tt-btn" onClick={onClose}>Cancel</button>
-          </Space>
-        </Form.Item>
       </Form>
     );
-  }, [loading, form, batchDisabled, onClose]);
+  }, [loading, form, batchDisabled]);
 
   return (
-    <Drawer title="Notification Preferences" width={520} open={open} onClose={onClose} destroyOnClose>
+    <Drawer
+      title="Notification Preferences"
+      width="40%"
+      open={open}
+      onClose={onClose}
+      destroyOnClose
+      bodyStyle={{ paddingBottom: 24 }}
+      footer={
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
+          <Button onClick={onClose}>Cancel</Button>
+          <Button type="primary" onClick={() => form.submit()}>Save Preferences</Button>
+        </div>
+      }
+    >
       <Typography.Paragraph type="secondary" style={{ marginBottom: 12 }}>
         Configure how you’d like to receive notifications.
       </Typography.Paragraph>

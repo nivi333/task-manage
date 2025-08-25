@@ -8,7 +8,6 @@ import {
   LogoutOutlined,
   BarChartOutlined,
   BellOutlined,
-  SettingOutlined,
   SearchOutlined,
 } from "@ant-design/icons";
 import { Link, useLocation, useNavigate } from "react-router-dom";
