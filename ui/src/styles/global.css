@@ -876,11 +876,19 @@ select:-moz-autofill {
   box-shadow: none !important;
   transition: none !important;
 }
+.tt-pagination-visible .ant-pagination-item > a {
+  color: var(--color-text-primary) !important;
+  font-weight: 700 !important;
+}
 .tt-pagination-visible .ant-pagination-item-active {
   background: var(--color-surface) !important;
   color: var(--color-primary) !important;
   border: 2px solid var(--color-primary) !important;
-  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.1) !important;
+  box-shadow: 0 0 0 2px rgba(var(--color-primary-rgb), 0.10) !important;
+}
+.tt-pagination-visible .ant-pagination-item-active > a {
+  color: var(--color-primary) !important;
+  font-weight: 700 !important;
 }
 
 html[data-theme="dark"] .tt-pagination-visible .ant-pagination-item {
@@ -888,10 +896,18 @@ html[data-theme="dark"] .tt-pagination-visible .ant-pagination-item {
   border: 1.5px solid #2a3140 !important;
   color: #e6e8ee !important;
 }
+html[data-theme="dark"] .tt-pagination-visible .ant-pagination-item > a {
+  color: #e6e8ee !important;
+  font-weight: 700 !important;
+}
 html[data-theme="dark"] .tt-pagination-visible .ant-pagination-item-active {
   background: #23283a !important;
   color: #667eea !important;
   border: 2px solid #667eea !important;
+}
+html[data-theme="dark"] .tt-pagination-visible .ant-pagination-item-active > a {
+  color: #667eea !important;
+  font-weight: 700 !important;
 }
 
 /* AntD icon color fixes for dark theme */
