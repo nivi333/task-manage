@@ -300,10 +300,10 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [ ] Comment editing/deletion
     - [ ] Real-time updates (WebSocket)
   - **API Integration:**
-    - [ ] `GET /api/v1/tasks/{taskId}/comments`
-    - [ ] `POST /api/v1/tasks/{taskId}/comments`
-    - [ ] `PUT /api/v1/tasks/{taskId}/comments/{commentId}`
-    - [ ] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
+    - [x] `GET /api/v1/tasks/{taskId}/comments`
+    - [x] `POST /api/v1/tasks/{taskId}/comments`
+    - [x] `PUT /api/v1/tasks/{taskId}/comments/{commentId}`
+    - [x] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
   - **Validation:**
     - [ ] Required fields
     - [ ] Valid mentions
@@ -313,7 +313,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access (auth interceptor)
 
-  > **Status:** ✅ UI IMPLEMENTED — `SettingsPage` with `SettingsForm`, `ThemeSelector`, `LanguageSelector`, and `NotificationSettings` is live and styled (full-bleed layout, dark theme contrast). API endpoints are pending; UI gracefully handles 404s by using defaults and suppressing noisy toasts. Once `GET/PUT /api/v1/settings` is available, persistence will be fully wired.
+  > **Status:** In Progress — Backend CRUD for comments is implemented (`CommentController`, `CommentServiceImpl`, `CommentRepository`). Frontend UI (CommentList/Form, ReplyThread), mentions, rich text editor + sanitization, and realtime (WebSocket + fallback polling) are pending. Will integrate into `TaskDetailPage` with `?tab=comments` deep link and optimistic updates.
   - **Routes & Placement:**
     - [ ] `/tasks/:id` — Comments tab/section inside `TaskDetailPage`
     - [ ] Deep link support: `/tasks/:id?tab=comments`
