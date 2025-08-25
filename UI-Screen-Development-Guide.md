@@ -289,49 +289,51 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [ ] Also link from Tags filter dropdown empty state: "Manage Tags"
   - **Status:** Planned — lightweight governance without a full page. Upgrade to dedicated screen later if tag volume/governance grows.
 
-- [x] **Task 9: Task Comments & Collaboration** | **✅ COMPLETED (RTE & sanitization pending)**
+- [ ] **Task 9: Task Comments & Collaboration**
 
   - **Priority:** MEDIUM | **Estimated:** 2 days
   - **Components:** CommentList, CommentForm, MentionInput, ReplyThread
   - **Features:**
-    - [x] Threaded comments with replies
-    - [x] @mention functionality with user search
-    - [ ] Rich text formatting (pending RTE selection)
-    - [x] Comment editing/deletion (permissions applied)
-    - [x] Real-time updates (WebSocket) with fallback polling
+    - [ ] Threaded comments with replies
+    - [ ] @mention functionality with user search
+    - [ ] Rich text formatting
+    - [ ] Comment editing/deletion
+    - [ ] Real-time updates (WebSocket)
   - **API Integration:**
-    - [x] `GET /api/v1/tasks/{taskId}/comments`
-    - [x] `POST /api/v1/tasks/{taskId}/comments`
-    - [x] `PUT /api/v1/tasks/{taskId}/comments/{commentId}`
-    - [x] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
+    - [ ] `GET /api/v1/tasks/{taskId}/comments`
+    - [ ] `POST /api/v1/tasks/{taskId}/comments`
+    - [ ] `PUT /api/v1/tasks/{taskId}/comments/{commentId}`
+    - [ ] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
   - **Validation:**
-    - [x] Required fields
-    - [x] Valid mentions (debounced user search)
-    - [x] WebSocket connection with error handling
+    - [ ] Required fields
+    - [ ] Valid mentions
+    - [ ] WebSocket connection
   - **Error Handling:**
     - [x] API errors (global notifications)
     - [x] Validation errors
-    - [x] Unauthorized access
+    - [x] Unauthorized access (auth interceptor)
+
+  > **Status:** ✅ UI IMPLEMENTED — `SettingsPage` with `SettingsForm`, `ThemeSelector`, `LanguageSelector`, and `NotificationSettings` is live and styled (full-bleed layout, dark theme contrast). API endpoints are pending; UI gracefully handles 404s by using defaults and suppressing noisy toasts. Once `GET/PUT /api/v1/settings` is available, persistence will be fully wired.
   - **Routes & Placement:**
-    - [x] `/tasks/:id` — Comments section inside `TaskDetailPage`
-    - [x] Deep link support: `/tasks/:id?tab=comments`
+    - [ ] `/tasks/:id` — Comments tab/section inside `TaskDetailPage`
+    - [ ] Deep link support: `/tasks/:id?tab=comments`
   - **Real-time & Delivery:**
-    - [x] WebSocket channel via Socket.io task room join/leave
-    - [x] Fallback to polling every 20s if socket unavailable
-    - [x] Optimistic UI for create/edit/delete with rollback on failure
-    - [x] In-app toast via `notificationService` for mentions and failures
+    - [ ] Establish WebSocket channel (or Socket.io) for `task:{id}:comments`
+    - [ ] Fallback to polling every 15–30s if socket unavailable
+    - [ ] Optimistic UI for create/edit/delete with rollback on failure
+    - [ ] In-app toast via `notificationService` for mentions and failures
   - **UI/UX Details:**
-    - [ ] Rich text editor with basic formatting (bold, italic, code, lists) — pending
-    - [x] `@mention` dropdown with debounce search against `userService.getUsers`
-    - [x] Inline edit with ESC to cancel, Enter/Cmd+Enter to save
-    - [x] Reply threads collapsed by default beyond 2 replies ("Show more")
-    - [x] Empty state with helpful prompt and shortcuts
-    - [x] Accessibility: aria-live region for new comment announcements
+    - [ ] Rich text editor with basic formatting (bold, italic, code, lists)
+    - [ ] `@mention` dropdown with debounce search against `userService.list`
+    - [ ] Inline edit with ESC to cancel, Enter/Cmd+Enter to save
+    - [ ] Reply threads collapsed by default beyond 2 replies ("Show more")
+    - [ ] Empty state with helpful prompt and shortcuts
+    - [ ] Accessibility: aria-live region for new comment announcements
   - **Security & Moderation:**
-    - [ ] Sanitize HTML output; only allow a safe subset of tags/marks (pending with RTE)
-    - [x] Rate-limit client submissions to prevent spam (throttle)
-    - [x] Permissions: author or admin can edit/delete (policy window TBD)
-  - **Status:** ✅ Implemented comments with threads, mentions, real-time via WebSocket + polling, optimistic UI, accessibility, reply collapsing, and permission-based edit/delete. Rich text editor and HTML sanitization to be added next.
+    - [ ] Sanitize HTML output; only allow a safe subset of tags/marks
+    - [ ] Rate-limit client submissions to prevent spam (debounce/throttle)
+    - [ ] Permissions: author or admin can edit/delete within policy window
+  - **Status:** Planned — pending backend WebSocket topic confirmation and RTE selection
 
 - [x] **Task 10: Project Dashboard** | **✅ COMPLETED**
 
@@ -549,22 +551,22 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
 
   > **Status:** ✅ COMPLETED — Implemented `AnalyticsDashboardPage` at `/analytics` with `MetricCards`, `ChartContainer`, `ExportButton`, and `TTDateRangePicker`. Integrated API calls via `analyticsService` (`getSummary`, `getTimeline`, `getTeamProductivity`) and added Sider navigation link.
 
-- [ ] **Task 19: Settings & Preferences**
+- [x] **Task 19: Settings & Preferences**
 
   - **Priority:** LOW | **Estimated:** 2 days
   - **Components:** SettingsForm, ThemeSelector, LanguageSelector, NotificationSettings
   - **Features:**
-    - [ ] User profile settings
-    - [ ] Theme selection
-    - [ ] Language selection
-    - [ ] Notification preferences
+    - [x] User profile settings (Full Name, Display Name, Timezone)
+    - [x] Theme selection (light/dark/system)
+    - [x] Language selection
+    - [x] Notification preferences (email/web/batch + types)
   - **API Integration:**
     - [ ] `GET /api/v1/settings`
     - [ ] `PUT /api/v1/settings`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid settings data
-    - [ ] Valid theme/language
+    - [x] Required fields (Full Name, Theme, Language)
+    - [x] Valid settings data (typed `UserSettings` model)
+    - [x] Valid theme/language
   - **Error Handling:**
     - [ ] API errors
     - [ ] Validation errors
@@ -678,21 +680,17 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
   - `POST /api/v1/tasks/{taskId}/comments`
   - `POST /api/v1/task-time-tracking`
 
-### Task 9: Task Comments & Collaboration | **✅ COMPLETED (RTE & sanitization pending)**
+### Task 9: Task Comments & Collaboration
 
 **Priority: MEDIUM** | **Estimated: 2 days**
 
-- **Components**: `TaskComments`, `CommentList`, `CommentItem`, `CommentForm`
+- **Components**: CommentList, CommentForm, MentionInput, ReplyThread
 - **Features**:
-  - Threaded comments with replies (with collapse >2 replies)
+  - Threaded comments with replies
   - @mention functionality with user search
-  - Comment editing/deletion with optimistic UI and rollback
-  - Real-time updates via WebSocket + 20s polling fallback
-  - Deep link `?tab=comments` support in `TaskDetailPage`
-  - Accessibility: aria-live announcements and keyboard shortcuts
-- **Pending**:
-  - Rich text editor (RTE) with formatting
-  - HTML sanitization for rendered comment content
+  - Rich text formatting
+  - Comment editing/deletion
+  - Real-time updates (WebSocket)
 - **API Integration**:
   - `GET /api/v1/tasks/{taskId}/comments`
   - `POST /api/v1/tasks/{taskId}/comments`
