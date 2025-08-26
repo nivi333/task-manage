@@ -81,8 +81,8 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ onFormReady }) => {
   return (
     <div style={{ background: 'var(--color-card-background)', borderRadius: 10, padding: '32px 40px', width: '100%' }}>
       <Form<UserSettings> form={form} layout="vertical" onFinish={onFinish} style={{ width: '100%' }}>
-        <Typography.Title level={5} style={{ margin: 0, color: 'var(--color-text-secondary)', fontWeight: 600 }}>Profile</Typography.Title>
-        <Row gutter={16} style={{ marginBottom: 0 }}>
+        <Typography.Title level={5} style={{ margin: 0, color: 'var(--color-text-secondary)', fontWeight: 600, textAlign: 'left' }}>Profile</Typography.Title>
+        <Row gutter={16} justify="start" style={{ marginBottom: 0 }}>
           <Col xs={24} md={8}>
             <Form.Item name={["profile", "fullName"]} label="Full Name" rules={[{ required: true, message: 'Full name is required' }]}>
               <Input placeholder="Your full name" />
@@ -100,8 +100,8 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ onFormReady }) => {
           </Col>
         </Row>
         <Divider style={{ margin: '18px 0 16px' }} />
-        <Typography.Title level={5} style={{ margin: 0, color: 'var(--color-text-secondary)', fontWeight: 600 }}>Appearance & Language</Typography.Title>
-        <Row gutter={16} style={{ marginBottom: 0 }}>
+        <Typography.Title level={5} style={{ margin: 0, color: 'var(--color-text-secondary)', fontWeight: 600, textAlign: 'left' }}>Appearance & Language</Typography.Title>
+        <Row gutter={16} justify="start" style={{ marginBottom: 0 }}>
           <Col xs={24} md={8}>
             <Form.Item name={["theme"]} label="Theme" rules={[{ required: true }]}>
               <ThemeSelector />
@@ -114,34 +114,8 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ onFormReady }) => {
           </Col>
         </Row>
         <Divider style={{ margin: '18px 0 16px' }} />
-        <Typography.Title level={5} style={{ margin: 0, color: 'var(--color-text-secondary)', fontWeight: 600 }}>Notifications</Typography.Title>
-        <Row gutter={16} style={{ marginBottom: 0 }}>
-          <Col xs={24} md={8}>
-            <Form.Item name={["notifications", "emailEnabled"]} valuePropName="checked">
-              <Switch /> Email Notifications
-            </Form.Item>
-          </Col>
-          <Col xs={24} md={8}>
-            <Form.Item name={["notifications", "webEnabled"]} valuePropName="checked">
-              <Switch /> Web Notifications
-            </Form.Item>
-          </Col>
-          <Col xs={24} md={8}>
-            <Form.Item name={["notifications", "batchEnabled"]} valuePropName="checked">
-              <Switch /> Batch Notifications
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row gutter={16} style={{ marginBottom: 0 }}>
-          <Col xs={24} md={8}>
-            <Form.Item name={["notifications", "batchFrequency"]} label="Batch Frequency">
-              <Select style={{ width: 180 }} options={batchFrequencyOptions} />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item name={["notifications", "enabledTypes"]} label="Notification Types">
-          <Checkbox.Group options={notificationTypeOptions} />
-        </Form.Item>
+        <Typography.Title level={5} style={{ margin: 0, color: 'var(--color-text-secondary)', fontWeight: 600, textAlign: 'left' }}>Notifications</Typography.Title>
+        <NotificationSettings name="notifications" />
       </Form>
     </div>
   );

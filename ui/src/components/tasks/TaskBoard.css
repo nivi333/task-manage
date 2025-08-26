@@ -12,11 +12,17 @@
   background: var(--color-surface);
   border: 1px solid var(--color-border);
   border-radius: 10px;
+  height: calc(100vh - 180px); /* fill viewport minus header/toolbars */
 }
 
 .task-board-column.modern .ant-card-head {
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
+}
+
+/* Kanban lanes: tighter header spacing per request (high specificity) */
+.tt-kanban-card.ant-card .ant-card-head {
+  margin-bottom: 5px !important;
 }
 
 .task-board-column.modern .ant-card-head-title {
@@ -27,7 +33,7 @@
 
 .task-board-column.modern .ant-card-body {
   padding: 12px;
-  max-height: calc(100vh - 240px);
+  height: calc(100% - 56px); /* card header ~56px */
   overflow-y: auto;
 }
 
@@ -35,17 +41,12 @@
 .task-board-column .task-card {
   margin-bottom: 12px;
   border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
 }
 
 /* Divider line between tasks (wrapper divs), independent of card margins */
 .task-board-column .task-card-draggable + .task-card-draggable {
-  border-top: 1px solid var(--color-border);
+  border-top: none;
   margin-top: 8px;
-}
-
-.task-board-column .task-card:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
 }
 
 /* Lane accents */

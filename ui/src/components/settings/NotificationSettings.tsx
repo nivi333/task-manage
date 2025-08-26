@@ -21,31 +21,31 @@ const NotificationSettings: React.FC<Props> = ({ name }) => {
   const batchDisabled = batchEnabled === false;
 
   return (
-      <Space direction="vertical" style={{ width: '100%' }}>
+      <Space direction="vertical" style={{ width: '100%', alignItems: 'flex-start' }}>
         <Typography.Text type="secondary">Configure how you’d like to receive notifications</Typography.Text>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Typography.Text strong style={{ width: 220 }}>Email Notifications</Typography.Text>
           <Form.Item name={[name, 'emailEnabled']} valuePropName="checked" noStyle>
             <Switch />
           </Form.Item>
+          <Typography.Text strong>Email Notifications</Typography.Text>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Typography.Text strong style={{ width: 220 }}>Web Notifications</Typography.Text>
           <Form.Item name={[name, 'webEnabled']} valuePropName="checked" noStyle>
             <Switch />
           </Form.Item>
+          <Typography.Text strong>Web Notifications</Typography.Text>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <Typography.Text strong style={{ width: 220 }}>Batch Notifications</Typography.Text>
           <Form.Item name={[name, 'batchEnabled']} valuePropName="checked" noStyle>
             <Switch />
           </Form.Item>
+          <Typography.Text strong>Batch Notifications</Typography.Text>
         </div>
 
-        <Form.Item name={[name, 'batchFrequency']} label="Batch Frequency" rules={[{ required: batchEnabled === true, message: 'Please select a frequency' }]}>
+        <Form.Item name={[name, 'batchFrequency']} label="Batch Frequency" style={{ width: 350, maxWidth: '100%' }} rules={[{ required: batchEnabled === true, message: 'Please select a frequency' }]}>
           <Select
             disabled={batchDisabled}
             options={[
@@ -56,8 +56,8 @@ const NotificationSettings: React.FC<Props> = ({ name }) => {
           />
         </Form.Item>
 
-        <Form.Item name={[name, 'enabledTypes']} label="Notification Types" rules={[{ required: true, message: 'Select at least one type' }]}>
-          <Checkbox.Group>
+        <Form.Item name={[name, 'enabledTypes']} label="Notification Types" rules={[{ required: true, message: 'Select at least one type' }]} style={{ width: '100%' }}>
+          <Checkbox.Group style={{ width: '100%' }}>
             <Row gutter={[12, 8]}>
               {ALL_TYPES.map((opt) => (
                 <Col xs={24} sm={12} md={12} lg={8} key={opt.value}>

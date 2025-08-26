@@ -21,13 +21,13 @@ const ThemeSelector: React.FC<Props> = ({ value = 'system', onChange }) => {
   }, [value]);
 
   return (
-    <Space direction="vertical" style={{ width: '100%' }}>
+    <Space direction="vertical" style={{ width: '100%', alignItems: 'flex-start' }}>
       <Typography.Text type="secondary">Choose your appearance preference</Typography.Text>
       <Radio.Group
         value={value}
         onChange={(e) => onChange?.(e.target.value as ThemeOption)}
       >
-        <Space direction="vertical">
+        <Space direction="vertical" align="start">
           <Radio value="system">System default</Radio>
           <Radio value="light">Light</Radio>
           <Radio value="dark">Dark</Radio>

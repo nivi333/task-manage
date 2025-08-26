@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu, Button, Typography, Space, theme, Tooltip } from "antd";
+import { Layout, Menu, Button, Typography, Space, theme, Tooltip, Avatar } from "antd";
 import {
   AppstoreOutlined,
   TeamOutlined,
@@ -16,6 +16,8 @@ import {
 import { useTheme } from "../../context/ThemeContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { authAPI } from "../../services/authService";
+import { userService } from "../../services/userService";
+import type { UserProfile } from "../../types/user";
 import logo from "../../logo.svg";
 
 const { Header, Sider, Content } = Layout;
@@ -44,6 +46,38 @@ const AppLayout: React.FC<AppLayoutProps> = ({
 
   const roles = authAPI.getUserRoles();
   const isAdmin = roles.includes("ADMIN");
+  const isManager = roles.includes("MANAGER");
+
+  const [profile, setProfile] = React.useState<UserProfile | null>(null);
+  const [profileLoading, setProfileLoading] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    let mounted = true;
+    const load = async () => {
+      try {
+        setProfileLoading(true);
+        const p = await userService.getProfile();
+        if (mounted) setProfile(p);
+      } catch (e) {
+        // best-effort; header can still render without profile
+      } finally {
+        if (mounted) setProfileLoading(false);
+      }
+    };
+    load();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const getInitials = (p?: UserProfile | null) => {
+    if (!p) return "";
+    const a = (p.firstName || "").trim();
+    const b = (p.lastName || "").trim();
+    const un = (p.username || "").trim();
+    const initials = `${a.charAt(0)}${b.charAt(0)}` || un.charAt(0);
+    return initials.toUpperCase();
+  };
 
   const menuItems = [
     {
@@ -86,8 +120,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({
       icon: <TeamOutlined />,
       label: <Link to="/teams">Teams</Link>,
     },
-    // Show Users only for admins
-    ...(isAdmin
+    // Show Users for admins and managers
+    ...(isAdmin || isManager
       ? [
           {
             key: "/admin/users",
@@ -186,6 +220,40 @@ const AppLayout: React.FC<AppLayoutProps> = ({
               >
                 Stats
               </Button>
+              <div
+                onClick={() => navigate("/profile")}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 8,
+                  cursor: "pointer",
+                  padding: "2px 8px",
+                  borderRadius: 16,
+                  border: "1px solid var(--color-border)",
+                }}
+              >
+                <Avatar
+                  src={profile?.profilePicture}
+                  style={{
+                    backgroundColor: "var(--color-primary)",
+                    color: "var(--color-on-primary)",
+                    fontWeight: 600,
+                  }}
+                  size={28}
+                >
+                  {!profile?.profilePicture ? getInitials(profile) : null}
+                </Avatar>
+                <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+                  <Typography.Text style={{ margin: 0 }}>
+                    {profile?.username || "My Account"}
+                  </Typography.Text>
+                  {profile?.firstName || profile?.lastName ? (
+                    <Typography.Text type="secondary" style={{ margin: 0, fontSize: 12 }}>
+                      {[profile?.firstName, profile?.lastName].filter(Boolean).join(" ")}
+                    </Typography.Text>
+                  ) : null}
+                </div>
+              </div>
               <Button
                 danger
                 icon={<LogoutOutlined />}

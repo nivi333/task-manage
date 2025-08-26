@@ -20,6 +20,10 @@ html[data-theme="dark"] {
   --color-primary-rgb: 102, 126, 234;
   --color-on-primary: #ffffff;
 
+  /* Skeleton (dark) */
+  --skeleton-base: #1a1f2b;
+  --skeleton-highlight: #232a39;
+
   /* Status tag colors (dark) */
   --status-todo-bg: #1f2430;
   --status-todo-fg: #b0b6c3;
@@ -31,11 +35,11 @@ html[data-theme="dark"] {
   --status-done-fg: #95de64;
 
   /* Priority tag colors (dark) */
-  --priority-high-bg: rgba(255, 77, 79, 0.12);
+  --priority-high-bg: rgba(255, 77, 79, 1);
   --priority-high-fg: #ff7875;
-  --priority-medium-bg: rgba(250, 140, 22, 0.12);
+  --priority-medium-bg: rgba(250, 140, 22, 1);
   --priority-medium-fg: #ffc069;
-  --priority-low-bg: rgba(82, 196, 26, 0.12);
+  --priority-low-bg: rgba(82, 196, 26, 1);
   --priority-low-fg: #95de64;
 }
 
@@ -108,6 +112,10 @@ body {
   --color-primary-rgb: 102, 126, 234;
   --color-on-primary: #ffffff;
 
+  /* Skeleton (light) */
+  --skeleton-base: #f2f3f5;
+  --skeleton-highlight: #e9ebef;
+
   /* Status tag colors */
   --status-todo-bg: #f0f0f0;
   --status-todo-fg: #595959;
@@ -164,7 +172,9 @@ body {
 }
 
 .app-header {
-  position: relative;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 .app-header::after {
   content: "";
@@ -732,6 +742,34 @@ select:-moz-autofill {
   box-shadow: 0 0 0 1000px var(--color-surface) inset !important;
 }
 
+/* Skeleton Theming (Ant Design) */
+.ant-skeleton,
+.ant-skeleton-content .ant-skeleton-title,
+.ant-skeleton-content .ant-skeleton-paragraph > li,
+.ant-skeleton-element .ant-skeleton-avatar,
+.ant-skeleton-element .ant-skeleton-button,
+.ant-skeleton-element .ant-skeleton-input,
+.ant-skeleton-image {
+  background-color: var(--skeleton-base) !important;
+  background-image: linear-gradient(
+    90deg,
+    var(--skeleton-base),
+    var(--skeleton-highlight),
+    var(--skeleton-base)
+  ) !important;
+  background-size: 400% 100% !important;
+  animation: tt-skeleton-loading 1.2s ease-in-out infinite !important;
+}
+
+@keyframes tt-skeleton-loading {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 /* Input.Search: ensure affix wrapper uses global height */
 .ant-input-search .ant-input-group .ant-input-affix-wrapper,
 .ant-input-search .ant-input-group .ant-input {
@@ -917,6 +955,24 @@ html[data-theme="dark"] .tt-pagination-visible .ant-pagination-item-active {
 .ant-pagination-item-link svg,
 .ant-pagination-item svg {
   color: var(--color-text-primary) !important;
+}
+
+/* Notifications and Messages (themed) */
+.ant-notification-notice,
+.ant-message-notice-content {
+  background: var(--color-card-background) !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+.ant-notification-notice-message,
+.ant-notification-notice-description,
+.ant-message-custom-content {
+  color: var(--color-text-primary) !important;
+}
+.ant-notification-notice-close svg,
+.ant-message-notice .anticon {
+  color: var(--color-text-secondary) !important;
 }
 
 /* Dropdown, select, and input suffix icon color */

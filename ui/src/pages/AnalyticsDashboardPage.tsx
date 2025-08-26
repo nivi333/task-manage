@@ -75,7 +75,10 @@ const AnalyticsDashboardPage: React.FC = () => {
 
   return (
     <AppLayout title={<HeaderTitle level={3}>Analytics Dashboard</HeaderTitle>} contentPadding={0}>
-      <Space direction="vertical" size={12} style={{ width: '100%' }}>
+      {/* Scoped override: remove extra space under card headers only on Analytics page */}
+      <div className="analytics-dashboard">
+        <style>{`.analytics-dashboard .ant-card .ant-card-head{ margin-bottom: 0 !important; }`}</style>
+        <Space direction="vertical" size={12} style={{ width: '100%' }}>
         {/* Filters row: label + picker inline */}
         <Row align="middle" justify="start" style={{ marginBottom: 4 }}>
           <Col>
@@ -120,7 +123,8 @@ const AnalyticsDashboardPage: React.FC = () => {
             </ChartContainer>
           </Col>
         </Row>
-      </Space>
+        </Space>
+      </div>
     </AppLayout>
   );
 };

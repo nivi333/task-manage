@@ -318,6 +318,7 @@
   margin-top: var(--spacing-lg);
   width: 100%;
   display: block;
+  color: var(--color-text-secondary);
 } /* Always centered */
 
 /* Registration Steps */

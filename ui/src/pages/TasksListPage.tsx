@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Spin, Button, Tooltip, Drawer, Space, Typography, Empty } from "antd";
 import { FilterOutlined, PlusOutlined } from "@ant-design/icons";
 import TaskFormDrawer from "components/tasks/TaskFormDrawer";
 import taskService, { TaskFilters } from "services/taskService";
 import { Task } from "types/task";
 import TaskList from "components/tasks/TaskList";
-import FilterSidebar from "components/tasks/FilterSidebar";
+import FilterSidebar, { FilterSidebarRef } from "components/tasks/FilterSidebar";
 import TagsManageButton from "components/tags/TagsManageButton";
 // removed HeaderTitle as page-level title is handled by TasksPage
 
@@ -16,6 +16,7 @@ const TasksListPage: React.FC = () => {
   const [isFilterSidebarVisible, setFilterSidebarVisible] = useState(false);
   const [isDrawerVisible, setDrawerVisible] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const filterRef = useRef<FilterSidebarRef>(null);
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -87,14 +88,25 @@ const TasksListPage: React.FC = () => {
         placement="right"
         onClose={() => setFilterSidebarVisible(false)}
         open={isFilterSidebarVisible}
-        width={300}
+        width={330}
         bodyStyle={{ padding: 0 }}
+        footer={
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <div />
+            <Space>
+              <Button onClick={() => filterRef.current?.reset()}>Reset</Button>
+              <Button type="primary" onClick={() => filterRef.current?.submit()}>Apply</Button>
+              <Button onClick={() => setFilterSidebarVisible(false)}>Cancel</Button>
+            </Space>
+          </div>
+        }
       >
         <FilterSidebar
+          ref={filterRef}
           onFilterChange={(newFilters) => {
             handleFilterChange(newFilters);
-            setFilterSidebarVisible(false);
           }}
+          onApplied={() => setFilterSidebarVisible(false)}
         />
       </Drawer>
       <TaskFormDrawer

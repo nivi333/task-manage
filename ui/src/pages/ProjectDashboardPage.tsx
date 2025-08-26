@@ -57,21 +57,19 @@ const ProjectDashboardPage: React.FC = () => {
       setLoading(true);
       setErrorStatus(null);
       try {
-        const [dashboard, burn] = await Promise.all([
+        const [dashRes, burnRes] = await Promise.allSettled([
           projectService.getDashboard(id!),
           projectService.getBurndown(id!),
         ]);
 
-        // Defensive validation of analytics data
-        const safeBurndown = Array.isArray(burn)
-          ? burn.filter((p) => p && p.date && typeof p.remaining === "number")
-          : [];
-        if (safeBurndown.length !== (burn as any[])?.length) {
-          notificationService.info(
-            "Some analytics points were ignored due to invalid data"
-          );
+        // Handle dashboard response (required)
+        if (dashRes.status === "rejected") {
+          const status = (dashRes as any)?.reason?.response?.status;
+          setErrorStatus(status || 500);
+          return; // stop further processing; page will render error state
         }
 
+        const dashboard = dashRes.value as ProjectDashboardData;
         setProject(dashboard.project);
         setMetrics(dashboard.metrics);
         setTaskSummary(
@@ -86,7 +84,24 @@ const ProjectDashboardPage: React.FC = () => {
             ? dashboard.recentActivity
             : []
         );
-        setBurndown(safeBurndown);
+
+        // Handle burndown response (optional)
+        if (burnRes.status === "fulfilled") {
+          const burn = burnRes.value as BurndownPoint[];
+          const safeBurndown = Array.isArray(burn)
+            ? burn.filter((p) => p && p.date && typeof p.remaining === "number")
+            : [];
+          if (safeBurndown.length !== (burn as any[])?.length) {
+            notificationService.info(
+              "Some analytics points were ignored due to invalid data"
+            );
+          }
+          setBurndown(safeBurndown);
+        } else {
+          // Analytics endpoint missing/forbidden should not break the page.
+          // Keep burndown empty and continue without error.
+          setBurndown([]);
+        }
       } catch (e: any) {
         const status = e?.response?.status;
         setErrorStatus(status || 500);

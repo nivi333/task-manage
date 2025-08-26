@@ -27,7 +27,7 @@ const SettingsPage: React.FC = () => {
       }
     >
       {/* remount form to reset */}
-      <div className="tt-settings">
+      <div className="tt-settings" style={{ display: 'flex', justifyContent: 'flex-start' }}>
         <SettingsForm key={`settings-form-${String((Math.random() * 1e6) | 0)}`} onFormReady={handleFormReady} />
       </div>
     </AppLayout>

@@ -34,7 +34,7 @@ const RegistrationCard = styled.div`
 const RegistrationTitle = styled.h1`
   text-align: center;
   margin-bottom: 30px;
-  color: #222;
+  color: var(--color-text-primary);
   font-size: 28px;
   font-weight: 600;
 `;

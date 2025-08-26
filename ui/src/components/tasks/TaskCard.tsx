@@ -42,7 +42,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task }) => {
   const issueCode = `TASK-${(task.id || '').slice(-5).toUpperCase()}`;
 
   return (
-    <Card className="task-card modern" hoverable>
+    <Card className={`task-card modern priority-${task.priority.toLowerCase()}`} hoverable>
       <div className="title-block">
         <div className="title" title={task.title}>{task.title}</div>
       </div>

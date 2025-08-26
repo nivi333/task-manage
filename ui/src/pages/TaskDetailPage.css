@@ -9,7 +9,8 @@
 .task-detail-container {
   background: var(--color-background);
   border-radius: 8px;
-  min-height: 100vh; /* full viewport height */
+  /* Avoid forcing full viewport height to prevent extra page scroll */
+  min-height: 0;
   box-sizing: border-box;
   position: relative;
   z-index: 1;
@@ -17,12 +18,22 @@
 
 /* Ensure direct children of layout stretch to fill container */
 .task-detail-container > .ant-row {
-  min-height: 100vh; /* fill full viewport height */
+  /* Let content determine height to avoid pushing page scroll */
+  min-height: 0;
   align-items: stretch; /* stretch children to fill height */
 }
 
 /* Ensure both columns fill available height */
 .task-detail-container .ant-col {
+  display: flex;
+  flex-direction: column;
+  /* Allow inner scroll areas to work without growing the page */
+  min-height: 0;
+}
+
+/* Make direct Card children fill the column height */
+.task-detail-container .ant-col > .ant-card {
+  flex: 1 1 auto;
   display: flex;
   flex-direction: column;
 }
@@ -33,7 +44,7 @@
 }
 
 .task-detail-card .ant-card-body {
-  padding: 16px 20px; /* tighter spacing for a compact look */
+  padding: 16px 20px 12px; /* reduce bottom space below the table */
 }
 
 .task-header .ant-typography {
@@ -86,6 +97,8 @@
   border-right: 1px solid var(--color-border); /* subtle divider between columns */
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
+  /* Do not force this card to fill the whole column; fit to content */
+  flex: 0 0 auto;
 }
 
 /* Remove default end margin on priority tags within the Task List only */
@@ -108,8 +121,15 @@
   align-items: stretch; /* stretch cells so the left border spans full row height */
   border-bottom: 1px solid var(--color-border); /* requested separator shade */
 }
-.task-detail-table .row:last-child {
-  border-bottom: none;
+/* Keep bottom border visible, including on the last row (below Comments) */
+.task-detail-table .row:last-child .cell {
+  padding-bottom: 12px; /* slightly tighter bottom padding */
+}
+
+/* If a scrollable list section exists inside the left card, disable it to avoid page scroll */
+.task-list-content {
+  flex: 0 0 auto;
+  overflow: visible;
 }
 
 .task-detail-table .cell {
