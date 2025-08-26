@@ -3,6 +3,7 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
   border: none; /* remove to avoid double border with inner table */
   /* height removed to avoid extra bottom whitespace */
+  background: var(--color-card-background);
 }
 
 /* Full-height white background container */
@@ -45,6 +46,7 @@
 
 .task-detail-card .ant-card-body {
   padding: 16px 20px 12px; /* reduce bottom space below the table */
+  background: var(--color-card-background);
 }
 
 .task-header .ant-typography {
@@ -99,6 +101,12 @@
   border-bottom-right-radius: 0;
   /* Do not force this card to fill the whole column; fit to content */
   flex: 0 0 auto;
+  background: var(--color-card-background);
+}
+
+/* Ensure the inner body inherits themed background */
+.task-list-card .ant-card-body {
+  background: var(--color-card-background);
 }
 
 /* Remove default end margin on priority tags within the Task List only */
@@ -166,6 +174,11 @@
   justify-content: flex-start;
   font-size: 14px;
   color: var(--color-text-primary);
+}
+
+/* Project label color inside left list */
+.task-detail-container .task-list-project {
+  color: var(--color-text-secondary);
 }
 
 /* Align Task Title value (Title row) to the top */

@@ -140,15 +140,11 @@ const TaskDetailPage: React.FC = () => {
       <div className="task-detail-container">
         <Row gutter={[0, 24]} wrap={false}>
           {/* Left panel: Task List */}
-          <Col xs={24} lg={8} style={{ background: "#fff", borderRadius: 6 }}>
+          <Col xs={24} lg={8}>
             <Card
               className="task-list-card"
-              bodyStyle={{ padding: 0, background: "#fff" }}
-              style={{
-                borderRadius: 6,
-                overflow: "hidden",
-                background: "#fff",
-              }}
+              bodyStyle={{ padding: 0 }}
+              style={{ borderRadius: 6, overflow: "hidden" }}
             >
               <div
                 style={{
@@ -156,8 +152,7 @@ const TaskDetailPage: React.FC = () => {
                   flexDirection: "column",
                   gap: 8,
                   padding: "0 16px 8px",
-                  borderBottom: "1px solid #f0f0f0",
-                  background: "#fff",
+                  borderBottom: "1px solid var(--color-border)",
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: 8, paddingTop: 8 }}>
@@ -168,7 +163,7 @@ const TaskDetailPage: React.FC = () => {
                       onClick={() => navigate('/tasks')}
                     />
                   </Tooltip>
-                  <Text strong style={{ fontSize: 16, color: "#1f1f1f" }}>
+                  <Text strong style={{ fontSize: 16 }}>
                     All Tasks
                   </Text>
                 </div>
@@ -245,7 +240,7 @@ const TaskDetailPage: React.FC = () => {
                                 <span style={{ flex: "0 0 auto", textAlign: "center", padding: "0 6px" }}>
                                   <span
                                     className="task-list-project"
-                                    style={{ fontSize: 12, color: "#666" }}
+                                    style={{ fontSize: 12 }}
                                   >
                                     {(item as any)?.projectName ||
                                       (item as any)?.project?.name ||
@@ -296,8 +291,7 @@ const TaskDetailPage: React.FC = () => {
           <Col xs={24} lg={16} style={{ marginLeft: 10 }}>
             <Card
               className="task-detail-card"
-              style={{ background: "#fff" }}
-              bodyStyle={{ padding: 15, background: "#fff" }}
+              bodyStyle={{ padding: 15 }}
               bordered={false}
             >
               {loading ? (

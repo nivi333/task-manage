@@ -220,6 +220,17 @@ const AppLayout: React.FC<AppLayoutProps> = ({
               >
                 Stats
               </Button>
+              <Button
+                danger
+                icon={<LogoutOutlined />}
+                onClick={() => {
+                  authAPI.logout();
+                  window.location.href = "/login";
+                }}
+                style={{ border: "1px solid var(--color-error)" }}
+              >
+                Logout
+              </Button>
               <div
                 onClick={() => navigate("/profile")}
                 style={{
@@ -229,7 +240,8 @@ const AppLayout: React.FC<AppLayoutProps> = ({
                   cursor: "pointer",
                   padding: "2px 8px",
                   borderRadius: 16,
-                  border: "1px solid var(--color-border)",
+                  /* remove border for profile section */
+                  border: "none",
                 }}
               >
                 <Avatar
@@ -243,28 +255,21 @@ const AppLayout: React.FC<AppLayoutProps> = ({
                 >
                   {!profile?.profilePicture ? getInitials(profile) : null}
                 </Avatar>
-                <div style={{ display: "flex", flexDirection: "column", lineHeight: 1 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 6,
+                    lineHeight: 1,
+                    whiteSpace: "nowrap",
+                  }}
+                >
                   <Typography.Text style={{ margin: 0 }}>
                     {profile?.username || "My Account"}
                   </Typography.Text>
-                  {profile?.firstName || profile?.lastName ? (
-                    <Typography.Text type="secondary" style={{ margin: 0, fontSize: 12 }}>
-                      {[profile?.firstName, profile?.lastName].filter(Boolean).join(" ")}
-                    </Typography.Text>
-                  ) : null}
                 </div>
               </div>
-              <Button
-                danger
-                icon={<LogoutOutlined />}
-                onClick={() => {
-                  authAPI.logout();
-                  window.location.href = "/login";
-                }}
-                style={{ border: "1px solid var(--color-error)" }}
-              >
-                Logout
-              </Button>
             </Space>
           </div>
         </Header>

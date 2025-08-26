@@ -57,14 +57,12 @@ const NotificationSettings: React.FC<Props> = ({ name }) => {
         </Form.Item>
 
         <Form.Item name={[name, 'enabledTypes']} label="Notification Types" rules={[{ required: true, message: 'Select at least one type' }]} style={{ width: '100%' }}>
-          <Checkbox.Group style={{ width: '100%' }}>
-            <Row gutter={[12, 8]}>
+          <Checkbox.Group>
+            <div style={{ display: 'flex', flexWrap: 'nowrap', gap: 24, alignItems: 'center' }}>
               {ALL_TYPES.map((opt) => (
-                <Col xs={24} sm={12} md={12} lg={8} key={opt.value}>
-                  <Checkbox value={opt.value}>{opt.label}</Checkbox>
-                </Col>
+                <Checkbox key={opt.value} value={opt.value}>{opt.label}</Checkbox>
               ))}
-            </Row>
+            </div>
           </Checkbox.Group>
         </Form.Item>
       </Space>
