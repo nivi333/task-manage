@@ -37,6 +37,18 @@ public class SecurityConfig {
             // .requiresChannel(channel -> channel.anyRequest().requiresSecure()) // Enforce HTTPS - disabled for local dev
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
+            .exceptionHandling(eh -> eh
+                .authenticationEntryPoint((request, response, authException) -> {
+                    response.setStatus(401);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"success\":false,\"message\":\"Unauthorized\",\"data\":null}");
+                })
+                .accessDeniedHandler((request, response, accessDeniedException) -> {
+                    response.setStatus(403);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"success\":false,\"message\":\"Access Denied\",\"data\":null}");
+                })
+            )
             .headers(headers -> headers
                 .frameOptions().sameOrigin() // Clickjacking protection
             )
