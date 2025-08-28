@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import java.util.UUID;
 
 @Service
@@ -28,59 +27,99 @@ public class ProjectAnalyticsService {
 
         List<Task> tasks = Optional.ofNullable(taskRepository.findByProjectId(projectId)).orElse(Collections.emptyList());
         long totalTasks = tasks.size();
-        long completed = tasks.stream().filter(t -> "COMPLETED".equals(t.getStatus())).count();
-        long inProgress = tasks.stream().filter(t -> "IN_PROGRESS".equals(t.getStatus())).count();
-        long overdue = tasks.stream()
+        long doneTasks = tasks.stream().filter(t -> "COMPLETED".equals(t.getStatus())).count();
+        long inProgressTasks = tasks.stream().filter(t -> "IN_PROGRESS".equals(t.getStatus())).count();
+        long overdueTasks = tasks.stream()
                 .filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && (t.getStatus() == null || !"COMPLETED".equals(t.getStatus())))
                 .count();
+        long openTasks = Math.max(0, totalTasks - (int) (doneTasks + inProgressTasks));
 
         Map<String, Object> metrics = new LinkedHashMap<>();
         metrics.put("totalTasks", totalTasks);
-        metrics.put("completedTasks", completed);
-        metrics.put("inProgressTasks", inProgress);
-        metrics.put("overdueTasks", overdue);
-        metrics.put("percentComplete", totalTasks > 0 ? (double) completed / totalTasks * 100 : 0.0);
+        metrics.put("openTasks", openTasks);
+        metrics.put("inProgressTasks", inProgressTasks);
+        metrics.put("doneTasks", doneTasks);
+        metrics.put("overdueTasks", overdueTasks);
+        metrics.put("completionPercent", totalTasks > 0 ? (double) doneTasks / totalTasks * 100 : 0.0);
+
+        // Build a lightweight, serialization-safe project DTO (no JPA entities)
+        Map<String, Object> projectDto = new LinkedHashMap<>();
+        projectDto.put("id", project.getId());
+        projectDto.put("key", project.getKey());
+        projectDto.put("name", project.getName());
+        projectDto.put("description", project.getDescription());
+        projectDto.put("status", project.getStatus() != null ? project.getStatus().name() : null);
+        projectDto.put("startDate", project.getStartDate());
+        projectDto.put("endDate", project.getEndDate());
+        // Owner summary
+        if (project.getOwner() != null) {
+            Map<String, Object> owner = new LinkedHashMap<>();
+            owner.put("id", project.getOwner().getId());
+            String ownerName = buildUserDisplayName(project.getOwner());
+            owner.put("name", ownerName);
+            owner.put("email", project.getOwner().getEmail());
+            projectDto.put("owner", owner);
+        }
+        // Team member summaries (id + name only)
+        List<Map<String, Object>> team = Optional.ofNullable(project.getTeamMembers())
+                .orElse(Collections.emptySet())
+                .stream()
+                .map(u -> {
+                    Map<String, Object> m = new LinkedHashMap<>();
+                    m.put("id", u.getId());
+                    m.put("name", buildUserDisplayName(u));
+                    m.put("email", u.getEmail());
+                    return m;
+                })
+                .collect(Collectors.toList());
 
         // Assemble dashboard payload expected by frontend
         Map<String, Object> payload = new LinkedHashMap<>();
-        payload.put("project", project);
+        payload.put("project", projectDto);
         payload.put("metrics", metrics);
         // Optional sections – provide safe defaults to avoid client errors
         payload.put("taskSummary", Collections.emptyList());
-        payload.put("team", Collections.emptyList());
+        payload.put("team", team);
         payload.put("timeline", getTimeline(projectId));
         payload.put("recentActivity", Collections.emptyList());
         return payload;
     }
 
+    private String buildUserDisplayName(com.example.tasksmanage.model.User u) {
+        String fn = u.getFirstName();
+        String ln = u.getLastName();
+        String full = ((fn != null ? fn.trim() : "") + " " + (ln != null ? ln.trim() : "")).trim();
+        if (!full.isEmpty()) return full;
+        return u.getUsername();
+    }
+
     public List<Map<String, Object>> getBurndown(UUID projectId) {
         List<Task> tasks = Optional.ofNullable(taskRepository.findByProjectId(projectId)).orElse(Collections.emptyList());
-        // Example: return daily open task counts (stub)
-        Map<Date, Long> openTasksByDay = new TreeMap<>();
+        // Example: return daily remaining task counts (stub) matching UI schema
+        Map<Date, Long> deltaByDay = new TreeMap<>();
         for (Task t : tasks) {
             if (t.getCreatedAt() != null) {
-                openTasksByDay.merge(truncateDay(t.getCreatedAt()), 1L, Long::sum);
+                deltaByDay.merge(truncateDay(t.getCreatedAt()), 1L, Long::sum);
             }
-            // Use updatedAt as completedAt if status is COMPLETED
             if (t.getStatus() != null && t.getStatus().equals("COMPLETED") && t.getUpdatedAt() != null) {
-                openTasksByDay.merge(truncateDay(t.getUpdatedAt()), -1L, Long::sum);
+                deltaByDay.merge(truncateDay(t.getUpdatedAt()), -1L, Long::sum);
             }
         }
         List<Map<String, Object>> burndown = new ArrayList<>();
         long running = 0;
-        for (Map.Entry<Date, Long> entry : openTasksByDay.entrySet()) {
+        for (Map.Entry<Date, Long> entry : deltaByDay.entrySet()) {
             running += entry.getValue();
             Map<String, Object> point = new LinkedHashMap<>();
             point.put("date", entry.getKey());
-            point.put("openTasks", running);
+            point.put("remaining", running);
             burndown.add(point);
         }
         return burndown;
     }
 
     public List<Map<String, Object>> getTimeline(UUID projectId) {
-        List<Task> tasks = taskRepository.findByProjectId(projectId);
-        // Example: return task start/end for Gantt
+        List<Task> tasks = Optional.ofNullable(taskRepository.findByProjectId(projectId)).orElse(Collections.emptyList());
+        // Return a lightweight timeline with simple scalar fields
         return tasks.stream().map(t -> {
             Map<String, Object> map = new HashMap<>();
             map.put("taskId", t.getId());

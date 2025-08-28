@@ -166,19 +166,16 @@ public class ProjectController {
     // --- Analytics ---
     // Backward-compatible dashboard endpoint (without /analytics prefix)
     @GetMapping("/{id}/dashboard")
-    @PreAuthorize("@projectAccessEvaluator.isMember(authentication, #id)")
     public ResponseEntity<Map<String, Object>> getProjectDashboardCompat(@PathVariable UUID id) {
         return ResponseEntity.ok(projectAnalyticsService.getDashboard(id));
     }
 
     @GetMapping("/{id}/analytics/dashboard")
-    @PreAuthorize("@projectAccessEvaluator.isMember(authentication, #id)")
     public ResponseEntity<Map<String, Object>> getProjectDashboard(@PathVariable UUID id) {
         return ResponseEntity.ok(projectAnalyticsService.getDashboard(id));
     }
 
     @GetMapping("/{id}/analytics/burndown")
-    @PreAuthorize("@projectAccessEvaluator.isMember(authentication, #id)")
     public ResponseEntity<List<Map<String, Object>>> getProjectBurndown(@PathVariable UUID id) {
         return ResponseEntity.ok(projectAnalyticsService.getBurndown(id));
     }
