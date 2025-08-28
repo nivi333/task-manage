@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Form, Input, Checkbox, message } from "antd";
 import { TTButton } from "../common";
 // All notifications will use Ant Design's message API at the top by default.
@@ -27,6 +27,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [twoFactorVisible, setTwoFactorVisible] = useState(false);
   const [tempLoginData, setTempLoginData] = useState<any>(null);
+
+  // Prefill remembered username and checkbox state
+  useEffect(() => {
+    const remembered = localStorage.getItem("rememberMe") === "true";
+    const rememberedUsername = localStorage.getItem("rememberedUsername") || "";
+    if (remembered) {
+      form.setFieldsValue({ rememberMe: true, usernameOrEmail: rememberedUsername });
+    } else {
+      form.setFieldsValue({ rememberMe: false });
+    }
+  }, [form]);
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -82,8 +93,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         if (refreshToken) {
           localStorage.setItem("refreshToken", refreshToken);
         }
+        // Remember Me: store only non-sensitive identifier, never password
         if (values.rememberMe) {
           localStorage.setItem("rememberMe", "true");
+          localStorage.setItem("rememberedUsername", values.usernameOrEmail || "");
+        } else {
+          localStorage.removeItem("rememberMe");
+          localStorage.removeItem("rememberedUsername");
         }
 
         console.log("[NOTIFICATION] LoginForm success");
@@ -196,7 +212,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
           form={form}
           name="login"
           onFinish={(values) => handleLogin(values as LoginFormData)}
-          autoComplete="off"
+          autoComplete="on"
           size="large"
           className="auth-form"
         >
@@ -233,6 +249,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
               prefix={<UserOutlined />}
               placeholder="Username or Email"
               autoComplete="username"
+              name="username"
             />
           </Form.Item>
 
@@ -247,6 +264,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
               prefix={<LockOutlined />}
               placeholder="Password"
               autoComplete="current-password"
+              name="current-password"
               iconRender={(visible) =>
                 visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
               }

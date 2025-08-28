@@ -11,7 +11,7 @@ import {
   TwoFAEnableResponse,
 } from "../types/user";
 import { notificationService } from "./notificationService";
-import apiClient from "./authService";
+import apiClient, { authAPI } from "./authService";
 
 // Prefer the same base URL env var used by authService for consistency
 const API_BASE_URL =
@@ -71,6 +71,19 @@ export class UserService {
     } catch (error: any) {
       console.error("Error removing avatar:", error);
       const message = error.response?.data?.message || "Failed to remove profile image";
+      notificationService.error(message);
+      throw error;
+    }
+  }
+
+  async selfDelete(): Promise<void> {
+    try {
+      await apiClient.delete(`${this.baseURL}/profile`);
+      notificationService.success("Your account has been deleted");
+      await authAPI.logout();
+    } catch (error: any) {
+      console.error("Error deleting account:", error);
+      const message = error.response?.data?.message || "Failed to delete account";
       notificationService.error(message);
       throw error;
     }

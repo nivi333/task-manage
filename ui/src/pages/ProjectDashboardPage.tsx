@@ -116,7 +116,7 @@ const ProjectDashboardPage: React.FC = () => {
   const content = useMemo(() => {
     if (loading) {
       return (
-        <Space direction="vertical" size={16} style={{ width: "100%" }}>
+        <Space direction="vertical" size={12} style={{ width: "100%" }}>
           <Skeleton active />
           <Skeleton active />
           <Skeleton active />
@@ -173,10 +173,10 @@ const ProjectDashboardPage: React.FC = () => {
     }
 
     return (
-      <Space direction="vertical" size={16} style={{ width: "100%" }}>
+      <Space direction="vertical" size={12} style={{ width: "100%" }} className="tt-project-dashboard">
         <ProjectHeader project={project} />
         <ProjectStats metrics={metrics} />
-        <Row gutter={[16, 16]}>
+        <Row gutter={[12, 12]}>
           <Col xs={24} lg={12}>
             {/* <TaskSummary items={taskSummary} /> */}
           </Col>
@@ -185,7 +185,7 @@ const ProjectDashboardPage: React.FC = () => {
           </Col>
         </Row>
         <ProgressCharts burndown={burndown} metrics={metrics} />
-        <Row gutter={[16, 16]}>
+        <Row gutter={[12, 12]}>
           <Col xs={24} lg={12}>
             <Timeline items={timeline} />
           </Col>

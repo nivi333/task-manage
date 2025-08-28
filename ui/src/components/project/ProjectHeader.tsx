@@ -19,35 +19,44 @@ interface Props {
 const ProjectHeader: React.FC<Props> = ({ project }) => {
   const navigate = useNavigate();
   return (
-    <Card>
-      <Space direction="vertical" style={{ width: "100%" }} size={8}>
-        <Breadcrumb
-          items={[
-            { title: <a onClick={() => navigate("/dashboard")}>Dashboard</a> },
-            { title: "Projects" },
-            { title: project.name },
-          ]}
+    <Card className="tt-project-header" bodyStyle={{ padding: 12 }}>
+      <div className="tt-project-header-inner">
+        {/* Top-left back button inside content area */}
+        <TTButton
+          className="tt-back-btn"
+          type="text"
+          aria-label="Back"
+          icon={<ArrowLeftOutlined />}
+          onClick={() => navigate(-1)}
         />
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 16,
-          }}
-        >
-          <Space align="start">
+
+        {/* Tiny breadcrumb for compact spacing */}
+        <div className="tt-breadcrumb-row">
+          <Breadcrumb
+            items={[
+              { title: <a onClick={() => navigate("/dashboard")}>Dashboard</a> },
+              { title: "Projects" },
+              { title: project.name },
+            ]}
+          />
+        </div>
+
+        <div className="tt-header-main">
+          <Space align="start" size={12}>
             <Avatar
-              size={56}
+              size={48}
               icon={<UserOutlined />}
               src={project.owner?.avatarUrl}
             />
             <div>
-              <HeaderTitle level={3}>{project.name}</HeaderTitle>
-              <Space size={8} wrap>
-                {project.key ? <Tag color="blue">{project.key}</Tag> : null}
+              <HeaderTitle level={4}>
+                {project.name}
+              </HeaderTitle>
+              <Space size={6} wrap>
+                {project.key ? <Tag className="tt-tag" color="blue">{project.key}</Tag> : null}
                 {project.status ? (
                   <Tag
+                    className="tt-tag"
                     color={
                       project.status === "ACTIVE"
                         ? "green"
@@ -60,35 +69,29 @@ const ProjectHeader: React.FC<Props> = ({ project }) => {
                   </Tag>
                 ) : null}
                 {project.startDate ? (
-                  <Tag icon={<CalendarOutlined />}>
-                    Start: {new Date(project.startDate).toLocaleDateString()}
+                  <Tag className="tt-tag" icon={<CalendarOutlined />}>
+                    {new Date(project.startDate).toLocaleDateString()} –
                   </Tag>
                 ) : null}
                 {project.endDate ? (
-                  <Tag icon={<CalendarOutlined />}>
-                    End: {new Date(project.endDate).toLocaleDateString()}
+                  <Tag className="tt-tag" icon={<CalendarOutlined />}>
+                    {new Date(project.endDate).toLocaleDateString()}
                   </Tag>
                 ) : null}
               </Space>
             </div>
           </Space>
           <Space>
-            <TTButton
-              type="text"
-              icon={<ArrowLeftOutlined />}
-              onClick={() => navigate(-1)}
-            />
-            <TTButton type="primary" icon={<EditOutlined />}>
-              Edit Project
-            </TTButton>
+            <TTButton size="small" type="primary" icon={<EditOutlined />}>Edit</TTButton>
           </Space>
         </div>
+
         {project.description ? (
-          <Paragraph type="secondary" style={{ marginTop: 4 }}>
+          <Paragraph className="tt-project-desc" type="secondary">
             {project.description}
           </Paragraph>
         ) : null}
-      </Space>
+      </div>
     </Card>
   );
 };

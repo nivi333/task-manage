@@ -244,4 +244,16 @@ public class UserController {
         User current = (actor != null) ? actor : getAuthenticatedUserOrNull();
         return ResponseEntity.ok(userService.deleteUser(id, current));
     }
+
+    // SELF: Delete own account
+    @DeleteMapping("/profile")
+    public ResponseEntity<ApiResponse<String>> selfDelete(@AuthenticationPrincipal User user) {
+        User current = (user != null) ? user : getAuthenticatedUserOrNull();
+        if (current == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse<>(false, "Unauthorized", null));
+        }
+        userService.selfDelete(current);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Account deleted successfully", null));
+    }
 }

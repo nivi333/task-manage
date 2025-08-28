@@ -12,6 +12,8 @@ import {
   Typography,
   Modal,
   message,
+  List,
+  Pagination,
 } from "antd";
 import type { UploadFile } from "antd/es/upload/interface";
 import {
@@ -22,6 +24,7 @@ import {
   CloseCircleFilled,
 } from "@ant-design/icons";
 import { userService } from "../services/userService";
+import { activityService, ActivityLogItem, Page as ActivityPage } from "../services/activityService";
 import {
   ChangePasswordRequest,
   UpdateProfileRequest,
@@ -59,6 +62,12 @@ const UserProfilePage: React.FC = () => {
     type: string;
   } | null>(null);
   // Removed image zoom/crop functionality for simplicity
+
+  // Activity log state
+  const [actPage, setActPage] = useState(1);
+  const [actPageSize, setActPageSize] = useState(10);
+  const [actData, setActData] = useState<ActivityPage<ActivityLogItem> | null>(null);
+  const [actLoading, setActLoading] = useState(false);
 
   const load = async () => {
     setLoading(true);
@@ -105,6 +114,21 @@ const UserProfilePage: React.FC = () => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    const fetchActivities = async () => {
+      if (!profile?.username) return;
+      setActLoading(true);
+      try {
+        const pageIndex = actPage - 1; // backend is 0-based
+        const data = await activityService.listForUser(profile.username, pageIndex, actPageSize);
+        setActData(data);
+      } finally {
+        setActLoading(false);
+      }
+    };
+    fetchActivities();
+  }, [profile?.username, actPage, actPageSize]);
 
   const onSaveProfile = async (values: UpdateProfileRequest) => {
     setLoading(true);
@@ -163,6 +187,21 @@ const UserProfilePage: React.FC = () => {
   const onEnable2FA = async () => {
     const data = await userService.enable2FA();
     setQrModal({ open: true, data });
+  };
+
+  const onDeleteAccount = async () => {
+    Modal.confirm({
+      title: "Delete account?",
+      content:
+        "This will permanently delete your account and cannot be undone. Continue?",
+      okText: "Delete",
+      okButtonProps: { danger: true },
+      cancelText: "Cancel",
+      onOk: async () => {
+        await userService.selfDelete();
+        navigate("/login");
+      },
+    });
   };
 
   return (
@@ -400,6 +439,62 @@ const UserProfilePage: React.FC = () => {
                 <Button onClick={onEnable2FA} icon={<QrcodeOutlined />}>
                   Enable 2FA
                 </Button>
+              </Space>
+            </Card>
+            <Card
+              className="tt-card-flat"
+              title={<Text strong>Activity Log</Text>}
+            >
+              <List
+                loading={actLoading}
+                dataSource={actData?.content || []}
+                locale={{ emptyText: "No activity yet" }}
+                renderItem={(item) => (
+                  <List.Item>
+                    <List.Item.Meta
+                      title={
+                        <Space size={8}>
+                          <Text strong>{item.action}</Text>
+                          <Text type="secondary">
+                            {new Date(item.timestamp).toLocaleString()}
+                          </Text>
+                        </Space>
+                      }
+                      description={
+                        <>
+                          {item.details && <div>{item.details}</div>}
+                          {item.entityType && item.entityId && (
+                            <div style={{ color: "rgba(0,0,0,0.45)" }}>
+                              {item.entityType} • {item.entityId}
+                            </div>
+                          )}
+                        </>
+                      }
+                    />
+                  </List.Item>
+                )}
+              />
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
+                <Pagination
+                  current={actPage}
+                  pageSize={actPageSize}
+                  total={actData?.totalElements || 0}
+                  onChange={(p, s) => {
+                    setActPage(p);
+                    setActPageSize(s);
+                  }}
+                  size="small"
+                  showSizeChanger
+                />
+              </div>
+            </Card>
+
+            <Card className="tt-card-flat" title={<Text strong>Danger Zone</Text>}>
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <Text type="danger">
+                  Deleting your account is irreversible. All your data may be removed.
+                </Text>
+                <Button danger onClick={onDeleteAccount}>Delete My Account</Button>
               </Space>
             </Card>
           </Col>

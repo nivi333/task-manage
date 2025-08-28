@@ -281,6 +281,18 @@ public class UserService {
         return deleteUser(id, null);
     }
 
+    // SELF: Delete own account
+    @Transactional
+    public void selfDelete(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Current user is null");
+        }
+        // Capture profile for audit if needed (not returned to client)
+        logAudit(user, user, "DELETE", "User self-deleted account");
+        userRepository.delete(user);
+        // Optionally, revoke refresh tokens or related resources if necessary in future
+    }
+
     // ADMIN: Export users (CSV, JSON, XLSX)
     public java.util.List<com.example.tasksmanage.dto.UserExportDTO> exportUsers() {
         java.util.List<User> users = userRepository.findAll();

@@ -4,6 +4,7 @@ import com.example.tasksmanage.dto.ProjectCreateDTO;
 import com.example.tasksmanage.dto.ProjectDTO;
 import com.example.tasksmanage.model.ProjectStatus;
 import com.example.tasksmanage.service.ProjectService;
+import com.example.tasksmanage.service.UserService;
 import com.example.tasksmanage.dto.ProjectMemberDTO;
 import com.example.tasksmanage.dto.ProjectMemberAddRequest;
 import com.example.tasksmanage.model.ProjectMemberRole;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import com.example.tasksmanage.service.ProjectAnalyticsService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
 import com.example.tasksmanage.model.User;
 
@@ -42,13 +44,17 @@ public class ProjectController {
     private ProjectAuditLogRepository auditLogRepository;
     @Autowired
     private ProjectAnalyticsService projectAnalyticsService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping
     public ResponseEntity<ProjectDTO> createProject(@RequestBody ProjectCreateDTO dto,
-                                                    @AuthenticationPrincipal User currentUser) {
+            @AuthenticationPrincipal User currentUser) {
+        User resolved = (currentUser != null && currentUser.getId() != null) ? currentUser
+                : getAuthenticatedUserOrNull();
         // Ensure creator is set as owner if not provided
-        if (dto.getOwnerId() == null && currentUser != null && currentUser.getId() != null) {
-            dto.setOwnerId(currentUser.getId());
+        if (dto.getOwnerId() == null && resolved != null && resolved.getId() != null) {
+            dto.setOwnerId(resolved.getId());
         }
         // Ensure creator/owner is part of team members
         if (dto.getTeamMemberIds() == null) {
@@ -56,8 +62,8 @@ public class ProjectController {
         }
         if (dto.getOwnerId() != null) {
             dto.getTeamMemberIds().add(dto.getOwnerId());
-        } else if (currentUser != null && currentUser.getId() != null) {
-            dto.getTeamMemberIds().add(currentUser.getId());
+        } else if (resolved != null && resolved.getId() != null) {
+            dto.getTeamMemberIds().add(resolved.getId());
         }
         return ResponseEntity.ok(projectService.createProject(dto));
     }
@@ -68,26 +74,44 @@ public class ProjectController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProjectDTO>> listProjects(Authentication authentication) {
-        UUID userId = getUserId(authentication);
-        if (userId == null) {
+    public ResponseEntity<List<ProjectDTO>> listProjects(@AuthenticationPrincipal User currentUser) {
+        User resolved = (currentUser != null && currentUser.getId() != null) ? currentUser
+                : getAuthenticatedUserOrNull();
+        if (resolved == null || resolved.getId() == null) {
             return ResponseEntity.ok(Collections.emptyList());
         }
-        return ResponseEntity.ok(projectService.listProjectsForUser(userId));
+        return ResponseEntity.ok(projectService.listProjectsForUser(resolved.getId()));
+    }
+
+    // Resolve authenticated domain User from SecurityContext when
+    // @AuthenticationPrincipal is not our entity
+    private User getAuthenticatedUserOrNull() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            return null;
+        }
+        String principalName = auth.getName();
+        return userService.findByUsernameOrEmail(principalName).orElse(null);
     }
 
     private UUID getUserId(Authentication authentication) {
-        if (authentication == null || !authentication.isAuthenticated()) return null;
+        if (authentication == null || !authentication.isAuthenticated())
+            return null;
         Object principal = authentication.getPrincipal();
         if (principal instanceof org.springframework.security.core.userdetails.UserDetails userDetails) {
             try {
                 java.lang.reflect.Method getId = userDetails.getClass().getMethod("getId");
                 Object id = getId.invoke(userDetails);
-                if (id instanceof UUID) return (UUID) id;
+                if (id instanceof UUID)
+                    return (UUID) id;
                 if (id instanceof String s) {
-                    try { return UUID.fromString(s); } catch (Exception ignored) {}
+                    try {
+                        return UUID.fromString(s);
+                    } catch (Exception ignored) {
+                    }
                 }
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         return null;
     }
@@ -115,8 +139,14 @@ public class ProjectController {
 
     public static class StatusUpdateRequest {
         private ProjectStatus status;
-        public ProjectStatus getStatus() { return status; }
-        public void setStatus(ProjectStatus status) { this.status = status; }
+
+        public ProjectStatus getStatus() {
+            return status;
+        }
+
+        public void setStatus(ProjectStatus status) {
+            this.status = status;
+        }
     }
 
     // --- Project Member Management ---
@@ -128,7 +158,8 @@ public class ProjectController {
 
     @PostMapping("/{id}/members")
     @PreAuthorize("@projectAccessEvaluator.hasRole(authentication, #id, 'OWNER', 'MANAGER')")
-    public ResponseEntity<List<ProjectMemberDTO>> addMembers(@PathVariable UUID id, @RequestBody ProjectMemberAddRequest req) {
+    public ResponseEntity<List<ProjectMemberDTO>> addMembers(@PathVariable UUID id,
+            @RequestBody ProjectMemberAddRequest req) {
         return ResponseEntity.ok(projectMemberService.addMembers(id, req));
     }
 
@@ -141,7 +172,8 @@ public class ProjectController {
 
     @PatchMapping("/{id}/members/{userId}/role")
     @PreAuthorize("@projectAccessEvaluator.hasRole(authentication, #id, 'OWNER', 'MANAGER')")
-    public ResponseEntity<ProjectMemberDTO> updateMemberRole(@PathVariable UUID id, @PathVariable UUID userId, @RequestParam ProjectMemberRole role) {
+    public ResponseEntity<ProjectMemberDTO> updateMemberRole(@PathVariable UUID id, @PathVariable UUID userId,
+            @RequestParam ProjectMemberRole role) {
         return ResponseEntity.ok(projectMemberService.updateRole(id, userId, role));
     }
 
@@ -205,4 +237,3 @@ public class ProjectController {
         return ResponseEntity.ok(auditLogRepository.findByProjectId(id));
     }
 }
-

@@ -38,6 +38,7 @@ import "./styles/global.css";
 import "./styles/components/auth.css";
 import "./styles/components/forms.css";
 import "./styles/components/admin.css";
+import "./styles/pages/ProjectDashboard.css";
 import { colors } from "./styles/colors";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import CreateTaskPage from "./pages/CreateTaskPage";

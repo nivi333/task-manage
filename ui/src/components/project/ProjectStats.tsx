@@ -17,10 +17,10 @@ const ProjectStats: React.FC<Props> = ({ metrics }) => {
   ];
 
   return (
-    <Row gutter={[16, 16]}>
+    <Row className="tt-project-stats" gutter={[12, 12]}>
       {items.map((k) => (
         <Col key={k.title} xs={12} sm={8} md={8} lg={4}>
-          <Card bordered>
+          <Card className="tt-stat-card" bordered>
             <Statistic title={k.title} value={k.value} suffix={k.suffix} valueStyle={{ color: k.color }} />
           </Card>
         </Col>
