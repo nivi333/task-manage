@@ -31,6 +31,8 @@ export interface Project {
   status?: 'ACTIVE' | 'ON_HOLD' | 'COMPLETED' | string;
   owner?: TeamMember;
   members?: TeamMember[];
+  // Backend may return only IDs instead of full member objects
+  teamMemberIds?: UUID[];
   // Optional owning team reference for filtering/grouping in UI
   teamId?: UUID;
   // Optional aggregate metrics for progress indicators in list/grid

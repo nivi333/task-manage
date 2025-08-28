@@ -24,22 +24,37 @@ public class ProjectAnalyticsService {
         if (projectOpt.isEmpty()) {
             throw new NoSuchElementException("Project not found");
         }
-        List<Task> tasks = taskRepository.findByProjectId(projectId);
-        long totalTasks = tasks != null ? tasks.size() : 0;
-        long completed = tasks != null ? tasks.stream().filter(t -> "COMPLETED".equals(t.getStatus())).count() : 0;
-        long inProgress = tasks != null ? tasks.stream().filter(t -> "IN_PROGRESS".equals(t.getStatus())).count() : 0;
-        long overdue = tasks != null ? tasks.stream().filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && (t.getStatus() == null || !"COMPLETED".equals(t.getStatus()))).count() : 0;
+        Project project = projectOpt.get();
+
+        List<Task> tasks = Optional.ofNullable(taskRepository.findByProjectId(projectId)).orElse(Collections.emptyList());
+        long totalTasks = tasks.size();
+        long completed = tasks.stream().filter(t -> "COMPLETED".equals(t.getStatus())).count();
+        long inProgress = tasks.stream().filter(t -> "IN_PROGRESS".equals(t.getStatus())).count();
+        long overdue = tasks.stream()
+                .filter(t -> t.getDueDate() != null && t.getDueDate().before(new Date()) && (t.getStatus() == null || !"COMPLETED".equals(t.getStatus())))
+                .count();
+
         Map<String, Object> metrics = new LinkedHashMap<>();
         metrics.put("totalTasks", totalTasks);
         metrics.put("completedTasks", completed);
         metrics.put("inProgressTasks", inProgress);
         metrics.put("overdueTasks", overdue);
         metrics.put("percentComplete", totalTasks > 0 ? (double) completed / totalTasks * 100 : 0.0);
-        return metrics;
+
+        // Assemble dashboard payload expected by frontend
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("project", project);
+        payload.put("metrics", metrics);
+        // Optional sections – provide safe defaults to avoid client errors
+        payload.put("taskSummary", Collections.emptyList());
+        payload.put("team", Collections.emptyList());
+        payload.put("timeline", getTimeline(projectId));
+        payload.put("recentActivity", Collections.emptyList());
+        return payload;
     }
 
     public List<Map<String, Object>> getBurndown(UUID projectId) {
-        List<Task> tasks = taskRepository.findByProjectId(projectId);
+        List<Task> tasks = Optional.ofNullable(taskRepository.findByProjectId(projectId)).orElse(Collections.emptyList());
         // Example: return daily open task counts (stub)
         Map<Date, Long> openTasksByDay = new TreeMap<>();
         for (Task t : tasks) {
@@ -55,7 +70,10 @@ public class ProjectAnalyticsService {
         long running = 0;
         for (Map.Entry<Date, Long> entry : openTasksByDay.entrySet()) {
             running += entry.getValue();
-            burndown.add(Map.of("date", entry.getKey(), "openTasks", running));
+            Map<String, Object> point = new LinkedHashMap<>();
+            point.put("date", entry.getKey());
+            point.put("openTasks", running);
+            burndown.add(point);
         }
         return burndown;
     }

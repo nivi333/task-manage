@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Card, Space, Modal } from "antd";
+import { Card, Space, Modal, Tooltip } from "antd";
 import {
   PlusOutlined,
   ExclamationCircleOutlined,
   ExportOutlined,
+  FilterOutlined,
 } from "@ant-design/icons";
 import UserTable from "../components/admin/UserTable";
 import UserFilters from "../components/admin/UserFilters";
@@ -129,7 +130,8 @@ const UserManagementPage: React.FC = () => {
   };
 
   const handleUserSubmit = async (
-    userData: CreateUserRequest | UpdateUserRequest
+    userData: CreateUserRequest | UpdateUserRequest,
+    file?: File
   ) => {
     try {
       if (editingUser) {
@@ -138,7 +140,14 @@ const UserManagementPage: React.FC = () => {
           userData as UpdateUserRequest
         );
       } else {
-        await userService.createUser(userData as CreateUserRequest);
+        if (file) {
+          await userService.createUserWithAvatar(
+            userData as CreateUserRequest,
+            file
+          );
+        } else {
+          await userService.createUser(userData as CreateUserRequest);
+        }
       }
       setUserModalVisible(false);
       await fetchUsers();
@@ -191,6 +200,14 @@ const UserManagementPage: React.FC = () => {
             />
           </div>
           <div className="um-toolbar-right">
+            <Tooltip title="Advanced Filters">
+              <TTButton
+                type="text"
+                className="um-filter-btn"
+                icon={<FilterOutlined />}
+                aria-label="Advanced Filters"
+              />
+            </Tooltip>
             <TTButton
               icon={<ExportOutlined />}
               onClick={handleExport}

@@ -30,12 +30,6 @@ const writeLocal = (data: UserSettings) => {
 };
 
 const get = async (): Promise<UserSettings> => {
-  // In development, skip backend unless explicitly enabled
-  const devSkip = process.env.NODE_ENV !== 'production' && process.env.REACT_APP_USE_SETTINGS_API !== 'true';
-  if (devSkip) {
-    const local = readLocal();
-    return local ?? DEFAULTS;
-  }
   try {
     const res = await apiClient.get<UserSettings>(API_URL);
     const data = res.data as UserSettings;
@@ -44,18 +38,11 @@ const get = async (): Promise<UserSettings> => {
   } catch (error: any) {
     // Fallback if endpoint is not implemented or errors out (404/500/etc)
     const local = readLocal();
-    if (local) return local;
-    return DEFAULTS;
+    return local ?? DEFAULTS;
   }
 };
 
 const update = async (settings: UserSettings): Promise<UserSettings> => {
-  const devSkip = process.env.NODE_ENV !== 'production' && process.env.REACT_APP_USE_SETTINGS_API !== 'true';
-  if (devSkip) {
-    writeLocal(settings);
-    notificationService.success('Settings saved.');
-    return settings;
-  }
   try {
     const res = await apiClient.put<UserSettings>(API_URL, settings);
     notificationService.success('Settings saved successfully.');

@@ -21,6 +21,9 @@ public class Project {
     @Column(nullable = false)
     private String name;
 
+    @Column(name = "project_key")
+    private String key;
+
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -56,6 +59,8 @@ public class Project {
     public void setId(UUID id) { this.id = id; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+    public String getKey() { return key; }
+    public void setKey(String key) { this.key = key; }
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
     public ProjectStatus getStatus() { return status; }

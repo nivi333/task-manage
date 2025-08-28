@@ -152,6 +152,31 @@ export class UserService {
     }
   }
 
+  async createUserWithAvatar(userData: CreateUserRequest, file: File): Promise<User> {
+    try {
+      const formData = new FormData();
+      formData.append("email", userData.email);
+      formData.append("username", userData.username);
+      formData.append("firstName", userData.firstName);
+      formData.append("lastName", userData.lastName);
+      formData.append("password", userData.password);
+      formData.append("role", String(userData.role));
+      formData.append("status", String(userData.status));
+      formData.append("avatar", file);
+
+      const response = await apiClient.post(this.baseURL, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      notificationService.success("User created successfully");
+      return response.data;
+    } catch (error: any) {
+      console.error("Error creating user with avatar:", error);
+      const message = error.response?.data?.message || "Failed to create user";
+      notificationService.error(message);
+      throw error;
+    }
+  }
+
   async updateUser(id: string, userData: UpdateUserRequest): Promise<User> {
     try {
       const response = await apiClient.put(`${this.baseURL}/${id}`, userData);

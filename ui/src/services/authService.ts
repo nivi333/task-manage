@@ -210,9 +210,40 @@ const authAPI = {
     const token = localStorage.getItem("authToken");
     if (!token) return [];
     try {
-      const payload = JSON.parse(atob(token.split('.')[1] || ''));
-      return payload?.roles || [];
-    } catch {
+      // Decode base64url payload safely
+      const base64Url = (token.split(".")[1] || "").replace(/-/g, "+").replace(/_/g, "/");
+      const padded = base64Url + "===".slice((base64Url.length + 3) % 4);
+      const json = atob(padded);
+      const payload = JSON.parse(json) || {};
+
+      // Collect roles from various common JWT fields
+      let candidates: any = [];
+      if (Array.isArray(payload.roles)) candidates = candidates.concat(payload.roles);
+      if (Array.isArray(payload.authorities)) candidates = candidates.concat(payload.authorities);
+      if (payload.realm_access?.roles) candidates = candidates.concat(payload.realm_access.roles);
+      // Merge any resource_access roles
+      if (payload.resource_access && typeof payload.resource_access === "object") {
+        Object.values(payload.resource_access).forEach((ra: any) => {
+          if (Array.isArray((ra as any)?.roles)) candidates = candidates.concat((ra as any).roles);
+        });
+      }
+      // Scope as space-delimited string
+      if (typeof payload.scope === "string") candidates = candidates.concat(payload.scope.split(" "));
+      if (Array.isArray(payload.permissions)) candidates = candidates.concat(payload.permissions);
+
+      // Normalize to unique uppercased role names without ROLE_ prefix
+      const normalized = (candidates as any[])
+        .map((r) => {
+          if (!r) return null;
+          // Support objects like { name: 'ADMIN' }
+          const val = typeof r === "string" ? r : (r as any).name ?? String(r);
+          const up = val.toString().toUpperCase();
+          return up.startsWith("ROLE_") ? up.substring(5) : up;
+        })
+        .filter((x): x is string => !!x);
+
+      return Array.from(new Set(normalized));
+    } catch (e) {
       return [];
     }
   },

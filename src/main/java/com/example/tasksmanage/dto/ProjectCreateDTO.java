@@ -6,6 +6,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public class ProjectCreateDTO {
+    private String key;
     private String name;
     private String description;
     private ProjectStatus status;
@@ -14,6 +15,8 @@ public class ProjectCreateDTO {
     private UUID ownerId;
     private Set<UUID> teamMemberIds;
     // Getters and setters
+    public String getKey() { return key; }
+    public void setKey(String key) { this.key = key; }
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
     public String getDescription() { return description; }

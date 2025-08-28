@@ -1,6 +1,6 @@
 import React from "react";
-import { Space, Row, Col, Tooltip } from "antd";
-import { FilterOutlined, ClearOutlined } from "@ant-design/icons";
+import { Space, Row, Col } from "antd";
+import { ClearOutlined } from "@ant-design/icons";
 import {
   UserRole,
   UserStatus,
@@ -78,16 +78,6 @@ const UserFilters: React.FC<UserFiltersProps> = ({
             ]}
           />
         </Col>
-        <Col xs={12} sm={6} md={4} lg={4}>
-          <Tooltip title="Advanced Filters">
-            <TTButton
-              className="tt-filters__btn"
-              icon={<FilterOutlined />}
-              disabled={loading}
-            />
-          </Tooltip>
-        </Col>
-
         <Col xs={24} sm={12} md={8} lg={4}>
           <Space>
             {hasActiveFilters && (

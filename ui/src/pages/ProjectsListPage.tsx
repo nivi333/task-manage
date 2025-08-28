@@ -183,7 +183,7 @@ const ProjectsListPage: React.FC = () => {
   return (
     <AppLayout title={<HeaderTitle level={3}>Projects</HeaderTitle>}>
       <Space direction="vertical" size={16} style={{ width: "100%" }}>
-        <div style={{ width: '100%', background: 'var(--color-card-background)', borderRadius: 8, padding: '16px 24px', marginBottom: 16, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ width: '100%', background: 'var(--color-card-background)', borderRadius: 8, padding: '16px', margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <HeaderTitle level={5} style={{ fontSize: 16, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 180, lineHeight: 1.2 }}>All Projects</HeaderTitle>
             <div className="tt-toolbar" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -279,9 +279,7 @@ const ProjectsListPage: React.FC = () => {
                               toggleSelect(project.id, e.target.checked)
                             }
                           />
-                          <Link to={`/projects/${project.id}/dashboard`}>
-                            {project.name}
-                          </Link>
+{project.name}
                         </Space>
                       }
                       extra={
@@ -385,7 +383,7 @@ const ProjectsTable: React.FC<{
             icon={<UserOutlined />}
             src={record.owner?.avatarUrl}
           />
-          <Link to={`/projects/${record.id}/dashboard`}>{record.name}</Link>
+{record.name}
           {record.key ? <Tag color="blue">{record.key}</Tag> : null}
         </Space>
       ),

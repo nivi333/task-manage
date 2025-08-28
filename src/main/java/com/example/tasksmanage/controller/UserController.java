@@ -8,10 +8,12 @@ import com.example.tasksmanage.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -101,6 +103,40 @@ public class UserController {
             @AuthenticationPrincipal User actor) {
         User current = (actor != null) ? actor : getAuthenticatedUserOrNull();
         com.example.tasksmanage.dto.UserProfileDTO created = userService.adminCreateUser(req, current);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    // ADMIN: Create user with optional avatar (multipart)
+    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<com.example.tasksmanage.dto.UserProfileDTO> createUserMultipart(
+            @RequestPart("email") String email,
+            @RequestPart("username") String username,
+            @RequestPart("firstName") String firstName,
+            @RequestPart("lastName") String lastName,
+            @RequestPart("password") String password,
+            @RequestPart("role") String role,
+            @RequestPart("status") String status,
+            @RequestPart(value = "avatar", required = false) MultipartFile avatar,
+            @AuthenticationPrincipal User actor) throws java.io.IOException {
+        User current = (actor != null) ? actor : getAuthenticatedUserOrNull();
+        com.example.tasksmanage.dto.AdminCreateUserRequest req = new com.example.tasksmanage.dto.AdminCreateUserRequest();
+        req.setEmail(email);
+        req.setUsername(username);
+        req.setFirstName(firstName);
+        req.setLastName(lastName);
+        req.setPassword(password);
+        req.setRole(role);
+        req.setStatus(status);
+        com.example.tasksmanage.dto.UserProfileDTO created = userService.adminCreateUser(req, current);
+        if (avatar != null && !avatar.isEmpty()) {
+            // Upload avatar for the newly created user
+            var createdUser = userService.findByUsernameOrEmail(username).orElse(null);
+            if (createdUser != null) {
+                userService.uploadAvatar(createdUser, avatar);
+                created = userService.getProfile(createdUser);
+            }
+        }
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 

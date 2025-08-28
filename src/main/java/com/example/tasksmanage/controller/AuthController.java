@@ -10,8 +10,10 @@ import com.example.tasksmanage.model.User;
 import com.example.tasksmanage.service.UserService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -30,6 +32,30 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<User>> register(@Valid @RequestBody UserRegistrationRequest request) {
         User user = userService.registerUser(request);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Registration successful. Please check your email to verify your account.", user));
+    }
+
+    // Multipart variant with optional profile image
+    @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<User>> registerMultipart(
+            @RequestPart("username") String username,
+            @RequestPart("email") String email,
+            @RequestPart("password") String password,
+            @RequestPart("firstName") String firstName,
+            @RequestPart("lastName") String lastName,
+            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
+    ) throws java.io.IOException {
+        UserRegistrationRequest req = new UserRegistrationRequest();
+        req.setUsername(username);
+        req.setEmail(email);
+        req.setPassword(password);
+        req.setFirstName(firstName);
+        req.setLastName(lastName);
+        User user = userService.registerUser(req);
+        if (profileImage != null && !profileImage.isEmpty()) {
+            // Store avatar for the newly registered user
+            userService.uploadAvatar(user, profileImage);
+        }
         return ResponseEntity.ok(new ApiResponse<>(true, "Registration successful. Please check your email to verify your account.", user));
     }
 

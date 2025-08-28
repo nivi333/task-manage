@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Modal, Form, Input, Row, Col, Avatar, Upload } from "antd";
 import { UserOutlined, UploadOutlined, CloseOutlined } from "@ant-design/icons";
 import { useLocation } from "react-router-dom";
@@ -15,7 +15,10 @@ interface UserModalProps {
   visible: boolean;
   user?: User;
   onCancel: () => void;
-  onSubmit: (userData: CreateUserRequest | UpdateUserRequest) => void;
+  onSubmit: (
+    userData: CreateUserRequest | UpdateUserRequest,
+    file?: File
+  ) => void;
   loading?: boolean;
 }
 
@@ -29,6 +32,11 @@ const UserModal: React.FC<UserModalProps> = ({
   const [form] = Form.useForm();
   const isEditing = !!user;
   const location = useLocation();
+  const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
+  const previewUrl = useMemo(() => {
+    if (selectedFile) return URL.createObjectURL(selectedFile);
+    return user?.profilePicture;
+  }, [selectedFile, user?.profilePicture]);
 
   useEffect(() => {
     console.groupCollapsed("[UserModal] visibility/useEffect");
@@ -36,6 +44,7 @@ const UserModal: React.FC<UserModalProps> = ({
     if (visible) {
       // Opened: reset first, then populate
       form.resetFields();
+      setSelectedFile(undefined);
       if (user) {
         form.setFieldsValue({
           username: user.username,
@@ -80,7 +89,7 @@ const UserModal: React.FC<UserModalProps> = ({
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
-      onSubmit(values);
+      onSubmit(values, selectedFile);
     } catch (error) {
       console.error("Validation failed:", error);
     }
@@ -89,12 +98,14 @@ const UserModal: React.FC<UserModalProps> = ({
   const handleCancel = () => {
     console.log("[UserModal] handleCancel -> resetting fields");
     form.resetFields();
+    setSelectedFile(undefined);
     onCancel();
   };
 
   const handleModalClose = () => {
     console.log("[UserModal] handleModalClose -> resetting fields");
     form.resetFields();
+    setSelectedFile(undefined);
     onCancel();
   };
 
@@ -162,13 +173,19 @@ const UserModal: React.FC<UserModalProps> = ({
           <Avatar
             size={80}
             icon={<UserOutlined />}
-            src={user?.profilePicture}
+            src={previewUrl}
           />
           <div style={{ marginTop: 8 }}>
             <Upload
               className="avatar-upload"
               showUploadList={false}
               beforeUpload={() => false}
+              onChange={(info) => {
+                const file = info.fileList?.[info.fileList.length - 1]?.originFileObj as File | undefined;
+                if (file) {
+                  setSelectedFile(file);
+                }
+              }}
             >
               <TTButton type="text" size="small" icon={<UploadOutlined />}>
                 {isEditing ? "Change Photo" : "Upload Photo"}

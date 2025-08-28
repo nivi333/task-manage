@@ -40,11 +40,22 @@ export const projectService = {
     return data;
   },
   async create(payload: ProjectCreateRequest): Promise<Project> {
-    const { data } = await apiClient.post('/projects', payload);
+    // Backend expects teamMemberIds; map from UI's memberIds.
+    const backendPayload: any = { ...payload } as any;
+    if ((payload as any).memberIds) {
+      backendPayload.teamMemberIds = (payload as any).memberIds;
+      delete backendPayload.memberIds;
+    }
+    const { data } = await apiClient.post('/projects', backendPayload);
     return data;
   },
   async update(id: UUID, payload: ProjectUpdateRequest): Promise<Project> {
-    const { data } = await apiClient.put(`/projects/${id}`, payload);
+    const backendPayload: any = { ...payload, projectId: id } as any;
+    if ((payload as any).memberIds) {
+      backendPayload.teamMemberIds = (payload as any).memberIds;
+      delete backendPayload.memberIds;
+    }
+    const { data } = await apiClient.put(`/projects/${id}`, backendPayload);
     return data;
   },
   async bulkDelete(ids: UUID[]): Promise<void> {

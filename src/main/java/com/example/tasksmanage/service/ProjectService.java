@@ -2,6 +2,7 @@ package com.example.tasksmanage.service;
 
 import com.example.tasksmanage.dto.ProjectCreateDTO;
 import com.example.tasksmanage.dto.ProjectDTO;
+import com.example.tasksmanage.dto.UserSummaryDTO;
 import com.example.tasksmanage.model.Project;
 import com.example.tasksmanage.model.ProjectStatus;
 import com.example.tasksmanage.model.User;
@@ -24,6 +25,7 @@ public class ProjectService {
     public ProjectDTO toDTO(Project project) {
         ProjectDTO dto = new ProjectDTO();
         dto.setId(project.getId());
+        dto.setKey(project.getKey());
         dto.setName(project.getName());
         dto.setDescription(project.getDescription());
         dto.setStatus(project.getStatus());
@@ -31,6 +33,11 @@ public class ProjectService {
         dto.setEndDate(project.getEndDate());
         dto.setOwnerId(project.getOwner() != null ? project.getOwner().getId() : null);
         dto.setTeamMemberIds(project.getTeamMembers().stream().map(User::getId).collect(Collectors.toSet()));
+        dto.setMembers(
+            project.getTeamMembers().stream()
+                .map(u -> new UserSummaryDTO(u.getId(), u.getUsername(), u.getFirstName(), u.getLastName(), u.getEmail()))
+                .collect(Collectors.toList())
+        );
         dto.setCreatedAt(project.getCreatedAt());
         dto.setUpdatedAt(project.getUpdatedAt());
         return dto;
@@ -39,6 +46,7 @@ public class ProjectService {
     @Transactional
     public ProjectDTO createProject(ProjectCreateDTO dto) {
         Project project = new Project();
+        project.setKey(dto.getKey());
         project.setName(dto.getName());
         project.setDescription(dto.getDescription());
         project.setStatus(dto.getStatus() != null ? dto.getStatus() : ProjectStatus.ACTIVE);
@@ -68,6 +76,7 @@ public class ProjectService {
     @Transactional
     public ProjectDTO updateProject(UUID id, ProjectCreateDTO dto) {
         Project project = projectRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Project not found"));
+        project.setKey(dto.getKey());
         project.setName(dto.getName());
         project.setDescription(dto.getDescription());
         project.setStatus(dto.getStatus());
@@ -95,6 +104,14 @@ public class ProjectService {
 
     public List<ProjectDTO> listProjects() {
         return projectRepository.findAll().stream().map(this::toDTO).collect(Collectors.toList());
+    }
+
+    public List<ProjectDTO> listProjectsForUser(UUID userId) {
+        return projectRepository.findAll().stream()
+            .filter(project -> project.getOwner() != null && project.getOwner().getId().equals(userId) ||
+                             project.getTeamMembers().stream().anyMatch(member -> member.getId().equals(userId)))
+            .map(this::toDTO)
+            .collect(Collectors.toList());
     }
 
     @Transactional

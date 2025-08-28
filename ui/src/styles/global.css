@@ -652,6 +652,7 @@ textarea::placeholder {
   box-shadow: none !important;
   padding-left: 12px !important;
   padding-right: 12px !important;
+  color: var(--color-text-primary) !important;
 }
 
 .ant-input:focus,
@@ -667,6 +668,7 @@ textarea::placeholder {
   height: auto !important;
   background: transparent !important;
   border: none !important;
+  color: var(--color-text-primary) !important;
 }
 .ant-input-affix-wrapper {
   display: inline-flex !important;
@@ -682,6 +684,17 @@ textarea::placeholder {
   color: var(--color-text-light) !important;
   font-size: var(--font-size-md) !important;
   line-height: 1.5 !important;
+}
+
+/* Textarea consistency (dark and light): use same surface/bg and text color */
+.ant-input-textarea,
+.ant-input-textarea textarea.ant-input {
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-border) !important;
+}
+.ant-input-textarea textarea.ant-input::placeholder {
+  color: var(--color-text-light) !important;
 }
 
 .ant-input:hover,
@@ -821,11 +834,14 @@ select:-moz-autofill {
   display: inline-flex !important;
   align-items: center !important;
   border-color: var(--color-border) !important;
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
 }
 .ant-select-single .ant-select-selector .ant-select-selection-item,
 .ant-select-single .ant-select-selector .ant-select-selection-placeholder {
   display: inline-flex !important;
   align-items: center !important;
+  color: var(--color-text-primary) !important;
 }
 .ant-select-arrow {
   display: flex !important;
@@ -840,9 +856,15 @@ select:-moz-autofill {
   align-items: center !important;
   padding: 0 12px !important;
   border-color: var(--color-border) !important;
+  background-color: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
 }
 .ant-picker-input > input {
   height: 34px !important;
+  color: var(--color-text-primary) !important;
+}
+.ant-picker-input > input::placeholder {
+  color: var(--color-text-light) !important;
 }
 .ant-picker-suffix,
 .ant-picker-clear {
@@ -1019,6 +1041,22 @@ html[data-theme="dark"] .tt-pagination-visible .ant-pagination-item-active {
 }
 .ant-card .ant-card-head {
   border-bottom-color: var(--color-border) !important;
+}
+
+/* Descriptions component theming */
+.ant-descriptions {
+  color: var(--color-text-primary) !important;
+}
+.ant-descriptions-view {
+  background: var(--color-card-background) !important;
+  border-color: var(--color-border) !important;
+}
+.ant-descriptions-item-label {
+  color: var(--color-text-secondary) !important;
+}
+.ant-descriptions-item-content {
+  color: var(--color-text-primary) !important;
+  background: var(--color-card-background) !important;
 }
 
 /* Buttons: exact vertical centering */

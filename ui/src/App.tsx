@@ -93,24 +93,15 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   return <>{children}</>;
 };
 
-// Admin Route component (checks JWT roles in localStorage token)
+// Admin Route component (checks roles via robust parser)
 const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isAuthenticated = authAPI.isAuthenticated();
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
-  // Try to read roles from JWT payload
-  const token = authAPI.getToken();
-  try {
-    if (token) {
-      const payload = JSON.parse(atob(token.split(".")[1] || ""));
-      const roles: string[] = payload?.roles || [];
-      if (roles.includes("ADMIN")) {
-        return <>{children}</>;
-      }
-    }
-  } catch (e) {
-    // Fallback to deny access
+  const roles = authAPI.getUserRoles();
+  if (roles.includes("ADMIN")) {
+    return <>{children}</>;
   }
   return <Navigate to="/dashboard" replace />;
 };

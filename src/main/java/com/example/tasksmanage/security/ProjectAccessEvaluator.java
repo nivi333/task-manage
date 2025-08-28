@@ -16,10 +16,30 @@ public class ProjectAccessEvaluator {
     private UserRepository userRepository;
 
     public boolean isMember(Authentication authentication, UUID projectId) {
-        if (authentication == null || !authentication.isAuthenticated()) return false;
+        if (authentication == null || !authentication.isAuthenticated()) {
+            System.out.println("DEBUG: Authentication is null or not authenticated");
+            return false;
+        }
         UUID userId = getUserId(authentication);
-        return projectMemberService.listMembers(projectId).stream()
-                .anyMatch(m -> m.getUserId().equals(userId));
+        if (userId == null) {
+            System.out.println("DEBUG: Could not extract userId from authentication: " + authentication.getName());
+            return false;
+        }
+        System.out.println("DEBUG: Checking membership for userId: " + userId + ", projectId: " + projectId);
+        
+        try {
+            var members = projectMemberService.listMembers(projectId);
+            System.out.println("DEBUG: Found " + members.size() + " members for project " + projectId);
+            members.forEach(m -> System.out.println("DEBUG: Member userId: " + m.getUserId()));
+            
+            boolean isMember = members.stream().anyMatch(m -> m.getUserId().equals(userId));
+            System.out.println("DEBUG: User " + userId + " is member: " + isMember);
+            return isMember;
+        } catch (Exception e) {
+            System.out.println("DEBUG: Exception in isMember check: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean hasRole(Authentication authentication, UUID projectId, String... roles) {
