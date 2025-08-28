@@ -173,7 +173,12 @@ const ProjectDashboardPage: React.FC = () => {
     }
 
     return (
-      <Space direction="vertical" size={12} style={{ width: "100%" }} className="tt-project-dashboard">
+      <Space
+        direction="vertical"
+        size={12}
+        style={{ width: "100%" }}
+        className="tt-project-dashboard"
+      >
         <ProjectHeader project={project} />
         <ProjectStats metrics={metrics} />
         <Row gutter={[12, 12]}>

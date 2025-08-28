@@ -17,6 +17,7 @@ import TasksBoardPage from "./pages/TasksBoardPage";
 import TasksStatsPage from "./pages/TasksStatsPage";
 import TasksPage from "./pages/TasksPage";
 import UserProfilePage from "./pages/UserProfilePage";
+import TermsPage from "./pages/TermsPage";
 import ProjectsListPage from "./pages/ProjectsListPage";
 import ProjectDashboardPage from "./pages/ProjectDashboardPage";
 import TeamSettingsPage from "./pages/TeamSettingsPage";
@@ -133,6 +134,7 @@ const AppContent: React.FC = () => {
             <Route path="/register" element={<RegistrationPage />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/terms" element={<TermsPage />} />
 
             {/* Protected Routes */}
             <Route

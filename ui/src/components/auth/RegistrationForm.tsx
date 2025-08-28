@@ -1,12 +1,18 @@
 import React, { useState } from "react";
-import { Form, Input, Checkbox, message, Modal } from "antd";
+import { Form, Input, Checkbox, message, Upload, Avatar } from "antd";
 import { TTButton } from "../common";
 import styled from "styled-components";
 import RegistrationStepper from "./RegistrationStepper";
 import PasswordStrengthMeter from "./PasswordStrengthMeter";
 import type { CheckboxChangeEvent } from "antd/es/checkbox";
-import { UserOutlined, LockOutlined, MailOutlined, UploadOutlined, ArrowLeftOutlined } from "@ant-design/icons";
-import ProfileImageCropper from "./ProfileImageCropper";
+import {
+  UserOutlined,
+  LockOutlined,
+  MailOutlined,
+  UploadOutlined,
+  ArrowLeftOutlined,
+} from "@ant-design/icons";
+// Removed cropper modal per UX request; using simple inline Upload + Avatar preview
 
 import { authAPI, RegisterRequest } from "../../services/authService";
 import LoadingSpinner from "../common/LoadingSpinner";
@@ -39,56 +45,33 @@ const RegistrationTitle = styled.h1`
   font-weight: 600;
 `;
 
-const TermsModal = ({
-  visible,
-  onOk,
-  onCancel,
-}: {
-  visible: boolean;
-  onOk: () => void;
-  onCancel: () => void;
-}) => (
-  <Modal
-    title="Terms & Conditions"
-    open={visible}
-    onOk={onOk}
-    onCancel={onCancel}
-    footer={null}
-  >
-    <p>
-      By registering, you agree to our Terms and Conditions and Privacy Policy.
-    </p>
-    <TTButton ttVariant="primary" block onClick={onOk}>
-      Accept
-    </TTButton>
-    <TTButton ttVariant="secondary" block onClick={onCancel} className="mt-sm">
-      Decline
-    </TTButton>
-  </Modal>
-);
+// Terms modal removed per UX: acceptance handled by inline checkbox only
 
-const steps = [
-  "Personal Info",
-  "Account Setup",
-  "Verification"
-];
+const steps = ["Personal Info", "Account Setup", "Verification"];
 
 const RegistrationForm: React.FC = () => {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  // Terms modal removed; keep only form field value
   const [currentStep, setCurrentStep] = useState(0);
   const [passwordValue, setPasswordValue] = useState("");
-  const [showProfileCropper, setShowProfileCropper] = useState(false);
   const [profileImage, setProfileImage] = useState<File | null>(null);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
 
-  const handleProfileCrop = (file: File) => {
+  const beforeUploadAvatar = (file: File) => {
+    const allowed = ["image/jpeg", "image/png", "image/jpg", "image/svg+xml"];
+    if (!allowed.includes(file.type)) {
+      message.error("Only jpeg, jpg, png, svg files are allowed");
+      return Upload.LIST_IGNORE;
+    }
+    if (file.size > 1024 * 1024) {
+      message.error("Image must not exceed 1 MB");
+      return Upload.LIST_IGNORE;
+    }
     setProfileImage(file);
     setProfileImageUrl(URL.createObjectURL(file));
-    setShowProfileCropper(false);
+    return false; // prevent auto upload
   };
 
   const handleFinish = async (_values: any) => {
@@ -96,8 +79,8 @@ const RegistrationForm: React.FC = () => {
     const values = form.getFieldsValue(true);
     console.log("Submitting registration with values:", values);
     if (!values.acceptTerms) {
-      console.log('[NOTIFICATION] RegistrationForm error');
-      console.log('[NOTIFICATION] RegistrationForm info');
+      console.log("[NOTIFICATION] RegistrationForm error");
+      console.log("[NOTIFICATION] RegistrationForm info");
       message.info("You must accept the terms and conditions.");
       return;
     }
@@ -118,44 +101,22 @@ const RegistrationForm: React.FC = () => {
       console.log("Calling register API with payload:", req);
       const resp = await authAPI.register(req);
       console.log("Register API response:", resp);
-      console.log('[NOTIFICATION] RegistrationForm success');
-      console.log('[NOTIFICATION] RegistrationForm info');
+      console.log("[NOTIFICATION] RegistrationForm success");
+      console.log("[NOTIFICATION] RegistrationForm info");
       message.success("Registration successful!");
       // Move to completion step only after successful submission
       setCurrentStep(2);
       form.resetFields();
-      setAcceptedTerms(false);
     } catch (err: any) {
-      console.log('[NOTIFICATION] RegistrationForm error');
-      console.log('[NOTIFICATION] RegistrationForm info');
+      console.log("[NOTIFICATION] RegistrationForm error");
+      console.log("[NOTIFICATION] RegistrationForm info");
       message.error(err.response?.data?.message || "Registration failed");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleTerms = (e: CheckboxChangeEvent) => {
-    if (e.target.checked) {
-      // Open modal and ensure the box is not marked as accepted until user confirms
-      setShowTerms(true);
-      form.setFieldsValue({ acceptTerms: false });
-    } else {
-      setAcceptedTerms(false);
-      form.setFieldsValue({ acceptTerms: false });
-    }
-  };
-
-  const handleAcceptTerms = () => {
-    setAcceptedTerms(true);
-    setShowTerms(false);
-    form.setFieldsValue({ acceptTerms: true });
-  };
-
-  const handleDeclineTerms = () => {
-    setAcceptedTerms(false);
-    setShowTerms(false);
-    form.setFieldsValue({ acceptTerms: false });
-  };
+  // Terms checkbox handled inline; no modal
 
   return (
     <RegistrationCard className="auth-card tt-card-flat">
@@ -168,14 +129,15 @@ const RegistrationForm: React.FC = () => {
         onFinish={handleFinish}
         onFinishFailed={({ errorFields }) => {
           if (errorFields && errorFields.length > 0) {
-            console.log('[NOTIFICATION] RegistrationForm error');
-            console.log('[NOTIFICATION] RegistrationForm info');
+            console.log("[NOTIFICATION] RegistrationForm error");
+            console.log("[NOTIFICATION] RegistrationForm info");
             message.error(
               errorFields[0].errors?.[0] || "Please fix validation errors"
             );
           }
         }}
         preserve
+        autoComplete="on"
         initialValues={{ acceptTerms: false }}
       >
         {currentStep === 0 && (
@@ -185,21 +147,36 @@ const RegistrationForm: React.FC = () => {
               label="First Name"
               rules={[{ required: true, message: "First name is required" }]}
             >
-              <Input prefix={<UserOutlined />} placeholder="First Name" />
+              <Input
+                prefix={<UserOutlined />}
+                placeholder="First Name"
+                autoComplete="given-name"
+                name="given-name"
+              />
             </Form.Item>
             <Form.Item
               name="lastName"
               label="Last Name"
               rules={[{ required: true, message: "Last name is required" }]}
             >
-              <Input prefix={<UserOutlined />} placeholder="Last Name" />
+              <Input
+                prefix={<UserOutlined />}
+                placeholder="Last Name"
+                autoComplete="family-name"
+                name="family-name"
+              />
             </Form.Item>
             <Form.Item
               name="username"
               label="Username"
               rules={[{ required: true, message: "Username is required" }]}
             >
-              <Input prefix={<UserOutlined />} placeholder="Username" />
+              <Input
+                prefix={<UserOutlined />}
+                placeholder="Username"
+                autoComplete="username"
+                name="username"
+              />
             </Form.Item>
             <Form.Item
               name="email"
@@ -209,15 +186,31 @@ const RegistrationForm: React.FC = () => {
                 { type: "email", message: "Invalid email format" },
               ]}
             >
-              <Input prefix={<MailOutlined />} placeholder="Email" />
+              <Input
+                prefix={<MailOutlined />}
+                placeholder="Email"
+                autoComplete="email"
+                name="email"
+              />
             </Form.Item>
             <Form.Item>
-              <TTButton ttVariant="primary" block onClick={async () => {
-                try {
-                  await form.validateFields(["firstName", "lastName", "username", "email"]);
-                  setCurrentStep(1);
-                } catch {}
-              }}>Next</TTButton>
+              <TTButton
+                ttVariant="primary"
+                block
+                onClick={async () => {
+                  try {
+                    await form.validateFields([
+                      "firstName",
+                      "lastName",
+                      "username",
+                      "email",
+                    ]);
+                    setCurrentStep(1);
+                  } catch {}
+                }}
+              >
+                Next
+              </TTButton>
             </Form.Item>
           </>
         )}
@@ -236,14 +229,21 @@ const RegistrationForm: React.FC = () => {
                   message: "Password must be at least 8 characters",
                 },
                 {
-                  pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  pattern:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
                   message:
                     "Password must contain upper and lower case letters, a digit, and a special character",
                 },
               ]}
               hasFeedback
             >
-              <Input.Password prefix={<LockOutlined />} placeholder="Password" onChange={e => setPasswordValue(e.target.value)} />
+              <Input.Password
+                prefix={<LockOutlined />}
+                placeholder="Password"
+                onChange={(e) => setPasswordValue(e.target.value)}
+                autoComplete="new-password"
+                name="new-password"
+              />
             </Form.Item>
             <PasswordStrengthMeter password={passwordValue} />
             <Form.Item
@@ -266,17 +266,31 @@ const RegistrationForm: React.FC = () => {
               <Input.Password
                 prefix={<LockOutlined />}
                 placeholder="Confirm Password"
+                autoComplete="new-password"
+                name="confirm-new-password"
               />
             </Form.Item>
             <Form.Item label="Profile Picture (optional)">
-              <TTButton icon={<UploadOutlined />} block onClick={() => setShowProfileCropper(true)}>
-                Upload Profile Picture (optional)
-              </TTButton>
-              {profileImageUrl && (
-                <div style={{ marginTop: 12, textAlign: 'center' }}>
-                  <img src={profileImageUrl} alt="Profile Preview" style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover', border: '1px solid #ddd' }} />
-                </div>
-              )}
+              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                <Avatar
+                  src={profileImageUrl || undefined}
+                  style={{ backgroundColor: "#ececec" }}
+                  size={64}
+                >
+                  {!profileImageUrl &&
+                    (form.getFieldValue("firstName")?.[0] ||
+                      form.getFieldValue("username")?.[0] ||
+                      "U")}
+                </Avatar>
+                <Upload
+                  accept=".jpg,.jpeg,.png,.svg"
+                  showUploadList={false}
+                  beforeUpload={beforeUploadAvatar}
+                  maxCount={1}
+                >
+                  <TTButton icon={<UploadOutlined />}>Upload Image</TTButton>
+                </Upload>
+              </div>
             </Form.Item>
             <Form.Item
               name="acceptTerms"
@@ -286,39 +300,49 @@ const RegistrationForm: React.FC = () => {
                   validator: (_, value) =>
                     value
                       ? Promise.resolve()
-                      : Promise.reject("You must accept the terms and conditions"),
+                      : Promise.reject(
+                          "You must accept the terms and conditions"
+                        ),
                 },
               ]}
             >
-              <Checkbox onChange={handleTerms}>
+              <Checkbox>
                 I accept the{" "}
-                <button
-                  type="button"
-                  style={{
-                    background: "none",
-                    border: "none",
-                    color: "#667eea",
-                    padding: 0,
-                    cursor: "pointer",
-                    textDecoration: "underline",
-                  }}
-                  onClick={() => setShowTerms(true)}
+                <a
+                  href="/terms"
+                  className="link-primary"
+                  target="_blank"
+                  rel="noreferrer"
                 >
                   terms and conditions
-                </button>
+                </a>
               </Checkbox>
             </Form.Item>
             <Form.Item>
-              <TTButton ttVariant="primary" block onClick={async () => {
-                try {
-                  await form.validateFields(["password", "confirmPassword", "acceptTerms"]);
-                  // Submit before changing steps to avoid unmounting fields and losing values
-                  form.submit();
-                } catch {}
-              }}>Register</TTButton>
+              <TTButton
+                ttVariant="primary"
+                block
+                onClick={async () => {
+                  try {
+                    await form.validateFields([
+                      "password",
+                      "confirmPassword",
+                      "acceptTerms",
+                    ]);
+                    // Submit before changing steps to avoid unmounting fields and losing values
+                    form.submit();
+                  } catch {}
+                }}
+              >
+                Register
+              </TTButton>
             </Form.Item>
             <Form.Item>
-              <TTButton ttVariant="secondary" block onClick={() => setCurrentStep(0)}>
+              <TTButton
+                ttVariant="secondary"
+                block
+                onClick={() => setCurrentStep(0)}
+              >
                 Back
               </TTButton>
             </Form.Item>
@@ -331,7 +355,11 @@ const RegistrationForm: React.FC = () => {
           </div>
         )}
         <Form.Item>
-          <TTButton ttVariant="transparent" block onClick={() => navigate("/login")}>
+          <TTButton
+            ttVariant="transparent"
+            block
+            onClick={() => navigate("/login")}
+          >
             <ArrowLeftOutlined /> Back to Login
           </TTButton>
         </Form.Item>
@@ -339,15 +367,14 @@ const RegistrationForm: React.FC = () => {
 
       {/* Auth footer link for parity with Login page */}
       <div className="back-to-login-container">
-        Already have an account? <a className="link-primary" href="/login">Sign in</a>
+        Already have an account?{" "}
+        <a className="link-primary" href="/login">
+          Sign in
+        </a>
       </div>
-      <TermsModal
-        visible={showTerms}
-        onOk={handleAcceptTerms}
-        onCancel={handleDeclineTerms}
-      />
+      {/* Terms modal removed */}
     </RegistrationCard>
   );
-}
+};
 
 export default RegistrationForm;

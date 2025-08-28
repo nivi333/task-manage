@@ -133,26 +133,49 @@ const UserManagementPage: React.FC = () => {
     userData: CreateUserRequest | UpdateUserRequest,
     file?: File
   ) => {
+    console.groupCollapsed("[UserManagementPage] handleUserSubmit");
+    console.log("isEditing:", !!editingUser);
+    console.log("hasFile:", !!file, file ? { name: file.name, type: file.type, size: file.size } : null);
+    console.log("userData:", userData);
     try {
       if (editingUser) {
-        await userService.updateUser(
-          editingUser.id,
-          userData as UpdateUserRequest
-        );
-      } else {
+        console.log("Branch: EDIT");
         if (file) {
+          console.log("Action: updateUserWithAvatar", { id: editingUser.id });
+          await userService.updateUserWithAvatar(
+            editingUser.id,
+            userData as UpdateUserRequest,
+            file
+          );
+        } else {
+          console.log("Action: updateUser (no file)", { id: editingUser.id });
+          await userService.updateUser(
+            editingUser.id,
+            userData as UpdateUserRequest
+          );
+        }
+      } else {
+        console.log("Branch: CREATE");
+        if (file) {
+          console.log("Action: createUserWithAvatar");
           await userService.createUserWithAvatar(
             userData as CreateUserRequest,
             file
           );
         } else {
+          console.log("Action: createUser (no file)");
           await userService.createUser(userData as CreateUserRequest);
         }
       }
+      console.log("Success: closing modal & refreshing list");
       setUserModalVisible(false);
       await fetchUsers();
-    } catch (error) {
-      console.error("Error saving user:", error);
+    } catch (error: any) {
+      const status = error?.response?.status;
+      const data = error?.response?.data;
+      console.error("[UserManagementPage] Save error:", { status, data, error });
+    } finally {
+      console.groupEnd();
     }
   };
 

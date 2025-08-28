@@ -23,6 +23,23 @@ apiClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    // If sending FormData, let the browser set the Content-Type (with boundary)
+    // Remove any existing header to avoid charset or incorrect boundary issues
+    if (config.data instanceof FormData) {
+      // Normalize headers object (Axios may nest per-method or common)
+      const hdrs: any = config.headers || {};
+      // Delete case-insensitive direct keys
+      delete hdrs["Content-Type"]; delete hdrs["content-type"]; delete hdrs["CONTENT-TYPE"];
+      // Delete nested defaults if present
+      if (hdrs.common) { delete hdrs.common["Content-Type"]; delete hdrs.common["content-type"]; }
+      if (hdrs.post) { delete hdrs.post["Content-Type"]; delete hdrs.post["content-type"]; }
+      if (hdrs.put) { delete hdrs.put["Content-Type"]; delete hdrs.put["content-type"]; }
+      config.headers = hdrs;
+      if (process.env.REACT_APP_DEBUG_AUTH === "true") {
+        // eslint-disable-next-line no-console
+        console.log(`[apiClient] ${config.method?.toUpperCase()} ${config.url} - FormData detected, stripped Content-Type`);
+      }
+    }
     // Debug: log auth header presence (toggle via env var)
     if (process.env.REACT_APP_DEBUG_AUTH === "true") {
       // Avoid logging full token
@@ -143,7 +160,6 @@ const authAPI = {
   // Register new user
   register: async (data: RegisterRequest): Promise<any> => {
     let payload: any = data;
-    let config = {};
     if (data.profileImage) {
       // Use FormData for multipart upload if profileImage is present
       const formData = new FormData();
@@ -155,9 +171,8 @@ const authAPI = {
       formData.append("acceptTerms", String(data.acceptTerms));
       formData.append("profileImage", data.profileImage);
       payload = formData;
-      config = { headers: { "Content-Type": "multipart/form-data" } };
     }
-    const response = await apiClient.post("/auth/register", payload, config);
+    const response = await apiClient.post("/auth/register", payload);
     return response.data;
   },
 

@@ -107,7 +107,7 @@ public class UserController {
     }
 
     // ADMIN: Create user with optional avatar (multipart)
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "", consumes = {"multipart/form-data", "multipart/form-data;charset=UTF-8", "multipart/form-data; charset=UTF-8"})
     @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<com.example.tasksmanage.dto.UserProfileDTO> createUserMultipart(
             @RequestPart("email") String email,

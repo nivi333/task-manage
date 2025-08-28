@@ -21,23 +21,88 @@ export class UserService {
   private baseURL = `${API_BASE_URL}/users`;
   private authBaseURL = `${API_BASE_URL}/auth`;
 
-  async uploadAvatar(file: File, profileData?: { firstName?: string; lastName?: string; email?: string; username?: string }): Promise<UserProfile> {
+  // Debug helper: safely log FormData entries
+  private logFormData(label: string, fd: FormData) {
+    try {
+      const entries: Record<string, any[]> = {};
+      // @ts-ignore - entries() exists in browsers
+      for (const [k, v] of (fd as any).entries()) {
+        if (!entries[k]) entries[k] = [];
+        if (v instanceof File) {
+          entries[k].push({ fileName: v.name, type: v.type, size: v.size });
+        } else {
+          entries[k].push(v);
+        }
+      }
+      // eslint-disable-next-line no-console
+      console.debug(`[UserService] ${label} FormData entries:`, entries);
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.debug(`[UserService] ${label} FormData log failed`, e);
+    }
+  }
+
+  // Send FormData with native fetch so the browser sets the multipart boundary and no charset is added
+  private async sendFormData(
+    method: 'POST' | 'PUT',
+    url: string,
+    fd: FormData
+  ): Promise<any> {
+    const token = localStorage.getItem('authToken');
+    // Debug log entries
+    this.logFormData(`${method} ${url}`, fd);
+    // Build headers WITHOUT Content-Type
+    const headers: Record<string, string> = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    console.debug('[UserService] fetch sending', { method, url, hasAuth: !!token });
+    const res = await fetch(url, {
+      method,
+      headers,
+      body: fd,
+      credentials: 'include',
+    });
+    const text = await res.text();
+    let data: any = undefined;
+    try { data = text ? JSON.parse(text) : undefined; } catch { data = text; }
+    if (!res.ok) {
+      console.error('[UserService] fetch error', { status: res.status, data });
+      const err: any = new Error('FormData request failed');
+      err.response = { status: res.status, data };
+      throw err;
+    }
+    console.debug('[UserService] fetch ok', { status: res.status, data });
+    return data;
+  }
+
+  async uploadAvatar(
+    file: File,
+    profileData?: {
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      username?: string;
+    }
+  ): Promise<UserProfile> {
     try {
       const formData = new FormData();
+      // Send under multiple common keys to match backend expectations
       formData.append("file", file);
-      
+      formData.append("avatar", file);
+      formData.append("profileImage", file);
+
       // Add profile fields if provided
-      if (profileData?.firstName) formData.append("firstName", profileData.firstName);
-      if (profileData?.lastName) formData.append("lastName", profileData.lastName);
+      if (profileData?.firstName)
+        formData.append("firstName", profileData.firstName);
+      if (profileData?.lastName)
+        formData.append("lastName", profileData.lastName);
       if (profileData?.email) formData.append("email", profileData.email);
-      if (profileData?.username) formData.append("username", profileData.username);
-      
-      const { data } = await apiClient.post(
+      if (profileData?.username)
+        formData.append("username", profileData.username);
+
+      const data = await this.sendFormData(
+        'POST',
         `${this.baseURL}/profile/avatar`,
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
+        formData
       );
       notificationService.success("Profile updated successfully");
       return {
@@ -50,7 +115,8 @@ export class UserService {
       };
     } catch (error: any) {
       console.error("Error uploading avatar:", error);
-      const message = error.response?.data?.message || "Failed to update profile";
+      const message =
+        error.response?.data?.message || "Failed to update profile";
       notificationService.error(message);
       throw error;
     }
@@ -70,7 +136,8 @@ export class UserService {
       };
     } catch (error: any) {
       console.error("Error removing avatar:", error);
-      const message = error.response?.data?.message || "Failed to remove profile image";
+      const message =
+        error.response?.data?.message || "Failed to remove profile image";
       notificationService.error(message);
       throw error;
     }
@@ -83,7 +150,8 @@ export class UserService {
       await authAPI.logout();
     } catch (error: any) {
       console.error("Error deleting account:", error);
-      const message = error.response?.data?.message || "Failed to delete account";
+      const message =
+        error.response?.data?.message || "Failed to delete account";
       notificationService.error(message);
       throw error;
     }
@@ -165,7 +233,10 @@ export class UserService {
     }
   }
 
-  async createUserWithAvatar(userData: CreateUserRequest, file: File): Promise<User> {
+  async createUserWithAvatar(
+    userData: CreateUserRequest,
+    file: File
+  ): Promise<User> {
     try {
       const formData = new FormData();
       formData.append("email", userData.email);
@@ -175,13 +246,11 @@ export class UserService {
       formData.append("password", userData.password);
       formData.append("role", String(userData.role));
       formData.append("status", String(userData.status));
-      formData.append("avatar", file);
+      formData.append("file", file);
 
-      const response = await apiClient.post(this.baseURL, formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const data = await this.sendFormData('POST', this.baseURL, formData);
       notificationService.success("User created successfully");
-      return response.data;
+      return data;
     } catch (error: any) {
       console.error("Error creating user with avatar:", error);
       const message = error.response?.data?.message || "Failed to create user";
@@ -197,6 +266,41 @@ export class UserService {
       return response.data;
     } catch (error: any) {
       console.error("Error updating user:", error);
+      const message = error.response?.data?.message || "Failed to update user";
+      notificationService.error(message);
+      throw error;
+    }
+  }
+
+  async updateUserWithAvatar(
+    id: string,
+    userData: UpdateUserRequest,
+    file: File
+  ): Promise<User> {
+    try {
+      const formData = new FormData();
+      if (userData.email !== undefined)
+        formData.append("email", String(userData.email));
+      if (userData.username !== undefined)
+        formData.append("username", String(userData.username));
+      if (userData.firstName !== undefined)
+        formData.append("firstName", String(userData.firstName));
+      if (userData.lastName !== undefined)
+        formData.append("lastName", String(userData.lastName));
+      if (userData.role !== undefined)
+        formData.append("role", String(userData.role));
+      if (userData.status !== undefined)
+        formData.append("status", String(userData.status));
+      // Send under multiple common keys to match backend expectations
+      formData.append("file", file);
+      formData.append("avatar", file);
+      formData.append("profileImage", file);
+
+      const data = await this.sendFormData('PUT', `${this.baseURL}/${id}`, formData);
+      notificationService.success("User updated successfully");
+      return data;
+    } catch (error: any) {
+      console.error("Error updating user with avatar:", error);
       const message = error.response?.data?.message || "Failed to update user";
       notificationService.error(message);
       throw error;
