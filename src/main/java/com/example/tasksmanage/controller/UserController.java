@@ -220,6 +220,17 @@ public class UserController {
         return userService.getUserStats();
     }
 
+    // ADMIN: Update user by id
+    @PutMapping("/{id}")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<com.example.tasksmanage.dto.UserProfileDTO> updateUser(
+            @PathVariable java.util.UUID id,
+            @Valid @RequestBody com.example.tasksmanage.dto.AdminUpdateUserRequest req,
+            @AuthenticationPrincipal User actor) {
+        User current = (actor != null) ? actor : getAuthenticatedUserOrNull();
+        return ResponseEntity.ok(userService.adminUpdateUser(id, req, current));
+    }
+
     // Get users available for team assignment (authenticated users only)
     @GetMapping("/for-teams")
     public ResponseEntity<java.util.List<com.example.tasksmanage.dto.UserSummaryDTO>> getUsersForTeamAssignment() {

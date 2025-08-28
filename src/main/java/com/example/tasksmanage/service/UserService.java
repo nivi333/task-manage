@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-
 @Service
 public class UserService {
 
@@ -39,7 +38,8 @@ public class UserService {
             try {
                 java.nio.file.Path path = java.nio.file.Paths.get(avatarPath);
                 java.nio.file.Files.deleteIfExists(path);
-            } catch (Exception ignored) {}
+            } catch (Exception ignored) {
+            }
         }
         user.setAvatarUrl(null);
         user.setUpdatedAt(new java.util.Date());
@@ -83,11 +83,15 @@ public class UserService {
             org.springframework.web.multipart.MultipartFile file,
             String firstName, String lastName, String email, String username) throws java.io.IOException {
         // Update profile fields if provided
-        if (firstName != null) user.setFirstName(firstName);
-        if (lastName != null) user.setLastName(lastName);
-        if (email != null) user.setEmail(email);
-        if (username != null) user.setUsername(username);
-        
+        if (firstName != null)
+            user.setFirstName(firstName);
+        if (lastName != null)
+            user.setLastName(lastName);
+        if (email != null)
+            user.setEmail(email);
+        if (username != null)
+            user.setUsername(username);
+
         // Handle avatar upload
         String avatarsDir = "src/main/resources/avatars/";
         java.nio.file.Files.createDirectories(java.nio.file.Paths.get(avatarsDir));
@@ -157,6 +161,56 @@ public class UserService {
 
         User saved = userRepository.save(user);
         logAudit(saved, actor, "CREATE", "User created by admin");
+        return getProfile(saved);
+    }
+
+    // ADMIN: Update user by id
+    @org.springframework.transaction.annotation.Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO adminUpdateUser(
+            java.util.UUID id,
+            com.example.tasksmanage.dto.AdminUpdateUserRequest req,
+            User actor) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        // Uniqueness checks when changing email/username
+        if (req.getEmail() != null && !req.getEmail().equalsIgnoreCase(user.getEmail())) {
+            if (userRepository.existsByEmail(req.getEmail())) {
+                throw new IllegalArgumentException("Email already in use");
+            }
+            user.setEmail(req.getEmail());
+        }
+        if (req.getUsername() != null && !req.getUsername().equalsIgnoreCase(user.getUsername())) {
+            if (userRepository.existsByUsername(req.getUsername())) {
+                throw new IllegalArgumentException("Username already in use");
+            }
+            user.setUsername(req.getUsername());
+        }
+
+        if (req.getFirstName() != null)
+            user.setFirstName(req.getFirstName());
+        if (req.getLastName() != null)
+            user.setLastName(req.getLastName());
+
+        // Role update
+        if (req.getRole() != null && !req.getRole().isBlank()) {
+            var roleEntity = roleRepository.findByName(req.getRole())
+                    .orElseThrow(() -> new IllegalArgumentException("Role not found: " + req.getRole()));
+            user.setRoles(new java.util.HashSet<>(java.util.Collections.singleton(roleEntity)));
+        }
+
+        // Status update
+        if (req.getStatus() != null && !req.getStatus().isBlank()) {
+            try {
+                user.setStatus(com.example.tasksmanage.model.AccountStatus.valueOf(req.getStatus()));
+            } catch (IllegalArgumentException ex) {
+                throw new IllegalArgumentException("Invalid status: " + req.getStatus());
+            }
+        }
+
+        user.setUpdatedAt(new java.util.Date());
+        User saved = userRepository.save(user);
+        logAudit(saved, actor, "UPDATE", "User updated by admin");
         return getProfile(saved);
     }
 
@@ -326,8 +380,10 @@ public class UserService {
         // Assign role: first registered user becomes ADMIN, others become USER
         boolean isFirstUser = userRepository.count() == 0;
         var assignedRole = isFirstUser
-                ? roleRepository.findByName("ADMIN").orElseThrow(() -> new IllegalStateException("Default role ADMIN not found"))
-                : roleRepository.findByName("USER").orElseThrow(() -> new IllegalStateException("Default role USER not found"));
+                ? roleRepository.findByName("ADMIN")
+                        .orElseThrow(() -> new IllegalStateException("Default role ADMIN not found"))
+                : roleRepository.findByName("USER")
+                        .orElseThrow(() -> new IllegalStateException("Default role USER not found"));
         user.setRoles(new java.util.HashSet<>(java.util.Collections.singleton(assignedRole)));
         user.setStatus(AccountStatus.ACTIVE);
         user.setCreatedAt(new java.util.Date());
@@ -421,11 +477,10 @@ public class UserService {
         variables.put("resetUrl", "http://localhost:8080/api/v1/auth/reset-password?token=" + token);
         if (emailEnabled) {
             emailService.sendVerificationEmail(
-                user.getEmail(),
-                "Reset your password",
-                "password-reset.html",
-                variables
-            );
+                    user.getEmail(),
+                    "Reset your password",
+                    "password-reset.html",
+                    variables);
         }
     }
 
