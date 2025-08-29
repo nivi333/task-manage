@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout, Menu, Button, Typography, Space, theme, Avatar } from "antd";
 import {
   AppstoreOutlined,
@@ -12,6 +12,7 @@ import {
   BellOutlined,
   SearchOutlined,
   SettingOutlined,
+  QuestionCircleOutlined,
 } from "@ant-design/icons";
 import { useTheme } from "../../context/ThemeContext";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -21,6 +22,7 @@ import type { UserProfile } from "../../types/user";
 import logo from "../../logo.svg";
 import AnimationWrapper from "../common/AnimationWrapper";
 import Hint from "../common/Hint";
+import HelpModal from "../help/HelpModal";
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -41,6 +43,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
   const [collapsed, setCollapsed] = React.useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [helpOpen, setHelpOpen] = useState(false);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -183,13 +186,17 @@ const AppLayout: React.FC<AppLayoutProps> = ({
       </Sider>
       <Layout>
         <Header
-          className="app-header"
-          style={{ background: colorBgContainer, padding: "0 16px" }}
+          style={{
+            padding: 0,
+            background: colorBgContainer,
+          }}
         >
+          <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
           <div
             style={{
               display: "flex",
               alignItems: "center",
+              gap: 12,
               justifyContent: "flex-start",
             }}
           >
@@ -207,6 +214,14 @@ const AppLayout: React.FC<AppLayoutProps> = ({
               ) : null}
             </div>
             <Space style={{ marginLeft: "auto" }}>
+              <Hint title="Open help and documentation">
+                <Button
+                  className="icon-only-button"
+                  aria-label="Open help"
+                  onClick={() => setHelpOpen(true)}
+                  icon={<QuestionCircleOutlined />}
+                />
+              </Hint>
               <Hint title={isDark ? "Switch to light mode" : "Switch to dark mode"}>
                 <Button
                   className="icon-only-button"

@@ -635,25 +635,28 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] UI bugs (reduced motion and high-contrast fallbacks; safe defaults)
     - [x] Accessibility issues (focus outline in high-contrast; ARIA labels for panel)
 
-- [ ] **Task 23: Documentation & Help**
+- [x] **Task 23: Documentation & Help**
 
   - **Priority:** LOW | **Estimated:** 1 day
-  - **Components:** HelpModal, FAQSection, DocsLink
+  - **Components:** HelpModal (`ui/src/components/help/HelpModal.tsx`), FAQSection (`ui/src/components/help/FAQSection.tsx`), DocsLink (`ui/src/components/help/DocsLink.tsx`)
   - **Features:**
-    - [ ] In-app help modal
-    - [ ] FAQ section
-    - [ ] Documentation links
+    - [x] In-app help modal (opens from header Help button in `AppLayout.tsx`)
+    - [x] FAQ section (accessible Collapse with common questions)
+    - [x] Documentation links (validated URLs, open in new tab, icons)
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid help content
+    - [x] Required fields (FAQ structure validated; link href checked)
+    - [x] Valid help content (URL validation and invalid indicator)
   - **Error Handling:**
-    - [ ] Missing documentation
-    - [ ] Outdated help content
+    - [x] Missing documentation (invalid URL notice, safe '#' link)
+    - [x] Outdated help content (links centralized in HelpModal for easy update)
+
+> **Status:** Implemented `HelpModal` with `FAQSection` and `DocsLink` components. Integrated with `helpService` for content fetching and validation. Added Help button to `AppLayout` header.
 
 - [ ] **Task 24: Testing & QA**
   - **Priority:** LOW | **Estimated:** 2 days
   - **Components:** TestSuite, CoverageReport, BugReportForm
   - **Features:**
+{{ ... }}
     - [ ] Automated test suite
     - [ ] Code coverage reporting
     - [ ] Bug report submission
