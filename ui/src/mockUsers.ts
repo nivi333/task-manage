@@ -1,0 +1,47 @@
+// This file provides mock user data for local development and UI testing
+import { User, UserRole, UserStatus } from "types/user";
+
+export const mockUsers: User[] = [
+  {
+    id: "1",
+    username: "teahyung",
+    email: "teahyung@email.com",
+    firstName: "Kim",
+    lastName: "Teahyung",
+    role: UserRole.USER,
+    status: UserStatus.ACTIVE,
+    createdAt: "2025-01-01T10:00:00Z",
+    updatedAt: "2025-08-01T10:00:00Z",
+    profilePicture: "https://randomuser.me/api/portraits/men/1.jpg",
+    avatarUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+    lastLogin: "2025-08-28T11:00:00Z",
+  },
+  {
+    id: "2",
+    username: "harryp",
+    email: "harryp@email.com",
+    firstName: "Harry",
+    lastName: "Potter",
+    role: UserRole.MANAGER,
+    status: UserStatus.ACTIVE,
+    createdAt: "2025-01-02T10:00:00Z",
+    updatedAt: "2025-08-02T10:00:00Z",
+    profilePicture: "https://randomuser.me/api/portraits/men/2.jpg",
+    avatarUrl: "https://randomuser.me/api/portraits/men/2.jpg",
+    lastLogin: "2025-08-28T11:30:00Z",
+  },
+  {
+    id: "3",
+    username: "hermioneg",
+    email: "hermione@email.com",
+    firstName: "Hermione",
+    lastName: "Granger",
+    role: UserRole.ADMIN,
+    status: UserStatus.ACTIVE,
+    createdAt: "2025-01-03T10:00:00Z",
+    updatedAt: "2025-08-03T10:00:00Z",
+    profilePicture: "https://randomuser.me/api/portraits/women/3.jpg",
+    avatarUrl: "https://randomuser.me/api/portraits/women/3.jpg",
+    lastLogin: "2025-08-28T12:00:00Z",
+  },
+];

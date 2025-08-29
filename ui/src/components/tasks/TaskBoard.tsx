@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Row, Col, Card, Typography, Empty } from "antd";
 import { Task } from "../../types/task";
 import TaskCard from "./TaskCard";
+import { createColorAllocator } from "../../utils/colorAllocator";
 import "./TaskBoard.css";
 
 const { Title } = Typography;
@@ -12,14 +13,37 @@ interface TaskBoardProps {
     taskId: string,
     newStatus: "OPEN" | "IN_PROGRESS" | "TESTING" | "DONE"
   ) => void;
+  projectMap?: Record<string, { key?: string; name: string }>;
 }
 
-const TaskBoard: React.FC<TaskBoardProps> = ({ tasks, onMove }) => {
+const TaskBoard: React.FC<TaskBoardProps> = ({
+  tasks,
+  onMove,
+  projectMap = {},
+}) => {
+  // Allocate unique colors per entity pool
+  const projectColorAlloc = React.useMemo(() => createColorAllocator(), []);
+  const userColorAlloc = React.useMemo(() => createColorAllocator(), []);
+
   const columns = {
     OPEN: tasks.filter((task) => task.status === "OPEN"),
     IN_PROGRESS: tasks.filter((task) => task.status === "IN_PROGRESS"),
     TESTING: tasks.filter((task) => task.status === "TESTING"),
     DONE: tasks.filter((task) => task.status === "DONE"),
+  };
+
+  const getColors = (task: Task) => {
+    const pColor = task.projectId
+      ? projectColorAlloc.getColor(task.projectId)
+      : projectColorAlloc.getColor("__no_project__");
+    const uid = task.assignedTo?.id || task.assignedTo?.username || "__unassigned__";
+    let aColor = userColorAlloc.getColor(String(uid));
+    if (aColor === pColor) {
+      const palette = userColorAlloc.palette;
+      const idx = palette.indexOf(aColor);
+      aColor = palette[(idx + 1) % palette.length];
+    }
+    return { projectColor: pColor, assigneeColor: aColor };
   };
 
   const WIP_LIMITS: Record<
@@ -104,7 +128,18 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ tasks, onMove }) => {
                 draggable
                 onDragStart={(e) => handleDragStart(e, task.id)}
               >
-                <TaskCard task={task} />
+                <TaskCard
+                  task={task}
+                  projectKey={
+                    task.projectId ? projectMap[task.projectId]?.key : undefined
+                  }
+                  projectName={
+                    task.projectId
+                      ? projectMap[task.projectId]?.name
+                      : undefined
+                  }
+                  {...getColors(task)}
+                />
               </div>
             ))
           )}
@@ -134,7 +169,18 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ tasks, onMove }) => {
                 draggable
                 onDragStart={(e) => handleDragStart(e, task.id)}
               >
-                <TaskCard task={task} />
+                <TaskCard
+                  task={task}
+                  projectKey={
+                    task.projectId ? projectMap[task.projectId]?.key : undefined
+                  }
+                  projectName={
+                    task.projectId
+                      ? projectMap[task.projectId]?.name
+                      : undefined
+                  }
+                  {...getColors(task)}
+                />
               </div>
             ))
           )}
@@ -164,7 +210,18 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ tasks, onMove }) => {
                 draggable
                 onDragStart={(e) => handleDragStart(e, task.id)}
               >
-                <TaskCard task={task} />
+                <TaskCard
+                  task={task}
+                  projectKey={
+                    task.projectId ? projectMap[task.projectId]?.key : undefined
+                  }
+                  projectName={
+                    task.projectId
+                      ? projectMap[task.projectId]?.name
+                      : undefined
+                  }
+                  {...getColors(task)}
+                />
               </div>
             ))
           )}
@@ -194,7 +251,18 @@ const TaskBoard: React.FC<TaskBoardProps> = ({ tasks, onMove }) => {
                 draggable
                 onDragStart={(e) => handleDragStart(e, task.id)}
               >
-                <TaskCard task={task} />
+                <TaskCard
+                  task={task}
+                  projectKey={
+                    task.projectId ? projectMap[task.projectId]?.key : undefined
+                  }
+                  projectName={
+                    task.projectId
+                      ? projectMap[task.projectId]?.name
+                      : undefined
+                  }
+                  {...getColors(task)}
+                />
               </div>
             ))
           )}

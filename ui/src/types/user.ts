@@ -1,4 +1,8 @@
 export interface User {
+  /**
+   * URL for the user's avatar image (optional, for compatibility with normalization logic)
+   */
+  avatarUrl?: string;
   id: string;
   username: string;
   email: string;
@@ -13,15 +17,15 @@ export interface User {
 }
 
 export enum UserRole {
-  ADMIN = 'ADMIN',
-  MANAGER = 'MANAGER',
-  USER = 'USER'
+  ADMIN = "ADMIN",
+  MANAGER = "MANAGER",
+  USER = "USER",
 }
 
 export enum UserStatus {
-  ACTIVE = 'ACTIVE',
-  INACTIVE = 'INACTIVE',
-  SUSPENDED = 'SUSPENDED'
+  ACTIVE = "ACTIVE",
+  INACTIVE = "INACTIVE",
+  SUSPENDED = "SUSPENDED",
 }
 
 export interface CreateUserRequest {
@@ -50,7 +54,7 @@ export interface UserFilters {
   page?: number;
   size?: number;
   sortBy?: string;
-  sortDirection?: 'asc' | 'desc';
+  sortDirection?: "asc" | "desc";
 }
 
 export interface UserListResponse {
@@ -63,7 +67,7 @@ export interface UserListResponse {
 
 export interface BulkUserAction {
   userIds: string[];
-  action: 'delete' | 'activate' | 'deactivate' | 'suspend';
+  action: "delete" | "activate" | "deactivate" | "suspend";
 }
 
 // Profile types
@@ -92,6 +96,6 @@ export interface ChangePasswordRequest {
 
 export interface TwoFAEnableResponse {
   qrImageUrl?: string; // URL for QR image if backend returns
-  secretKey?: string;  // fallback secret
+  secretKey?: string; // fallback secret
   message?: string;
 }

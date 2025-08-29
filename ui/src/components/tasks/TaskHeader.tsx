@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Tag, Avatar } from 'antd';
+import { Card, Tag } from 'antd';
+import UserAvatar from '../common/UserAvatar';
 import { Task } from '../../types/task';
 
 const TaskHeader: React.FC<{ task: Task }> = ({ task }) => (
@@ -16,9 +17,9 @@ const TaskHeader: React.FC<{ task: Task }> = ({ task }) => (
       </div>
       <div>
         {task.assignedTo ? (
-          <Avatar src={task.assignedTo.profilePicture} style={{ marginRight: 8 }} />
+          <UserAvatar user={task.assignedTo} size={32} style={{ marginRight: 8 }} />
         ) : (
-          <Avatar icon={null} style={{ marginRight: 8 }} />
+          <UserAvatar user={null} size={32} style={{ marginRight: 8 }} />
         )}
         <span>{task.assignedTo ? `${task.assignedTo.firstName} ${task.assignedTo.lastName}` : 'Unassigned'}</span>
       </div>

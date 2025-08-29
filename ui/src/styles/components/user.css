@@ -1,0 +1,55 @@
+:root {
+  /* Softer neutral for initials */
+  --tt-avatar-initial-bg: #e9edf3;
+  --tt-avatar-initial-fg: #3b3f45;
+}
+
+.tt-user-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  line-height: 1;
+  user-select: none;
+  border-radius: 50% !important;
+}
+
+.tt-user-avatar.with-initial {
+  background: var(--tt-avatar-initial-bg) !important;
+  color: var(--tt-avatar-initial-fg) !important;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Optionally tweak small sizes */
+/* Size-specific font scaling to keep initials smaller */
+.tt-user-avatar.with-initial[data-size="24"] {
+  font-size: 8px;
+  font-weight: 600;
+}
+.tt-user-avatar.with-initial[data-size="28"] {
+  font-size: 14px;
+  font-weight: 600;
+}
+.tt-user-avatar.with-initial[data-size="32"] {
+  font-size: 14px;
+  font-weight: 600;
+}
+.tt-user-avatar.with-initial[data-size="36"] {
+  font-size: 11px;
+  font-weight: 600;
+}
+.tt-user-avatar.with-initial[data-size="40"] {
+  font-size: 12px;
+  font-weight: 600;
+}
+.tt-user-avatar.with-initial[data-size="48"] {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Kill AntD auto-scaling so our font-size sticks */
+.tt-user-avatar.with-initial .ant-avatar-string {
+  transform: none !important;
+  line-height: 1 !important;
+}

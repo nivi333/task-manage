@@ -21,6 +21,21 @@ export class UserService {
   private baseURL = `${API_BASE_URL}/users`;
   private authBaseURL = `${API_BASE_URL}/auth`;
 
+  private normalizeAvatarUrl(url?: string): string | undefined {
+    if (!url) return undefined;
+    const u = String(url);
+    if (u.startsWith("http://") || u.startsWith("https://")) return u;
+    // Ensure leading slash
+    const path = u.startsWith("/") ? u : `/${u}`;
+    // If backend already returns '/api/v1/...', prefix with origin from API_BASE_URL
+    try {
+      const api = new URL(API_BASE_URL);
+      return `${api.origin}${path}`;
+    } catch {
+      return `${API_BASE_URL}${path}`;
+    }
+  }
+
   // Debug helper: safely log FormData entries
   private logFormData(label: string, fd: FormData) {
     try {
@@ -44,33 +59,41 @@ export class UserService {
 
   // Send FormData with native fetch so the browser sets the multipart boundary and no charset is added
   private async sendFormData(
-    method: 'POST' | 'PUT',
+    method: "POST" | "PUT",
     url: string,
     fd: FormData
   ): Promise<any> {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem("authToken");
     // Debug log entries
     this.logFormData(`${method} ${url}`, fd);
     // Build headers WITHOUT Content-Type
     const headers: Record<string, string> = {};
-    if (token) headers['Authorization'] = `Bearer ${token}`;
-    console.debug('[UserService] fetch sending', { method, url, hasAuth: !!token });
+    if (token) headers["Authorization"] = `Bearer ${token}`;
+    console.debug("[UserService] fetch sending", {
+      method,
+      url,
+      hasAuth: !!token,
+    });
     const res = await fetch(url, {
       method,
       headers,
       body: fd,
-      credentials: 'include',
+      credentials: "include",
     });
     const text = await res.text();
     let data: any = undefined;
-    try { data = text ? JSON.parse(text) : undefined; } catch { data = text; }
+    try {
+      data = text ? JSON.parse(text) : undefined;
+    } catch {
+      data = text;
+    }
     if (!res.ok) {
-      console.error('[UserService] fetch error', { status: res.status, data });
-      const err: any = new Error('FormData request failed');
+      console.error("[UserService] fetch error", { status: res.status, data });
+      const err: any = new Error("FormData request failed");
       err.response = { status: res.status, data };
       throw err;
     }
-    console.debug('[UserService] fetch ok', { status: res.status, data });
+    console.debug("[UserService] fetch ok", { status: res.status, data });
     return data;
   }
 
@@ -100,7 +123,7 @@ export class UserService {
         formData.append("username", profileData.username);
 
       const data = await this.sendFormData(
-        'POST',
+        "POST",
         `${this.baseURL}/profile/avatar`,
         formData
       );
@@ -191,7 +214,9 @@ export class UserService {
           createdAt: u.createdAt,
           updatedAt: u.updatedAt,
           lastLogin: u.lastLogin,
-          profilePicture: u.avatarUrl,
+          profilePicture: this.normalizeAvatarUrl(
+            u.avatarUrl || u.profilePicture
+          ),
         } as User;
       });
       const result: UserListResponse = {
@@ -248,7 +273,7 @@ export class UserService {
       formData.append("status", String(userData.status));
       formData.append("file", file);
 
-      const data = await this.sendFormData('POST', this.baseURL, formData);
+      const data = await this.sendFormData("POST", this.baseURL, formData);
       notificationService.success("User created successfully");
       return data;
     } catch (error: any) {
@@ -296,7 +321,11 @@ export class UserService {
       formData.append("avatar", file);
       formData.append("profileImage", file);
 
-      const data = await this.sendFormData('PUT', `${this.baseURL}/${id}`, formData);
+      const data = await this.sendFormData(
+        "PUT",
+        `${this.baseURL}/${id}`,
+        formData
+      );
       notificationService.success("User updated successfully");
       return data;
     } catch (error: any) {
@@ -349,7 +378,7 @@ export class UserService {
       if (filters.status) params.append("status", filters.status);
 
       const response = await apiClient.get(
-        `${this.baseURL}/export?${params.toString()}`,
+        `${this.baseURL}/export/csv?${params.toString()}`,
         {
           responseType: "blob",
         }
@@ -452,7 +481,9 @@ export class UserService {
           createdAt: u.createdAt,
           updatedAt: u.updatedAt,
           lastLogin: u.lastLogin,
-          profilePicture: u.avatarUrl,
+          profilePicture: this.normalizeAvatarUrl(
+            u.avatarUrl || u.profilePicture
+          ),
         } as User;
       });
       return users;

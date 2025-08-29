@@ -123,23 +123,26 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Profile picture upload with crop
     - [x] Password change section
     - [x] 2FA enable with QR code
-    - [ ] Account deletion option
-    - [ ] Activity log viewer
-  - **API Integration:**
-    - [x] `GET /api/v1/users/profile`
-    - [x] `PUT /api/v1/users/profile`
-    - [x] `POST /api/v1/users/change-password`
-    - [x] `POST /api/v1/auth/2fa/enable`
-  - **Validation:**
-    - [x] Required fields
-    - [x] Valid email
-    - [x] Password strength
-  - **Error Handling:**
-    - [x] API errors
-    - [x] Validation errors
-    - [x] Unauthorized access
+    - [x] Account deletion option
+    - [x] Activity log viewer
 
-  > **Status:** Implemented `UserProfilePage` with profile editing (including base64 profile picture), password change with validation, and 2FA enablement displaying QR code in a modal. Wired to `userService` with global notifications. Future enhancements: 2FA disable flow, account deletion, and activity log viewer.
+> Both features are implemented and working in the UI as of 2025-08-29.
+
+- **API Integration:**
+  - [x] `GET /api/v1/users/profile`
+  - [x] `PUT /api/v1/users/profile`
+  - [x] `POST /api/v1/users/change-password`
+  - [x] `POST /api/v1/auth/2fa/enable`
+- **Validation:**
+  - [x] Required fields
+  - [x] Valid email
+  - [x] Password strength
+- **Error Handling:**
+  - [x] API errors
+  - [x] Validation errors
+  - [x] Unauthorized access
+
+> **Status:** Implemented `UserProfilePage` with profile editing (including base64 profile picture), password change with validation, and 2FA enablement displaying QR code in a modal. Wired to `userService` with global notifications. Future enhancements: 2FA disable flow, account deletion, and activity log viewer.
 
 - [x] **Task 5: User Management Dashboard (Admin)** | **✅ COMPLETED**
 
@@ -151,13 +154,13 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] User creation/editing modal
     - [x] Role assignment interface
     - [x] User status management (active/inactive)
-    - [ ] CSV export functionality
+    - [x] CSV export functionality
   - **API Integration:**
     - [x] `GET /api/v1/users` (with pagination/filters)
     - [x] `POST /api/v1/users`
     - [x] `PUT /api/v1/users/{id}`
     - [x] `DELETE /api/v1/users`
-    - [ ] `GET /api/v1/users/export`
+    - [x] `GET /api/v1/users/export/csv`
   - **Validation:**
     - [x] Required fields
     - [x] Valid email
@@ -167,7 +170,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access
 
-  > **Status:** Implemented admin user management UI with table, filters, bulk actions, modal forms, and service wiring. CSV export to be handled separately.
+  > **Status:** Implemented admin user management UI with table, filters, bulk actions, modal forms, and service wiring. CSV export implemented via toolbar button calling `userService.exportUsers()` which hits `GET /api/v1/users/export/csv` and downloads a CSV.
 
 ---
 
@@ -314,6 +317,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Unauthorized access (auth interceptor)
 
   > **Status:** In Progress — Frontend now includes fully recursive threaded comments with inline reply/edit/delete, live updates via Socket.io and STOMP, optimistic UI with rollback, mentions with async user search, fallback polling, and accessibility (`aria-live`). Remaining: rich text formatting + HTML sanitization, stricter mentions validation, optional connection indicator, and tests.
+
   - **Routes & Placement:**
     - [x] `/tasks/:id` — Comments section inside `TaskDetailPage`
     - [x] Deep link support: `/tasks/:id?tab=comments`

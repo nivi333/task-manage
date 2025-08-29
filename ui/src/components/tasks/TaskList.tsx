@@ -5,11 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import { Task } from '../../types/task';
 import { ColumnsType } from 'antd/es/table';
 import TTTable from '../common/TTTable';
+import UserAvatar from '../common/UserAvatar';
 
 interface TaskListProps {
   tasks: Task[];
   loading: boolean;
   onEdit: (task: Task) => void;
+  // Map of projectId to project name for display
+  projectNameMap?: Record<string, string>;
 }
 
 const getPriorityColor = (priority: 'HIGH' | 'MEDIUM' | 'LOW') => {
@@ -40,9 +43,17 @@ const getStatusColor = (status: 'OPEN' | 'IN_PROGRESS' | 'TESTING' | 'DONE') => 
   }
 };
 
-const TaskList: React.FC<TaskListProps> = ({ tasks, loading, onEdit }) => {
+const TaskList: React.FC<TaskListProps> = ({ tasks, loading, onEdit, projectNameMap = {} }) => {
   const navigate = useNavigate();
   const columns: ColumnsType<Task> = [
+    {
+      title: 'Assignee',
+      key: 'assignee',
+      width: 72,
+      render: (_, record) => (
+        <UserAvatar user={record.assignedTo as any} size={28} />
+      ),
+    },
     {
       title: 'Title',
       dataIndex: 'title',
@@ -72,10 +83,14 @@ const TaskList: React.FC<TaskListProps> = ({ tasks, loading, onEdit }) => {
       render: (dueDate) => (dueDate ? new Date(dueDate).toLocaleDateString() : 'N/A'),
     },
     {
-      title: 'Assigned To',
-      dataIndex: 'assignedTo',
-      key: 'assignedTo',
-      render: (assignedTo) => (assignedTo ? `${assignedTo.firstName} ${assignedTo.lastName}` : 'Unassigned'),
+      title: 'Project',
+      key: 'project',
+      render: (_, record) => {
+        const anyRecord: any = record as any;
+        const directName = anyRecord.project?.name as string | undefined;
+        const byMap = record.projectId ? projectNameMap[record.projectId] : undefined;
+        return directName || byMap || 'N/A';
+      },
     },
     {
       title: 'Actions',

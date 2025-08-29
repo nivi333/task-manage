@@ -19,7 +19,6 @@ import TasksPage from "./pages/TasksPage";
 import UserProfilePage from "./pages/UserProfilePage";
 import TermsPage from "./pages/TermsPage";
 import ProjectsListPage from "./pages/ProjectsListPage";
-import ProjectDashboardPage from "./pages/ProjectDashboardPage";
 import TeamSettingsPage from "./pages/TeamSettingsPage";
 import ProjectTeamPage from "./pages/ProjectTeamPage";
 import TeamListPage from "./pages/TeamListPage";
@@ -39,7 +38,7 @@ import "./styles/global.css";
 import "./styles/components/auth.css";
 import "./styles/components/forms.css";
 import "./styles/components/admin.css";
-import "./styles/pages/ProjectDashboard.css";
+import "./styles/components/user.css";
 import { colors } from "./styles/colors";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import CreateTaskPage from "./pages/CreateTaskPage";
@@ -193,15 +192,7 @@ const AppContent: React.FC = () => {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/projects/:id/dashboard"
-              element={
-                <ProtectedRoute>
-                  <ProjectDashboardPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
+                        <Route
               path="/projects/:id/team"
               element={
                 <ProtectedRoute>

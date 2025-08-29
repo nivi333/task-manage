@@ -1,9 +1,8 @@
 import React from "react";
 import Dropdown from "../common/Dropdown";
-import { Avatar, Tag, Space, Tooltip, Typography } from "antd";
+import { Tag, Space, Tooltip, Typography } from "antd";
 import type { SortOrder } from "antd/es/table/interface";
 import {
-  UserOutlined,
   EditOutlined,
   DeleteOutlined,
   MoreOutlined,
@@ -13,6 +12,7 @@ import {
 } from "@ant-design/icons";
 import { User, UserRole, UserStatus, UserFilters } from "../../types/user";
 import { TTButton, TTTable } from "../common";
+import UserAvatar from "../common/UserAvatar";
 
 const { Text } = Typography;
 
@@ -164,11 +164,7 @@ const UserTable: React.FC<UserTableProps> = ({
       key: "user",
       render: (_: any, record: User) => (
         <Space size={8}>
-          <Avatar
-            size={40}
-            icon={<UserOutlined />}
-            src={record.profilePicture}
-          />
+          <UserAvatar user={record} size={40} />
           <div>
             <div>
               <Text strong>

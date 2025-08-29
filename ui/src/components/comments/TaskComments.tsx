@@ -302,6 +302,22 @@ const TaskComments: React.FC<TaskCommentsProps> = ({ taskId }) => {
 
   return (
     <>
+      <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
+        <span
+          style={{
+            display: 'inline-block',
+            width: 10,
+            height: 10,
+            borderRadius: '50%',
+            background: socketConnected ? '#52c41a' : '#ff4d4f',
+            marginRight: 6,
+            border: '1px solid #d9d9d9',
+          }}
+        />
+        <span style={{ fontSize: 13, color: socketConnected ? '#52c41a' : '#ff4d4f' }}>
+          {socketConnected ? 'Connected' : 'Disconnected'}
+        </span>
+      </div>
       {loading ? (
         <Spin />
       ) : (

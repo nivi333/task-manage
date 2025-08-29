@@ -7,6 +7,7 @@ import React, {
 import { Form, Select, DatePicker, Divider, Space } from "antd";
 import { TaskFilters } from "../../services/taskService";
 import tagsService from "../../services/tagsService";
+import { projectService } from "../../services/projectService";
 import TagsManageButton from "../tags/TagsManageButton";
 
 const { Option } = Select;
@@ -26,6 +27,7 @@ const FilterSidebar = forwardRef<FilterSidebarRef, FilterSidebarProps>(
     const [form] = Form.useForm();
     const [tagOptions, setTagOptions] = useState<string[]>([]);
     const [manageOpenKey, setManageOpenKey] = useState(0); // change to force re-mount modal
+    const [projectOptions, setProjectOptions] = useState<{ label: string; value: string }[]>([]);
 
     const onFinish = (values: any) => {
       const filters: TaskFilters = {
@@ -49,19 +51,34 @@ const FilterSidebar = forwardRef<FilterSidebarRef, FilterSidebarProps>(
     }));
 
     useEffect(() => {
-      const loadTags = async () => {
+      const loadData = async () => {
         try {
           const names = await tagsService.names();
           setTagOptions(names);
         } catch (e) {
           // handled globally
         }
+        try {
+          const projects = await projectService.list();
+          setProjectOptions(projects.map((p) => ({ label: p.name, value: p.id })));
+        } catch (e) {
+          // handled globally
+        }
       };
-      loadTags();
+      loadData();
     }, [manageOpenKey]);
 
     return (
       <Form form={form} layout="vertical" onFinish={onFinish} style={{ padding: 12 }}>
+        <Form.Item name="projectId" label="Project">
+          <Select
+            placeholder="Select project"
+            allowClear
+            options={projectOptions}
+            showSearch
+            optionFilterProp="label"
+          />
+        </Form.Item>
         <Form.Item name="status" label="Status">
           <Select placeholder="Select status" allowClear>
             <Option value="OPEN">Open</Option>

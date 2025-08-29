@@ -63,7 +63,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [
               mentionUsernames={mentionUsernames}
             />
           ) : (
-            <Text style={{ whiteSpace: 'pre-wrap' }}>{comment.content}</Text>
+            <span className="tiptap-rendered-content" dangerouslySetInnerHTML={{ __html: comment.content }} />
           )
         }
       />

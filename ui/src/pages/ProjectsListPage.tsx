@@ -41,6 +41,8 @@ import {
 } from "../components/common";
 import { teamService } from "../services/teamService";
 import { Team } from "../types/team";
+import { createColorAllocator } from "../utils/colorAllocator";
+import ProjectKeyBadge from "../components/common/ProjectKeyBadge";
 
 const { Text } = Typography;
 
@@ -58,6 +60,9 @@ const ProjectsListPage: React.FC = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [teams, setTeams] = useState<Team[]>([]);
+
+  // Deterministic project color allocator for badges
+  const projectColorAlloc = useMemo(() => createColorAllocator(), []);
 
   useEffect(() => {
     let mounted = true;
@@ -264,6 +269,9 @@ const ProjectsListPage: React.FC = () => {
                 selectedIds={selectedIds}
                 onToggleSelect={toggleSelect}
                 onEdit={(p) => setEditingProject(p)}
+                getProjectColor={(p) =>
+                  projectColorAlloc.getColor(p.id || p.key || p.name)
+                }
               />
             ) : (
               <Row gutter={[16, 16]}>
@@ -284,7 +292,11 @@ const ProjectsListPage: React.FC = () => {
                       }
                       extra={
                         project.key ? (
-                          <Tag color="blue">{project.key}</Tag>
+                          <ProjectKeyBadge
+                            keyText={project.key}
+                            name={project.name}
+                            color={projectColorAlloc.getColor(project.id || project.key)}
+                          />
                         ) : undefined
                       }
                     >
@@ -315,10 +327,7 @@ const ProjectsListPage: React.FC = () => {
                         <Text type="secondary">
                           {project.description || "No description"}
                         </Text>
-                        <Link to={`/projects/${project.id}/dashboard`}>
-                          Open Dashboard
-                        </Link>
-                        <TTButton icon={<EditOutlined />} onClick={() => setEditingProject(project)}>
+                                                <TTButton icon={<EditOutlined />} onClick={() => setEditingProject(project)}>
                           Edit
                         </TTButton>
                       </Space>
@@ -358,7 +367,8 @@ const ProjectsTable: React.FC<{
   selectedIds: Set<string>;
   onToggleSelect: (id: string, checked: boolean) => void;
   onEdit: (p: Project) => void;
-}> = ({ data, selectedIds, onToggleSelect, onEdit }) => {
+  getProjectColor: (p: Project) => string;
+}> = ({ data, selectedIds, onToggleSelect, onEdit, getProjectColor }) => {
   const columns: ColumnsType<Project> = [
     {
       title: "",
@@ -383,8 +393,14 @@ const ProjectsTable: React.FC<{
             icon={<UserOutlined />}
             src={record.owner?.avatarUrl}
           />
-{record.name}
-          {record.key ? <Tag color="blue">{record.key}</Tag> : null}
+          {record.name}
+          {record.key ? (
+            <ProjectKeyBadge
+              keyText={record.key}
+              name={record.name}
+              color={getProjectColor(record)}
+            />
+          ) : null}
         </Space>
       ),
     },
@@ -443,8 +459,7 @@ const ProjectsTable: React.FC<{
       align: "right" as const,
       render: (_: any, record) => (
         <Space>
-          <Link to={`/projects/${record.id}/dashboard`}>Open Dashboard</Link>
-          <TTButton size="small" icon={<EditOutlined />} onClick={() => onEdit(record)}>
+                    <TTButton size="small" icon={<EditOutlined />} onClick={() => onEdit(record)}>
             Edit
           </TTButton>
         </Space>

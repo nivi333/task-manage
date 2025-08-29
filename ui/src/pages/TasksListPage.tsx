@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Spin, Button, Tooltip, Drawer, Space, Typography, Empty } from "antd";
 import { FilterOutlined, PlusOutlined } from "@ant-design/icons";
 import TaskFormDrawer from "components/tasks/TaskFormDrawer";
@@ -7,6 +7,7 @@ import { Task } from "types/task";
 import TaskList from "components/tasks/TaskList";
 import FilterSidebar, { FilterSidebarRef } from "components/tasks/FilterSidebar";
 import TagsManageButton from "components/tags/TagsManageButton";
+import { projectService } from "services/projectService";
 // removed HeaderTitle as page-level title is handled by TasksPage
 
 const TasksListPage: React.FC = () => {
@@ -17,6 +18,7 @@ const TasksListPage: React.FC = () => {
   const [isDrawerVisible, setDrawerVisible] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const filterRef = useRef<FilterSidebarRef>(null);
+  const [projectNameMap, setProjectNameMap] = useState<Record<string, string>>({});
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -33,6 +35,20 @@ const TasksListPage: React.FC = () => {
   useEffect(() => {
     fetchTasks();
   }, [filters]);
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const projects = await projectService.list();
+        const map: Record<string, string> = {};
+        projects.forEach((p) => (map[p.id] = p.name));
+        setProjectNameMap(map);
+      } catch (e) {
+        // notification handled globally
+      }
+    };
+    loadProjects();
+  }, []);
 
   const handleFilterChange = (newFilters: TaskFilters) => {
     setFilters(newFilters);
@@ -81,7 +97,7 @@ const TasksListPage: React.FC = () => {
           description="No tasks found"
         />
       ) : (
-        <TaskList tasks={tasks} loading={false} onEdit={handleEditTask} />
+        <TaskList tasks={tasks} loading={false} onEdit={handleEditTask} projectNameMap={projectNameMap} />
       )}
       <Drawer
         title="Filters"

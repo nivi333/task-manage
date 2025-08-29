@@ -4,11 +4,13 @@ import taskService from '../services/taskService';
 import { Task } from '../types/task';
 import TaskBoard from '../components/tasks/TaskBoard';
 import TaskFormDrawer from '../components/tasks/TaskFormDrawer';
+import { projectService } from '../services/projectService';
 
 const TasksBoardPage: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [createOpen, setCreateOpen] = useState(false);
+  const [projectMap, setProjectMap] = useState<Record<string, { key?: string; name: string }>>({});
 
   const fetchTasks = useCallback(async () => {
     setLoading(true);
@@ -25,6 +27,20 @@ const TasksBoardPage: React.FC = () => {
   useEffect(() => {
     fetchTasks();
   }, [fetchTasks]);
+
+  useEffect(() => {
+    const loadProjects = async () => {
+      try {
+        const projects = await projectService.list();
+        const map: Record<string, { key?: string; name: string }> = {};
+        projects.forEach(p => { map[p.id] = { key: p.key, name: p.name }; });
+        setProjectMap(map);
+      } catch (e) {
+        // handled globally
+      }
+    };
+    loadProjects();
+  }, []);
 
   const handleMove = async (taskId: string, newStatus: 'OPEN' | 'IN_PROGRESS' | 'TESTING' | 'DONE') => {
     // Optimistic update
@@ -50,7 +66,7 @@ const TasksBoardPage: React.FC = () => {
           <Spin size="large" />
         </div>
       ) : (
-        <TaskBoard tasks={tasks} onMove={handleMove} />
+        <TaskBoard tasks={tasks} onMove={handleMove} projectMap={projectMap} />
       )}
 
       <TaskFormDrawer

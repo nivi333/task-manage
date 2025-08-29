@@ -59,7 +59,7 @@ const TasksPage: React.FC = () => {
             ]}
           />
         </Sider>
-        <Content style={{ padding: "16px 24px 24px" }}>
+        <Content style={{ padding: "0 24px 24px" }}>
           {/* Show page-level title for list and stats only; board renders its own header */}
           {selectedKey !== 'list' && selectedKey !== 'board' && (
             <div style={{ marginBottom: 12 }}>

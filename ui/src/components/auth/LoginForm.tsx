@@ -32,8 +32,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
   useEffect(() => {
     const remembered = localStorage.getItem("rememberMe") === "true";
     const rememberedUsername = localStorage.getItem("rememberedUsername") || "";
+    const rememberedPassword = localStorage.getItem("rememberedPassword") || "";
     if (remembered) {
-      form.setFieldsValue({ rememberMe: true, usernameOrEmail: rememberedUsername });
+      form.setFieldsValue({
+        rememberMe: true,
+        usernameOrEmail: rememberedUsername,
+        password: rememberedPassword,
+      });
     } else {
       form.setFieldsValue({ rememberMe: false });
     }
@@ -93,13 +98,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
         if (refreshToken) {
           localStorage.setItem("refreshToken", refreshToken);
         }
-        // Remember Me: store only non-sensitive identifier, never password
+        // Remember Me: store username and password for prefill when enabled
         if (values.rememberMe) {
           localStorage.setItem("rememberMe", "true");
           localStorage.setItem("rememberedUsername", values.usernameOrEmail || "");
+          localStorage.setItem("rememberedPassword", values.password || "");
         } else {
           localStorage.removeItem("rememberMe");
           localStorage.removeItem("rememberedUsername");
+          localStorage.removeItem("rememberedPassword");
         }
 
         console.log("[NOTIFICATION] LoginForm success");
@@ -176,6 +183,21 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLoginSuccess }) => {
       }
       console.log("[NOTIFICATION] LoginForm success");
       message.success("2FA verification successful!");
+      // Apply Remember Me behavior after 2FA completes
+      try {
+        const rememberMe = form.getFieldValue("rememberMe");
+        const usernameOrEmail = form.getFieldValue("usernameOrEmail") || "";
+        const password = form.getFieldValue("password") || "";
+        if (rememberMe) {
+          localStorage.setItem("rememberMe", "true");
+          localStorage.setItem("rememberedUsername", usernameOrEmail);
+          localStorage.setItem("rememberedPassword", password);
+        } else {
+          localStorage.removeItem("rememberMe");
+          localStorage.removeItem("rememberedUsername");
+          localStorage.removeItem("rememberedPassword");
+        }
+      } catch {}
       // Pass roles decoded from token if possible
       let roles: string[] = [];
       try {
