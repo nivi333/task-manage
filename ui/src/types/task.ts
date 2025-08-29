@@ -3,6 +3,12 @@ import { User } from './user';
 export type UUID = string;
 
 export interface Task {
+  project?: {
+    id: string;
+    name: string;
+  };
+  projectName?: string;
+
   id: string;
   title: string;
   description?: string;

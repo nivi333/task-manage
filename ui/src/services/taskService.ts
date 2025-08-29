@@ -219,6 +219,11 @@ function normalizeTask(raw: any): Task {
   }
 
   // Build Task in our UI shape
+  const project = raw?.project && typeof raw.project === 'object'
+    ? { id: String(raw.project.id), name: String(raw.project.name || '') }
+    : undefined;
+  const projectName = project?.name || '';
+
   const task: Task = {
     id: String(raw.id),
     title: String(raw.title || ""),
@@ -230,10 +235,13 @@ function normalizeTask(raw: any): Task {
     updatedAt: raw.updatedAt || raw.createdAt || new Date().toISOString(),
     assignedTo,
     projectId,
+    project,
     tags,
     attachments: raw.attachments || undefined,
     dependencies: raw.dependencies || undefined,
     subtasks: raw.subtasks || undefined,
+    // for convenience in UI
+    projectName,
   };
   return task;
 }

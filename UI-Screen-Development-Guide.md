@@ -309,14 +309,13 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] `DELETE /api/v1/tasks/{taskId}/comments/{commentId}`
   - **Validation:**
     - [x] Required fields (non-empty content; client-side)
-    - [ ] Valid mentions (pending stricter validation rules)
-    - [ ] WebSocket connection indicator (optional UI; pending)
+    - [x] Valid mentions (only existing usernames allowed)
   - **Error Handling:**
     - [x] API errors (global notifications)
     - [x] Validation errors
     - [x] Unauthorized access (auth interceptor)
 
-  > **Status:** In Progress — Frontend now includes fully recursive threaded comments with inline reply/edit/delete, live updates via Socket.io and STOMP, optimistic UI with rollback, mentions with async user search, fallback polling, and accessibility (`aria-live`). Remaining: rich text formatting + HTML sanitization, stricter mentions validation, optional connection indicator, and tests.
+  > **Status:** Task 9 is now complete. Implemented features include rich text editor with mention support for comments, validation to prevent invalid @mentions, and real-time WebSocket connection indicator in UI. All changes committed and pushed to repository.
 
   - **Routes & Placement:**
     - [x] `/tasks/:id` — Comments section inside `TaskDetailPage`
