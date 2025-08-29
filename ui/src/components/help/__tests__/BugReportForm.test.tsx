@@ -52,7 +52,7 @@ jest.mock("antd", () => {
       )}
     </select>
   );
-  const Button: any = ({ children, htmlType = "button", ...rest }: any) => (
+  const Button: any = ({ children, htmlType = "button", loading: _loading, type: _antdType, ...rest }: any) => (
     <button type={htmlType} {...rest}>
       {children}
     </button>
