@@ -2,6 +2,7 @@ import React from "react";
 import { Modal, Divider, Typography, Space } from "antd";
 import FAQSection from "./FAQSection";
 import DocsLink from "./DocsLink";
+import BugReportForm from "./BugReportForm";
 import { BookOutlined, FileTextOutlined, QuestionCircleOutlined, RocketOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph, Text } = Typography;
@@ -63,6 +64,16 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
       width={720}
     >
       <div className="tt-form-compact" style={{ display: "grid", gap: 16 }}>
+        <section>
+          <Title level={5} style={{ marginBottom: 8 }}>Report a Bug</Title>
+          <Paragraph type="secondary" style={{ marginTop: 0 }}>
+            Found an issue? Submit a quick report and we'll take a look.
+          </Paragraph>
+          <BugReportForm />
+        </section>
+
+        <Divider style={{ margin: "8px 0" }} />
+
         <section>
           <Title level={5} style={{ marginBottom: 8 }}>FAQs</Title>
           <FAQSection items={faqItems} />

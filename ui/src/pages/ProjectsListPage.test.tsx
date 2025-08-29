@@ -29,6 +29,7 @@ jest.mock('antd', () => {
     Title: ({ level, children, style }: any) => <h4 style={style} data-level={level}>{children}</h4>,
     Text: ({ children, type }: any) => <span data-type={type}>{children}</span>,
   } as any;
+  const Tooltip = ({ children }: any) => <>{children}</>;
   const List = ({ dataSource, renderItem }: any) => (
     <ul>
       {Array.isArray(dataSource) ? dataSource.map((item: any, idx: number) => (
@@ -76,7 +77,7 @@ jest.mock('antd', () => {
   DatePicker.RangePicker = ({ onChange }: any) => (
     <input data-testid="range-picker" onChange={onChange} />
   );
-  return { Card, Space, Input, Empty, Skeleton, Tag, Avatar, Typography, List, Checkbox, Progress, Row, Col, Popconfirm, DatePicker, Button, Select, Table };
+  return { Card, Space, Input, Empty, Skeleton, Tag, Avatar, Typography, Tooltip, List, Checkbox, Progress, Row, Col, Popconfirm, DatePicker, Button, Select, Table };
 });
 
 jest.mock('../services/projectService', () => ({
@@ -118,7 +119,8 @@ describe('ProjectsListPage', () => {
     expect(await findByText('Alpha Project')).toBeInTheDocument();
     expect(await findByText('Beta Project')).toBeInTheDocument();
 
-    // Links to dashboards
-    expect(getAllByText('Open Dashboard')[0]).toHaveAttribute('href', '/projects/11111111-1111-1111-1111-111111111111/dashboard');
+    // Projects and keys appear in table view
+    expect(getByText('ALPHA')).toBeInTheDocument();
+    expect(getByText('BETA')).toBeInTheDocument();
   });
 });

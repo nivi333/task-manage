@@ -8,31 +8,27 @@ import '@testing-library/jest-dom';
 // JSDOM doesn't implement matchMedia; AntD Grid/useBreakpoint relies on it
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: jest.fn().mockImplementation((query: string) => {
-    let matches = false;
-    const listeners: Array<(e: { matches: boolean; media: string }) => void> = [];
-    const mql = {
-      get matches() { return matches; },
-      media: query,
-      onchange: null as any,
-      addListener: (cb: (e: { matches: boolean; media: string }) => void) => {
-        listeners.push(cb);
-        cb({ matches, media: query });
-      },
-      removeListener: (cb: (e: { matches: boolean; media: string }) => void) => {
-        const i = listeners.indexOf(cb);
-        if (i >= 0) listeners.splice(i, 1);
-      },
-      addEventListener: (_: string, cb: (e: { matches: boolean; media: string }) => void) => {
-        listeners.push(cb);
-        cb({ matches, media: query });
-      },
-      removeEventListener: (_: string, cb: (e: { matches: boolean; media: string }) => void) => {
-        const i = listeners.indexOf(cb);
-        if (i >= 0) listeners.splice(i, 1);
-      },
-      dispatchEvent: jest.fn(),
-    } as any;
-    return mql;
-  }),
+  value: jest.fn().mockImplementation((query: string) => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
 });
+
+// Mock window.open used by bugService mailto fallback
+(window as any).open = (window as any).open || jest.fn();
+
+// Polyfill ResizeObserver used by Ant Design components
+class MockResizeObserver {
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}
+
+(window as any).ResizeObserver = (window as any).ResizeObserver || MockResizeObserver;
+(global as any).ResizeObserver = (global as any).ResizeObserver || MockResizeObserver;
