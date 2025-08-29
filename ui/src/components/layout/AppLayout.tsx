@@ -22,7 +22,7 @@ import type { UserProfile } from "../../types/user";
 import logo from "../../logo.svg";
 import AnimationWrapper from "../common/AnimationWrapper";
 import Hint from "../common/Hint";
-import HelpModal from "../help/HelpModal";
+import HelpDrawer from "../help/HelpDrawer";
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -187,11 +187,11 @@ const AppLayout: React.FC<AppLayoutProps> = ({
       <Layout>
         <Header
           style={{
-            padding: 0,
+            padding: "0 16px",
             background: colorBgContainer,
           }}
         >
-          <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
+          <HelpDrawer open={helpOpen} onClose={() => setHelpOpen(false)} />
           <div
             style={{
               display: "flex",
@@ -296,6 +296,14 @@ const AppLayout: React.FC<AppLayoutProps> = ({
             </Space>
           </div>
         </Header>
+        {/* Gradient divider below header */}
+        <div
+          style={{
+            height: 2,
+            background:
+              "linear-gradient(90deg, rgba(105,108,255,0.35) 0%, rgba(239,68,68,0.25) 50%, rgba(99,102,241,0.35) 100%)",
+          }}
+        />
         <Content
           style={{
             margin: "24px 16px",
