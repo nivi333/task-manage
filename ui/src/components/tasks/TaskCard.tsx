@@ -46,19 +46,22 @@ const TaskCard: React.FC<TaskCardProps> = ({
         </div>
       </div>
 
-      {primaryLabel && (
-        <div className="pills">
-          <span className="pill primary">{primaryLabel}</span>
-        </div>
-      )}
-
-      {otherTags.length > 0 && (
-        <div className="chips">
-          {otherTags.map((tag) => (
-            <span key={tag} className="chip">
-              {String(tag).toUpperCase()}
-            </span>
-          ))}
+      {(primaryLabel || otherTags.length > 0) && (
+        <div className="tags-row">
+          {primaryLabel && (
+            <div className="pills">
+              <span className="pill primary">{primaryLabel}</span>
+            </div>
+          )}
+          {otherTags.length > 0 && (
+            <div className="chips">
+              {otherTags.map((tag) => (
+                <span key={tag} className="chip">
+                  {String(tag).toUpperCase()}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -79,7 +82,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
           ) : (
             <span className="project-key-pill">—</span>
           )}
-          <UserAvatar user={task.assignedTo as any} size={26} />
+          <UserAvatar user={task.assignedTo as any} size={32} />
         </div>
       </div>
     </Card>

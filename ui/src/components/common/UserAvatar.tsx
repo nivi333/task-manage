@@ -38,9 +38,11 @@ const UserAvatar: React.FC<UserAvatarProps> = ({
   tooltipTitle,
 }) => {
   const displayName = tooltipTitle || getUserDisplayName(user);
-  const src = (user as any)?.profilePicture || (user as any)?.avatarUrl;
+  const src =
+    (user as any)?.profilePicture ||
+    (user as any)?.avatarUrl ||
+    (user as any)?.imageUrl;
   const hasImage = Boolean(src);
-  console.log('[UserAvatar] user:', user, 'profilePicture:', (user as any)?.profilePicture, 'avatarUrl:', (user as any)?.avatarUrl, 'src:', src, 'hasImage:', hasImage);
   const seed = getUserSeed(user);
   const bgColor = getAvatarColor(seed);
 

@@ -25,8 +25,9 @@ import {
 import { Link } from "react-router-dom";
 import AppLayout from "../components/layout/AppLayout";
 import "../styles/components/project-card.css";
-import { Project } from "../types/project";
+import { Project, TeamMember } from "../types/project";
 import { projectService } from "../services/projectService";
+import { userService } from "../services/userService";
 import { notificationService } from "../services/notificationService";
 import CreateProjectModal from "../components/projects/CreateProjectModal";
 import EditProjectModal from "../components/projects/EditProjectModal";
@@ -60,6 +61,7 @@ const ProjectsListPage: React.FC = () => {
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [loading, setLoading] = useState(true);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [ownerCache, setOwnerCache] = useState<Record<string, TeamMember>>({});
 
   // Deterministic project color allocator for badges
   const projectColorAlloc = useMemo(() => createColorAllocator(), []);
@@ -130,6 +132,42 @@ const ProjectsListPage: React.FC = () => {
     return list;
   }, [projects, query, status, dateRange, teamId]);
 
+  // Fetch owners by ownerId when members are not present
+  useEffect(() => {
+    const missing: string[] = [];
+    for (const p of filtered) {
+      if (!p) continue;
+      if (!p.ownerId) continue;
+      if (ownerCache[p.ownerId]) continue;
+      const hasInMembers = Array.isArray(p.members)
+        ? p.members.some((m) => m.id === p.ownerId)
+        : false;
+      if (!hasInMembers) missing.push(p.ownerId);
+    }
+    if (missing.length === 0) return;
+    (async () => {
+      const updates: Record<string, TeamMember> = {};
+      for (const id of Array.from(new Set(missing))) {
+        try {
+          const u: any = await userService.getUserById(id);
+          const fullName = [u.firstName, u.lastName].filter(Boolean).join(" ") || u.username;
+          updates[id] = {
+            id: u.id,
+            name: fullName,
+            email: u.email,
+            role: (u.role as any) || "MEMBER",
+            avatarUrl: u.avatarUrl || u.profilePicture,
+          } as TeamMember;
+        } catch (e) {
+          // ignore fetch errors per-id
+        }
+      }
+      if (Object.keys(updates).length > 0) {
+        setOwnerCache((prev) => ({ ...prev, ...updates }));
+      }
+    })();
+  }, [filtered, ownerCache]);
+
   const refresh = async () => {
     setLoading(true);
     try {
@@ -185,10 +223,21 @@ const ProjectsListPage: React.FC = () => {
     }
   };
 
+  const getOwner = (p: Project) => {
+    if (p.owner?.name) return p.owner;
+    if (p.ownerId && ownerCache[p.ownerId]) return ownerCache[p.ownerId];
+    if (p.ownerId && Array.isArray(p.members)) {
+      const byId = p.members.find((mm) => mm.id === p.ownerId);
+      if (byId) return byId;
+    }
+    const byRole = (p.members || []).find((mm) => (mm.role || '').toUpperCase() === 'OWNER');
+    return byRole || p.owner;
+  };
+
   return (
     <AppLayout title={<HeaderTitle level={3}>Projects</HeaderTitle>}>
       <Space direction="vertical" size={16} style={{ width: "100%" }}>
-        <div style={{ width: '100%', background: 'var(--color-card-background)', borderRadius: 8, padding: '16px', margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <div style={{ width: '100%', background: 'var(--color-card-background)', borderRadius: 8, padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: 8 }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
             <HeaderTitle level={5} style={{ fontSize: 16, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 180, lineHeight: 1.2 }}>All Projects</HeaderTitle>
             <div className="tt-toolbar" style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
@@ -255,7 +304,7 @@ const ProjectsListPage: React.FC = () => {
           )}
         </div>
 
-        <div style={{ width: '100%', background: 'var(--color-card-background)', borderRadius: 8, padding: '16px 24px', marginBottom: 16 }}>
+        <div style={{ width: '100%', background: 'var(--color-card-background)', borderRadius: 8, padding: 0, marginBottom: 16 }}>
           {loading ? (
             <>
               <Skeleton active paragraph={{ rows: 2 }} />
@@ -272,6 +321,7 @@ const ProjectsListPage: React.FC = () => {
                 getProjectColor={(p) =>
                   projectColorAlloc.getColor(p.id || p.key || p.name)
                 }
+                resolveOwner={getOwner}
               />
             ) : (
               <Row gutter={[16, 16]}>
@@ -304,9 +354,9 @@ const ProjectsListPage: React.FC = () => {
                         <Space>
                           <Avatar
                             icon={<UserOutlined />}
-                            src={project.owner?.avatarUrl}
+                            src={getOwner(project)?.avatarUrl}
                           />
-                          <Text>{project.owner?.name || "Unknown Owner"}</Text>
+                          <Text>{getOwner(project)?.name || "Unknown Owner"}</Text>
                         </Space>
                         {typeof (project as any)?.metrics?.completionPercent === "number" ? (
                           <Progress percent={(project as any).metrics.completionPercent} size="small" status="active" />
@@ -368,7 +418,9 @@ const ProjectsTable: React.FC<{
   onToggleSelect: (id: string, checked: boolean) => void;
   onEdit: (p: Project) => void;
   getProjectColor: (p: Project) => string;
-}> = ({ data, selectedIds, onToggleSelect, onEdit, getProjectColor }) => {
+  resolveOwner: (p: Project) => TeamMember | undefined;
+}> = ({ data, selectedIds, onToggleSelect, onEdit, getProjectColor, resolveOwner }) => {
+
   const columns: ColumnsType<Project> = [
     {
       title: "",
@@ -391,7 +443,7 @@ const ProjectsTable: React.FC<{
           <Avatar
             size="small"
             icon={<UserOutlined />}
-            src={record.owner?.avatarUrl}
+            src={resolveOwner(record)?.avatarUrl}
           />
           {record.name}
           {record.key ? (
@@ -442,7 +494,7 @@ const ProjectsTable: React.FC<{
       dataIndex: "owner",
       key: "owner",
       width: 220,
-      render: (_: any, record) => record.owner?.name || "Unknown Owner",
+      render: (_: any, record) => resolveOwner(record)?.name || "Unknown Owner",
     },
     {
       title: "Created",

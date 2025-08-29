@@ -231,6 +231,29 @@ public class UserController {
         return ResponseEntity.ok(userService.adminUpdateUser(id, req, current));
     }
 
+    // ADMIN: Update user avatar (multipart tolerant)
+    @PutMapping(value = "/{id}/avatar")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<com.example.tasksmanage.dto.UserProfileDTO> updateUserAvatar(
+            @PathVariable java.util.UUID id,
+            @RequestParam(value = "file", required = false) MultipartFile file,
+            @RequestParam(value = "avatar", required = false) MultipartFile avatar,
+            @RequestParam(value = "profileImage", required = false) MultipartFile profileImage,
+            // Optional extras (ignored but allowed so clients can send alongside)
+            @RequestParam(value = "firstName", required = false) String firstName,
+            @RequestParam(value = "lastName", required = false) String lastName,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "username", required = false) String username,
+            @AuthenticationPrincipal User actor) throws java.io.IOException {
+        User current = (actor != null) ? actor : getAuthenticatedUserOrNull();
+        MultipartFile chosen = file != null ? file : (avatar != null ? avatar : profileImage);
+        if (chosen == null || chosen.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(null);
+        }
+        return ResponseEntity.ok(userService.adminUploadAvatar(id, chosen, current));
+    }
+
     // Get users available for team assignment (authenticated users only)
     @GetMapping("/for-teams")
     public ResponseEntity<java.util.List<com.example.tasksmanage.dto.UserSummaryDTO>> getUsersForTeamAssignment() {

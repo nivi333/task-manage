@@ -29,6 +29,7 @@ export interface Project {
   startDate?: string; // ISO
   endDate?: string;   // ISO
   status?: 'ACTIVE' | 'ON_HOLD' | 'COMPLETED' | string;
+  ownerId?: UUID; // Backend may provide only the owner's ID
   owner?: TeamMember;
   members?: TeamMember[];
   // Backend may return only IDs instead of full member objects

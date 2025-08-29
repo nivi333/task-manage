@@ -260,7 +260,7 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access
 
-  > **Status:** Task Detail View fully implemented with modular components, API integration, validation, and error handling. Ready for QA and user feedback.
+  > **Status (Updated 2025-08-29):** Task Detail View complete. Activity Log now uses canonical `ActivityLogItem` type (action, details, timestamp, user) with proper loading and empty states. Minor CSS improvements added: `.task-detail-sidebar-title { margin-left: 5px; }` and a darker background for `.ant-descriptions-item-content` for better separation. Fixed ESLint import order in `TaskDetailPage.tsx`. Ready for QA.
 
 - [x] **Task 25: Tags Management (Modal)** | **✅ COMPLETED**
 

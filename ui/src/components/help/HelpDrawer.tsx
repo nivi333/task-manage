@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Divider, Typography, Space, Button } from "antd";
+import { Drawer, Divider, Typography, Space, Button } from "antd";
 import FAQSection from "./FAQSection";
 import DocsLink from "./DocsLink";
 import BugReportForm from "./BugReportForm";
@@ -7,12 +7,12 @@ import { BookOutlined, FileTextOutlined, QuestionCircleOutlined, RocketOutlined 
 
 const { Title, Paragraph, Text } = Typography;
 
-export interface HelpModalProps {
+export interface HelpDrawerProps {
   open: boolean;
   onClose: () => void;
 }
 
-const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
+const HelpDrawer: React.FC<HelpDrawerProps> = ({ open, onClose }) => {
   const faqItems = [
     {
       question: "How do I create a new task?",
@@ -49,27 +49,26 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
   ];
 
   return (
-    <Modal
-      className="tt-help-modal"
+    <Drawer
+      className="tt-help-drawer tt-modal-tight"
       title={
-        <div className="tt-help-modal__header">
-          <Space size={8} className="tt-help-modal__title">
-            <QuestionCircleOutlined />
-            <span>Help & Documentation</span>
-          </Space>
-          <Button aria-label="Close" type="text" onClick={onClose} className="tt-help-modal__close">×</Button>
+        <Space size={8} style={{ display: "flex", alignItems: "center" }}>
+          <QuestionCircleOutlined />
+          <span>Help & Documentation</span>
+        </Space>
+      }
+      width="40%"
+      open={open}
+      onClose={onClose}
+      destroyOnClose
+      bodyStyle={{ padding: 0, paddingBottom: 16 }}
+      footer={
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button type="primary" onClick={onClose}>Close</Button>
         </div>
       }
-      closable={false}
-      open={open}
-      onCancel={onClose}
-      onOk={onClose}
-      okText="Close"
-      cancelButtonProps={{ style: { display: "none" } }}
-      width={720}
-      styles={{ body: { padding: 0 } }}
     >
-      <div className="tt-form-compact tt-help-modal__body" style={{ display: "grid", gap: 16 }}>
+      <div className="tt-help-drawer__body tt-form-compact" style={{ padding: "24px 32px", display: "grid", gap: 16 }}>
         <section>
           <Title level={5} style={{ marginBottom: 8 }}>Report a Bug</Title>
           <Paragraph type="secondary" style={{ marginTop: 0 }}>
@@ -78,14 +77,14 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
           <BugReportForm />
         </section>
 
-        <Divider style={{ margin: "8px 0" }} />
+        <Divider className="tt-help-drawer__divider" />
 
         <section>
           <Title level={5} style={{ marginBottom: 8 }}>FAQs</Title>
           <FAQSection items={faqItems} />
         </section>
 
-        <Divider style={{ margin: "8px 0" }} />
+        <Divider className="tt-help-drawer__divider" />
 
         <section>
           <Title level={5} style={{ marginBottom: 8 }}>Useful Links</Title>
@@ -97,8 +96,8 @@ const HelpModal: React.FC<HelpModalProps> = ({ open, onClose }) => {
           </Space>
         </section>
       </div>
-    </Modal>
+    </Drawer>
   );
 };
 
-export default HelpModal;
+export default HelpDrawer;

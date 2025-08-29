@@ -15,7 +15,7 @@
 }
 
 .tt-user-avatar.with-initial {
-  background: var(--tt-avatar-initial-bg) !important;
+  background: var(--tt-avatar-initial-bg);
   color: var(--tt-avatar-initial-fg) !important;
   text-transform: uppercase;
   font-weight: 600;

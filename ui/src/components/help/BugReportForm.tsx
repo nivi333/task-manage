@@ -55,7 +55,7 @@ const BugReportForm: React.FC<BugReportFormProps> = ({ onSubmitted }) => {
         <Input type="email" placeholder="you@example.com" aria-label="Contact email" />
       </Form.Item>
       <Form.Item>
-        <Button type="primary" htmlType="submit" loading={submitting}>
+        <Button className="tt-help-submit" type="primary" htmlType="submit" loading={submitting}>
           Submit Bug Report
         </Button>
       </Form.Item>

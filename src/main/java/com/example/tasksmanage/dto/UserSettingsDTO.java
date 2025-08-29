@@ -17,7 +17,7 @@ public class UserSettingsDTO {
         public List<String> enabledTypes;
     }
 
-    public String theme; // light | dark | system
+    public String theme; // light | dark
     public String language; // en | es | fr | de | hi
     public ProfileSettings profile;
     public NotificationPreferences notifications;

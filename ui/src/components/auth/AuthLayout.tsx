@@ -1,6 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
-import logo from '../../logo.svg';
+import { useTheme } from "../../context/ThemeContext";
+import React from "react";
+import styled from "styled-components";
+import logo from "../../logo.svg";
 
 interface AuthLayoutProps {
   imageUrl?: string;
@@ -15,23 +16,43 @@ const SplitContainer = styled.div`
   background: var(--color-background, #f6f6f6);
 `;
 
-// Use transient prop to avoid passing to DOM
-const ImageSection = styled.div<{ $imageUrl?: string }>`
-  flex: 1.2;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 48px 40px 40px 48px;
-  position: relative;
-  overflow: hidden;
-`;
+// Dynamic ImageSection that uses current color scheme gradient
+
+const ImageSection: React.FC<{
+  imageUrl?: string;
+  children?: React.ReactNode;
+}> = ({ imageUrl, children }) => {
+  const { colorScheme } = useTheme();
+  const gradients = {
+    purple: "linear-gradient(135deg, #6D28D9 0%, #9333EA 100%)",
+    blue: "linear-gradient(135deg, #1D4ED8 0%, #3B82F6 100%)",
+    green: "linear-gradient(135deg, #16A34A 0%, #10B981 100%)",
+    orange: "linear-gradient(135deg, #EA580C 0%, #F97316 100%)",
+    pink: "linear-gradient(135deg, #BE185D 0%, #EC4899 100%)",
+  };
+  return (
+    <div
+      style={{
+        flex: 1.2,
+        background: gradients[colorScheme] || gradients.purple,
+        color: "#fff",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: "48px 40px 40px 48px",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {children}
+    </div>
+  );
+};
 
 const Overlay = styled.div`
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
   z-index: 2;
 `;
 
@@ -46,11 +67,11 @@ const TaskIcons = styled.div`
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     width: 100px;
     height: 100px;
-    border: 2px solid rgba(255,255,255,0.3);
+    border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 12px;
   }
 
@@ -67,12 +88,17 @@ const TaskIcons = styled.div`
   }
 
   @keyframes pulse {
-    0%, 100% { transform: scale(1); opacity: 0.1; }
-    50% { transform: scale(1.1); opacity: 0.2; }
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.1;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.2;
+    }
   }
 `;
-
-
 
 const ImageText = styled.div`
   position: relative;
@@ -85,16 +111,16 @@ const Title = styled.h1`
   font-weight: 700;
   margin: 0 0 16px 0;
   color: #fff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 `;
 
 const Subtitle = styled.p`
   font-size: 1.2rem;
-  color: rgba(255,255,255,0.95);
+  color: rgba(255, 255, 255, 0.95);
   margin: 0 0 32px 0;
   font-weight: 400;
   line-height: 1.6;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 `;
 
 const BrandLogo = styled.div`
@@ -121,52 +147,57 @@ const FlowingShape = styled.div`
   position: relative;
   width: 54px;
   height: 42px;
-  
+
   &::before {
-    content: '';
+    content: "";
     position: absolute;
     top: 0;
     left: 8px;
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, 
-      rgba(255,255,255,0.95) 0%, 
-      rgba(255,255,255,0.8) 50%,
-      rgba(255,255,255,0.6) 100%);
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(255, 255, 255, 0.8) 50%,
+      rgba(255, 255, 255, 0.6) 100%
+    );
     border-radius: 50% 40% 60% 30%;
     transform: rotate(-15deg);
     animation: morph 8s ease-in-out infinite;
   }
-  
+
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     top: 12px;
     left: 0;
     width: 28px;
     height: 28px;
-    background: linear-gradient(225deg, 
-      rgba(255,255,255,0.7) 0%, 
-      rgba(255,255,255,0.4) 100%);
+    background: linear-gradient(
+      225deg,
+      rgba(255, 255, 255, 0.7) 0%,
+      rgba(255, 255, 255, 0.4) 100%
+    );
     border-radius: 40% 60% 50% 30%;
     transform: rotate(25deg);
     animation: morph 8s ease-in-out infinite reverse;
   }
-  
+
   @keyframes morph {
-    0%, 100% { 
+    0%,
+    100% {
       border-radius: 50% 40% 60% 30%;
       transform: rotate(-15deg) scale(1);
     }
-    25% { 
+    25% {
       border-radius: 40% 60% 30% 50%;
       transform: rotate(-10deg) scale(1.05);
     }
-    50% { 
+    50% {
       border-radius: 60% 30% 50% 40%;
       transform: rotate(-20deg) scale(0.95);
     }
-    75% { 
+    75% {
       border-radius: 30% 50% 40% 60%;
       transform: rotate(-12deg) scale(1.02);
     }
@@ -177,17 +208,24 @@ const StarAccent = styled.div`
   position: absolute;
   top: -2px;
   right: 2px;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
   animation: twinkle 4s ease-in-out infinite;
-  
+
   &::before {
-    content: '✦';
+    content: "✦";
   }
-  
+
   @keyframes twinkle {
-    0%, 100% { opacity: 0.7; transform: scale(1) rotate(0deg); }
-    50% { opacity: 1; transform: scale(1.1) rotate(180deg); }
+    0%,
+    100% {
+      opacity: 0.7;
+      transform: scale(1) rotate(0deg);
+    }
+    50% {
+      opacity: 1;
+      transform: scale(1.1) rotate(180deg);
+    }
   }
 `;
 
@@ -195,12 +233,12 @@ const SecondaryAccent = styled.div`
   position: absolute;
   bottom: 2px;
   left: -2px;
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 10px;
   animation: twinkle 4s ease-in-out infinite 2s;
-  
+
   &::before {
-    content: '✧';
+    content: "✧";
   }
 `;
 
@@ -215,9 +253,9 @@ const LogoTitle = styled.span`
   font-weight: 300;
   letter-spacing: -1px;
   line-height: 1;
-  color: rgba(255,255,255,0.95);
-  font-family: 'Georgia', 'Times New Roman', serif;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  color: rgba(255, 255, 255, 0.95);
+  font-family: "Georgia", "Times New Roman", serif;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
   font-style: italic;
 `;
 
@@ -226,8 +264,9 @@ const LogoSubtitle = styled.span`
   font-weight: 400;
   letter-spacing: 3px;
   text-transform: lowercase;
-  color: rgba(255,255,255,0.75);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  color: rgba(255, 255, 255, 0.75);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+    sans-serif;
   margin-top: 2px;
 `;
 
@@ -239,11 +278,20 @@ const FormSection = styled.div`
   background: var(--color-surface, #fff);
 `;
 
-const AuthLayout: React.FC<AuthLayoutProps> = ({ imageUrl, imageTitle, imageSubtitle, children }) => (
+const AuthLayout: React.FC<AuthLayoutProps> = ({
+  imageUrl,
+  imageTitle,
+  imageSubtitle,
+  children,
+}) => (
   <SplitContainer>
-    <ImageSection $imageUrl={imageUrl}>
+    <ImageSection imageUrl={imageUrl}>
       <BrandLogo>
-        <img src={logo} alt="Task Tango" style={{ height: 56, width: 'auto', display: 'block' }} />
+        <img
+          src={logo}
+          alt="Task Tango"
+          style={{ height: 56, width: "auto", display: "block" }}
+        />
       </BrandLogo>
       <TaskIcons />
       <Overlay />
@@ -252,9 +300,7 @@ const AuthLayout: React.FC<AuthLayoutProps> = ({ imageUrl, imageTitle, imageSubt
         {imageSubtitle && <Subtitle>{imageSubtitle}</Subtitle>}
       </ImageText>
     </ImageSection>
-    <FormSection>
-      {children}
-    </FormSection>
+    <FormSection>{children}</FormSection>
   </SplitContainer>
 );
 

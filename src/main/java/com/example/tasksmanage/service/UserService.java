@@ -112,6 +112,19 @@ public class UserService {
         return uploadAvatar(user, file, null, null, null, null);
     }
 
+    // ADMIN: Upload avatar for a specific user by ID
+    @org.springframework.transaction.annotation.Transactional
+    public com.example.tasksmanage.dto.UserProfileDTO adminUploadAvatar(java.util.UUID id,
+            org.springframework.web.multipart.MultipartFile file,
+            User actor) throws java.io.IOException {
+        User target = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        // Optionally, we could log audit including actor
+        com.example.tasksmanage.dto.UserProfileDTO dto = uploadAvatar(target, file);
+        logAudit(target, actor, "UPLOAD_AVATAR", "Avatar updated by admin");
+        return dto;
+    }
+
     // ADMIN: List users with pagination and optional search
     public org.springframework.data.domain.Page<com.example.tasksmanage.dto.UserProfileDTO> listUsers(int page,
             int size, String search) {
@@ -591,7 +604,8 @@ public class UserService {
                         user.getUsername(),
                         user.getFirstName(),
                         user.getLastName(),
-                        user.getEmail()))
+                        user.getEmail(),
+                        user.getAvatarUrl()))
                 .collect(java.util.stream.Collectors.toList());
     }
 }

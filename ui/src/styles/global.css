@@ -95,6 +95,10 @@ body {
   --color-primary: #667eea;
   --color-secondary: #8b5cf6;
   --color-accent: #f093fb;
+  /* Default gradient (kept in sync with primary/secondary) */
+  --gradient-start: var(--color-primary);
+  --gradient-end: var(--color-secondary);
+  --gradient-angle: 135deg;
   --color-background: #ffffff;
   --color-surface: #ffffff;
   --color-card-background: #ffffff; /* cards should be pure white */
@@ -450,14 +454,20 @@ body.reduce-motion *::after {
 }
 
 /* High contrast mode adjustments */
+/* Default (light theme) high-contrast: increase text and border contrast without altering surfaces */
 body.high-contrast {
-  --color-background: #ffffff;
-  --color-surface: #ffffff;
-  --color-card-background: #ffffff;
   --color-text-primary: #000000;
-  --color-text-secondary: #111111;
+  --color-text-secondary: #111111; /* darker than default for readability on light */
   --color-text-light: #222222;
   --color-border: #000000;
+}
+
+/* Dark theme + high-contrast: brighten text and borders so secondary text stays visible */
+html[data-theme="dark"] body.high-contrast {
+  --color-text-primary: #ffffff;
+  --color-text-secondary: #f1f1f1; /* nearly white for visibility on dark surfaces */
+  --color-text-light: #d9e1ff;
+  --color-border: #ffffff;
 }
 
 /* Stronger focus outline in high-contrast mode */
@@ -470,6 +480,75 @@ body.high-contrast :focus-visible {
 /* Global Button Base Styles */
 .btn-base {
   border: 1.5px solid var(--color-border, #d9d9d9) !important;
+}
+
+/* ==========================
+   Help & Documentation Modal
+   ========================== */
+.tt-help-modal .ant-modal-content {
+  border-radius: 12px;
+}
+.tt-help-modal .ant-modal-header {
+  /* remove default header padding, we render custom header inside title */
+  padding: 0;
+}
+.tt-help-modal .ant-modal-body {
+  /* safety: already set via styles prop, but keep here as guard */
+  padding: 0 !important;
+}
+.tt-help-modal__header {
+  display: flex;
+  align-items: center; /* centers title and close icon vertically */
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: var(--color-surface-2, var(--color-surface));
+  border-bottom: 1px solid var(--color-border);
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.tt-help-modal__title {
+  font-weight: 600;
+}
+.tt-help-modal__close {
+  color: var(--color-text-primary);
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+}
+.tt-help-modal__close:hover {
+  background: var(--color-surface-3, rgba(0, 0, 0, 0.06));
+}
+.tt-help-modal__body {
+  padding: 16px 20px 20px 20px; /* content padding since body is zero */
+}
+.tt-help-modal .ant-form-item .ant-form-item-control-input {
+  padding-top: 10px;
+  margin-top: 10px;
+}
+.tt-help-modal .ant-divider-horizontal {
+  margin: 0 !important;
+}
+
+/* Submit button spacing in Help modal */
+.tt-help-modal .tt-help-submit {
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.tt-help-drawer .ant-drawer-body {
+  padding: 0 !important; /* we pad inner wrapper instead */
+}
+.tt-help-drawer .ant-divider-horizontal {
+  margin: 0 !important;
+}
+.tt-help-drawer__body {
+  padding: 24px 32px;
+}
+
+/* Submit button spacing in Help drawer */
+.tt-help-drawer .tt-help-submit {
+  margin-top: 10px;
+  padding-top: 10px;
 }
 
 .btn-base {
@@ -504,47 +583,41 @@ body.high-contrast :focus-visible {
 
 /* Primary Button - Gradient */
 .btn-primary {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    var(--color-secondary) 100%
-  );
+  background: linear-gradient(var(--gradient-angle), var(--gradient-start) 0%, var(--gradient-end) 100%);
   color: white;
   border: none !important;
   box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #7a8ef0 0%, #8a5fb8 100%);
+  background: linear-gradient(var(--gradient-angle), var(--gradient-start) 0%, var(--gradient-end) 100%);
+  color: #fff !important;
   /* Very light hover elevation */
   box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:active:not(:disabled) {
-  background: linear-gradient(135deg, #5a6ee8 0%, #6a4fa0 100%);
+  background: linear-gradient(var(--gradient-angle), var(--gradient-start) 0%, var(--gradient-end) 100%);
   transform: translateY(0px);
   box-shadow: var(--shadow-sm);
 }
 
 /* Enforce the same gradient style for all Ant Design primary buttons */
 .ant-btn-primary {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary) 0%,
-    var(--color-secondary) 100%
-  ) !important;
+  background: linear-gradient(var(--gradient-angle), var(--gradient-start) 0%, var(--gradient-end) 100%) !important;
   border: none !important;
   color: #fff !important;
   box-shadow: var(--shadow-sm) !important;
 }
 .ant-btn-primary:hover,
 .ant-btn-primary:focus {
-  background: linear-gradient(135deg, #7a8ef0 0%, #8a5fb8 100%) !important;
+  background: linear-gradient(var(--gradient-angle), var(--gradient-start) 0%, var(--gradient-end) 100%) !important;
+  color: #fff !important;
   /* Very light hover elevation */
   box-shadow: var(--shadow-sm) !important;
 }
 .ant-btn-primary:active {
-  background: linear-gradient(135deg, #5a6ee8 0%, #6a4fa0 100%) !important;
+  background: linear-gradient(var(--gradient-angle), var(--gradient-start) 0%, var(--gradient-end) 100%) !important;
   box-shadow: var(--shadow-sm) !important;
   transform: translateY(0);
 }
@@ -1058,12 +1131,7 @@ html[data-theme="dark"] .tt-pagination-visible .ant-pagination-item-active {
   padding: 0 !important;
 }
 
-/* Cards: ensure consistent spacing below card headers globally
-   Note: Avoid using AntD dev-only hash like :where(.css-dev-only-do-not-override-XXXX)
-   because it changes across environments. Use stable selectors instead. */
-.ant-card .ant-card-head {
-  margin-bottom: 15px !important;
-}
+/* Removed global card head bottom margin to allow per-card compact headers */
 
 /* Global Card appearance: white background and clearer borders */
 .ant-card {

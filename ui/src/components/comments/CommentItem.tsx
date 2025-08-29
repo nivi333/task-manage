@@ -1,7 +1,8 @@
 import React, { useMemo, useState } from 'react';
-import { Avatar, Button, List, Popconfirm, Space, Typography } from 'antd';
+import { Button, List, Popconfirm, Space, Typography } from 'antd';
 import { Comment } from '../../types/comment';
 import CommentForm from './CommentForm';
+import UserAvatar from '../common/UserAvatar';
 
 const { Text } = Typography;
 
@@ -48,7 +49,7 @@ const CommentItem: React.FC<CommentItemProps> = ({ comment, childrenComments = [
       ].filter(Boolean) as any}
     >
       <List.Item.Meta
-        avatar={<Avatar>{(comment.author?.username || 'U').slice(0, 1).toUpperCase()}</Avatar>}
+        avatar={<UserAvatar user={comment.author as any} />}
         title={<Space>
           <Text strong>{comment.author ? `${comment.author.firstName} ${comment.author.lastName}` : 'Anonymous'}</Text>
           <Text type="secondary" style={{ fontSize: 12 }}>{createdAtStr}</Text>

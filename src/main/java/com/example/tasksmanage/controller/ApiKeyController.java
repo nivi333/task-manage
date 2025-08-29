@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -62,5 +63,17 @@ public class ApiKeyController {
         }
         UUID userId = resolveUserId(authentication.getName());
         return ResponseEntity.ok(apiKeyService.listApiKeys(userId));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || authentication.getName() == null) {
+            throw new RuntimeException("No authenticated user found");
+        }
+        UUID userId = resolveUserId(authentication.getName());
+        // Soft delete by revoking the key for this user
+        apiKeyService.revokeApiKey(id, userId);
+        return ResponseEntity.noContent().build();
     }
 }

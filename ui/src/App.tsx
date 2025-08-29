@@ -27,6 +27,8 @@ import NotificationCenterPage from "./pages/NotificationCenterPage";
 import GlobalSearchPage from "./pages/GlobalSearchPage";
 import AnalyticsDashboardPage from "./pages/AnalyticsDashboardPage";
 import SettingsPage from "./pages/SettingsPage";
+import IntegrationSettingsPage from "./pages/IntegrationSettingsPage";
+import ApiKeysPage from "./pages/ApiKeysPage";
 import AdminDashboardPage from "./pages/AdminDashboardPage";
 import { authAPI } from "./services/authService";
 import {
@@ -43,18 +45,17 @@ import "./styles/components/auth.css";
 import "./styles/components/forms.css";
 import "./styles/components/admin.css";
 import "./styles/components/user.css";
-import { colors } from "./styles/colors";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
 import { AccessibilityProvider } from "./context/AccessibilityContext";
 import AccessibilityPanel from "./components/accessibility/AccessibilityPanel";
 import CreateTaskPage from "./pages/CreateTaskPage";
 
 // Theme configuration builder (light/dark)
-const buildTheme = (isDark: boolean) => {
+const buildTheme = (isDark: boolean, primary: string) => {
   return {
     algorithm: [isDark ? antdTheme.darkAlgorithm : antdTheme.defaultAlgorithm],
     token: {
-      colorPrimary: colors.primary,
+      colorPrimary: primary,
       borderRadius: 8,
     },
   } as const;
@@ -115,7 +116,7 @@ const AdminRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 // Inner App component that uses the App context
 const AppContent: React.FC = () => {
-  const { isDark } = useTheme();
+  const { isDark, primaryColor } = useTheme();
   const { message } = AntdApp.useApp();
   const initializedRef = useRef(false);
 
@@ -127,7 +128,7 @@ const AppContent: React.FC = () => {
     console.log("[NOTIFICATION] Service initialized with App context");
   }, [message]);
 
-  const themeCfg = buildTheme(isDark);
+  const themeCfg = buildTheme(isDark, primaryColor);
 
   return (
     <ConfigProvider theme={themeCfg as any}>
@@ -183,6 +184,22 @@ const AppContent: React.FC = () => {
               element={
                 <ProtectedRoute>
                   <SettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/integrations"
+              element={
+                <ProtectedRoute>
+                  <IntegrationSettingsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings/api-keys"
+              element={
+                <ProtectedRoute>
+                  <ApiKeysPage />
                 </ProtectedRoute>
               }
             />

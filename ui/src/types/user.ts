@@ -3,6 +3,10 @@ export interface User {
    * URL for the user's avatar image (optional, for compatibility with normalization logic)
    */
   avatarUrl?: string;
+  /**
+   * New backend field for lightweight summaries
+   */
+  imageUrl?: string;
   id: string;
   username: string;
   email: string;

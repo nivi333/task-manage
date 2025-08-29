@@ -22,10 +22,19 @@
   text-align: left; /* ensure title starts at left */
 }
 
-.pills {
-  margin-top: 10px;
+.tags-row {
+  margin-top: 10px; /* parent controls spacing */
   display: flex;
-  justify-content: flex-start; /* move badge to the left */
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap; /* wrap to next line when needed */
+}
+
+.pills {
+  margin-top: 0; /* moved to parent .tags-row */
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 }
 .pill {
   display: inline-block;
@@ -42,10 +51,12 @@
 }
 
 .chips {
-  margin-top: 10px;
+  margin-top: 0; /* parent controls spacing */
   display: flex;
   gap: 8px;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* allow wrapping to keep straight alignment */
+  max-width: 100%;
+  align-items: center;
 }
 .chip {
   display: inline-block;
@@ -139,49 +150,79 @@
 
 /* Priority-based card border colors (light & dark via CSS vars) */
 .task-card.modern.priority-high {
-  border-color: color-mix(in oklab, var(--priority-high-bg) 60%, var(--color-border)) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--priority-high-bg) 60%,
+    var(--color-border)
+  ) !important;
 }
 .task-card.modern.priority-medium {
-  border-color: color-mix(in oklab, var(--priority-medium-bg) 60%, var(--color-border)) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--priority-medium-bg) 60%,
+    var(--color-border)
+  ) !important;
 }
 .task-card.modern.priority-low {
-  border-color: color-mix(in oklab, var(--priority-low-bg) 60%, var(--color-border)) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--priority-low-bg) 60%,
+    var(--color-border)
+  ) !important;
 }
 
 /* Light theme: use vivid foreground colors for stronger priority borders */
 html:not([data-theme="dark"]) .task-card.modern.priority-high {
   border-color: var(--priority-high-fg) !important; /* fallback */
-  border-color: color-mix(in oklab, var(--priority-high-fg) 80%, var(--color-border)) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--priority-high-fg) 80%,
+    var(--color-border)
+  ) !important;
 }
 html:not([data-theme="dark"]) .task-card.modern.priority-medium {
   border-color: var(--priority-medium-fg) !important; /* fallback */
-  border-color: color-mix(in oklab, var(--priority-medium-fg) 80%, var(--color-border)) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--priority-medium-fg) 80%,
+    var(--color-border)
+  ) !important;
 }
 html:not([data-theme="dark"]) .task-card.modern.priority-low {
   border-color: var(--priority-low-fg) !important; /* fallback */
-  border-color: color-mix(in oklab, var(--priority-low-fg) 80%, var(--color-border)) !important;
+  border-color: color-mix(
+    in oklab,
+    var(--priority-low-fg) 80%,
+    var(--color-border)
+  ) !important;
 }
 
 /* Priority-colored hover glow layered on base shadow */
 .task-card.modern.priority-high:hover {
-  box-shadow: var(--shadow-md), 0 8px 20px color-mix(in oklab, var(--priority-high-bg) 22%, transparent);
+  box-shadow: var(--shadow-md),
+    0 8px 20px color-mix(in oklab, var(--priority-high-bg) 22%, transparent);
 }
 .task-card.modern.priority-medium:hover {
-  box-shadow: var(--shadow-md), 0 8px 20px color-mix(in oklab, var(--priority-medium-bg) 18%, transparent);
+  box-shadow: var(--shadow-md),
+    0 8px 20px color-mix(in oklab, var(--priority-medium-bg) 18%, transparent);
 }
 .task-card.modern.priority-low:hover {
-  box-shadow: var(--shadow-md), 0 8px 20px color-mix(in oklab, var(--priority-low-bg) 14%, transparent);
+  box-shadow: var(--shadow-md),
+    0 8px 20px color-mix(in oklab, var(--priority-low-bg) 14%, transparent);
 }
 
 /* Light theme: use foreground tints for a crisper glow */
 html:not([data-theme="dark"]) .task-card.modern.priority-high:hover {
-  box-shadow: var(--shadow-md), 0 8px 20px color-mix(in oklab, var(--priority-high-fg) 20%, transparent);
+  box-shadow: var(--shadow-md),
+    0 8px 20px color-mix(in oklab, var(--priority-high-fg) 20%, transparent);
 }
 html:not([data-theme="dark"]) .task-card.modern.priority-medium:hover {
-  box-shadow: var(--shadow-md), 0 8px 20px color-mix(in oklab, var(--priority-medium-fg) 16%, transparent);
+  box-shadow: var(--shadow-md),
+    0 8px 20px color-mix(in oklab, var(--priority-medium-fg) 16%, transparent);
 }
 html:not([data-theme="dark"]) .task-card.modern.priority-low:hover {
-  box-shadow: var(--shadow-md), 0 8px 20px color-mix(in oklab, var(--priority-low-fg) 12%, transparent);
+  box-shadow: var(--shadow-md),
+    0 8px 20px color-mix(in oklab, var(--priority-low-fg) 12%, transparent);
 }
 
 .assignee-initials {

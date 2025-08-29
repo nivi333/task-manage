@@ -8,15 +8,23 @@ public class UserSummaryDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private String imageUrl; // avatar URL if present
 
-    public UserSummaryDTO() {}
+    public UserSummaryDTO() {
+    }
 
+    // Backward-compatible constructor without imageUrl
     public UserSummaryDTO(UUID id, String username, String firstName, String lastName, String email) {
+        this(id, username, firstName, lastName, email, null);
+    }
+
+    public UserSummaryDTO(UUID id, String username, String firstName, String lastName, String email, String imageUrl) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.imageUrl = imageUrl;
     }
 
     public UUID getId() {
@@ -57,5 +65,13 @@ public class UserSummaryDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

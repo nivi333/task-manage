@@ -203,6 +203,9 @@ export class UserService {
         const primaryRole = Array.isArray(u.roles)
           ? u.roles[0]?.name || u.roles[0] || "USER"
           : u.role || "USER";
+        const normalizedImage = this.normalizeAvatarUrl(
+          u.imageUrl || u.avatarUrl || u.profilePicture
+        );
         return {
           id: u.id,
           username: u.username,
@@ -214,9 +217,9 @@ export class UserService {
           createdAt: u.createdAt,
           updatedAt: u.updatedAt,
           lastLogin: u.lastLogin,
-          profilePicture: this.normalizeAvatarUrl(
-            u.avatarUrl || u.profilePicture
-          ),
+          profilePicture: normalizedImage,
+          avatarUrl: normalizedImage,
+          imageUrl: normalizedImage,
         } as User;
       });
       const result: UserListResponse = {
@@ -320,10 +323,10 @@ export class UserService {
       formData.append("file", file);
       formData.append("avatar", file);
       formData.append("profileImage", file);
-
+      // Use the dedicated avatar endpoint which accepts multipart/form-data
       const data = await this.sendFormData(
         "PUT",
-        `${this.baseURL}/${id}`,
+        `${this.baseURL}/${id}/avatar`,
         formData
       );
       notificationService.success("User updated successfully");
@@ -470,6 +473,9 @@ export class UserService {
         const primaryRole = Array.isArray(u.roles)
           ? u.roles[0]?.name || u.roles[0] || "USER"
           : u.role || "USER";
+        const normalizedImage = this.normalizeAvatarUrl(
+          u.imageUrl || u.avatarUrl || u.profilePicture
+        );
         return {
           id: u.id,
           username: u.username,
@@ -481,9 +487,9 @@ export class UserService {
           createdAt: u.createdAt,
           updatedAt: u.updatedAt,
           lastLogin: u.lastLogin,
-          profilePicture: this.normalizeAvatarUrl(
-            u.avatarUrl || u.profilePicture
-          ),
+          profilePicture: normalizedImage,
+          avatarUrl: normalizedImage,
+          imageUrl: normalizedImage,
         } as User;
       });
       return users;

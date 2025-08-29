@@ -23,7 +23,7 @@ public class SettingsServiceImpl implements SettingsService {
 
     private UserSettingsDTO defaultsFor(User user) {
         UserSettingsDTO dto = new UserSettingsDTO();
-        dto.theme = "system";
+        dto.theme = "light";
         dto.language = "en";
         UserSettingsDTO.ProfileSettings profile = new UserSettingsDTO.ProfileSettings();
         profile.fullName = (user.getFirstName() + " " + user.getLastName()).trim();

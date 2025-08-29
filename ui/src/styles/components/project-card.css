@@ -9,16 +9,31 @@
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  /* let height be content-driven for compact grid */
+  height: auto;
 }
 .project-grid-card:hover {
   border-color: #8a8a8a;
   box-shadow: 0 8px 32px rgba(30, 41, 59, 0.12);
 }
+.project-grid-card .ant-card-head {
+  margin-bottom: 0 !important;
+  padding: 8px 12px;
+  min-height: 40px;
+}
+.project-grid-card .ant-card-head-title,
+.project-grid-card .ant-card-extra {
+  padding: 0;
+}
 .project-grid-card .ant-card-body {
-  padding: 0 !important;
+  /* give space but keep consistent content height */
+  padding: 12px !important;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 10px;
+  /* subtract approx. header height (48px) + borders to keep body within 310px */
+  flex: 1 1 auto;
+  overflow: hidden;
 }
 .project-grid-card .ant-avatar {
   margin-right: 10px;

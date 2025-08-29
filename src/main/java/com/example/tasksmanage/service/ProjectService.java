@@ -35,7 +35,13 @@ public class ProjectService {
         dto.setTeamMemberIds(project.getTeamMembers().stream().map(User::getId).collect(Collectors.toSet()));
         dto.setMembers(
             project.getTeamMembers().stream()
-                .map(u -> new UserSummaryDTO(u.getId(), u.getUsername(), u.getFirstName(), u.getLastName(), u.getEmail()))
+                .map(u -> new UserSummaryDTO(
+                        u.getId(),
+                        u.getUsername(),
+                        u.getFirstName(),
+                        u.getLastName(),
+                        u.getEmail(),
+                        u.getAvatarUrl()))
                 .collect(Collectors.toList())
         );
         dto.setCreatedAt(project.getCreatedAt());
