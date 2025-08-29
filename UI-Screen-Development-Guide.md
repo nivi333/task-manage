@@ -599,41 +599,41 @@ This comprehensive guide provides detailed UI screen creation tasks for the Task
     - [x] Validation errors
     - [x] Unauthorized access
 
-- [ ] **Task 21: Mobile & PWA Support**
+- [x] **Task 21: Mobile & PWA Support**
 
   - **Priority:** MEDIUM | **Estimated:** 3 days
   - **Components:** MobileNav, OfflineBanner, PushNotificationSetup, InstallPrompt
   - **Features:**
-    - [ ] Responsive mobile navigation
-    - [ ] Offline support
-    - [ ] Push notifications
-    - [ ] Install prompt for PWA
+    - [x] Responsive mobile navigation (`ui/src/components/pwa/MobileNav.tsx` wired globally in `ui/src/App.tsx`)
+    - [x] Offline support (service worker registered in `ui/src/index.tsx`, banner in `ui/src/components/pwa/OfflineBanner.tsx`)
+    - [x] Push notifications (VAPID subscribe + token submit via `PushNotificationSetup.tsx`)
+    - [x] Install prompt for PWA (`InstallPrompt.tsx` handles `beforeinstallprompt`)
   - **API Integration:**
-    - [ ] `GET /api/v1/mobile/config`
-    - [ ] `POST /api/v1/mobile/push-token`
+    - [x] `GET /api/v1/mobile/config` via `mobileService.getConfig()`
+    - [x] `POST /api/v1/mobile/push-token` via `mobileService.submitPushToken()`
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid push token
-    - [ ] Valid mobile config
+    - [x] Required fields (backend DTO validation; frontend guards before submit)
+    - [x] Valid push token (subscription keys presence verified; errors surfaced)
+    - [x] Valid mobile config (handles missing/disabled push or VAPID key)
   - **Error Handling:**
-    - [ ] API errors
-    - [ ] Validation errors
-    - [ ] Unauthorized access
+    - [x] API errors (global `notificationService`)
+    - [x] Validation errors (frontend guards + backend constraints)
+    - [x] Unauthorized access (auth axios interceptor)
 
-- [ ] **Task 22: UI/UX Enhancements**
+- [x] **Task 22: UI/UX Enhancements**
 
   - **Priority:** LOW | **Estimated:** 1.5 days
-  - **Components:** AnimationWrapper, Tooltip, AccessibilityPanel
+  - **Components:** AnimationWrapper (`ui/src/components/common/AnimationWrapper.tsx`), Hint Tooltip helper (`ui/src/components/common/Hint.tsx`), AccessibilityPanel (`ui/src/components/accessibility/AccessibilityPanel.tsx`), AccessibilityProvider (`ui/src/context/AccessibilityContext.tsx`)
   - **Features:**
-    - [ ] Smooth transitions/animations
-    - [ ] Tooltips for buttons/fields
-    - [ ] Accessibility improvements
+    - [x] Smooth transitions/animations (page transitions via `AnimationWrapper` in `AppLayout.tsx`, honors reduced motion)
+    - [x] Tooltips for buttons/fields (standardized via `Hint`; applied to header actions)
+    - [x] Accessibility improvements (font scaling, reduce motion, high-contrast toggle via `AccessibilityPanel` + CSS vars)
   - **Validation:**
-    - [ ] Required fields
-    - [ ] Valid accessibility features
+    - [x] Required fields (accessibility preferences validated/ranged; font scale clamped 0.875–1.5)
+    - [x] Valid accessibility features (CSS classes and variables applied globally; persistent via localStorage)
   - **Error Handling:**
-    - [ ] UI bugs
-    - [ ] Accessibility issues
+    - [x] UI bugs (reduced motion and high-contrast fallbacks; safe defaults)
+    - [x] Accessibility issues (focus outline in high-contrast; ARIA labels for panel)
 
 - [ ] **Task 23: Documentation & Help**
 

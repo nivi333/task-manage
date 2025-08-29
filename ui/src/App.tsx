@@ -33,6 +33,10 @@ import {
   initNotificationService,
   notificationService,
 } from "./services/notificationService";
+import OfflineBanner from "./components/pwa/OfflineBanner";
+import InstallPrompt from "./components/pwa/InstallPrompt";
+import PushNotificationSetup from "./components/pwa/PushNotificationSetup";
+import MobileNav from "./components/pwa/MobileNav";
 import "./App.css";
 import "./styles/global.css";
 import "./styles/components/auth.css";
@@ -41,6 +45,8 @@ import "./styles/components/admin.css";
 import "./styles/components/user.css";
 import { colors } from "./styles/colors";
 import { ThemeProvider, useTheme } from "./context/ThemeContext";
+import { AccessibilityProvider } from "./context/AccessibilityContext";
+import AccessibilityPanel from "./components/accessibility/AccessibilityPanel";
 import CreateTaskPage from "./pages/CreateTaskPage";
 
 // Theme configuration builder (light/dark)
@@ -127,6 +133,10 @@ const AppContent: React.FC = () => {
     <ConfigProvider theme={themeCfg as any}>
       <Router>
         <div className="App">
+          <OfflineBanner />
+          <InstallPrompt />
+          <PushNotificationSetup />
+          <AccessibilityPanel />
           <Routes>
             {/* Public Routes */}
             <Route path="/login" element={<LoginPage />} />
@@ -269,6 +279,7 @@ const AppContent: React.FC = () => {
             {/* Catch all route */}
             <Route path="*" element={<Navigate to="/dashboard" replace />} />
           </Routes>
+          <MobileNav />
         </div>
       </Router>
     </ConfigProvider>
@@ -278,9 +289,11 @@ const AppContent: React.FC = () => {
 function App() {
   return (
     <ThemeProvider>
-      <AntdApp>
-        <AppContent />
-      </AntdApp>
+      <AccessibilityProvider>
+        <AntdApp>
+          <AppContent />
+        </AntdApp>
+      </AccessibilityProvider>
     </ThemeProvider>
   );
 }

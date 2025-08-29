@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu, Button, Typography, Space, theme, Tooltip, Avatar } from "antd";
+import { Layout, Menu, Button, Typography, Space, theme, Avatar } from "antd";
 import {
   AppstoreOutlined,
   TeamOutlined,
@@ -19,6 +19,8 @@ import { authAPI } from "../../services/authService";
 import { userService } from "../../services/userService";
 import type { UserProfile } from "../../types/user";
 import logo from "../../logo.svg";
+import AnimationWrapper from "../common/AnimationWrapper";
+import Hint from "../common/Hint";
 
 const { Header, Sider, Content } = Layout;
 const { Title } = Typography;
@@ -205,7 +207,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
               ) : null}
             </div>
             <Space style={{ marginLeft: "auto" }}>
-              <Tooltip title={isDark ? "Switch to light mode" : "Switch to dark mode"}>
+              <Hint title={isDark ? "Switch to light mode" : "Switch to dark mode"}>
                 <Button
                   className="icon-only-button"
                   aria-label="Toggle theme"
@@ -213,63 +215,69 @@ const AppLayout: React.FC<AppLayoutProps> = ({
                 >
                   {isDark ? <SunOutlined /> : <MoonOutlined />}
                 </Button>
-              </Tooltip>
-              <Button
-                icon={<BarChartOutlined />}
-                onClick={() => navigate("/tasks/stats")}
-              >
-                Stats
-              </Button>
-              <Button
-                danger
-                icon={<LogoutOutlined />}
-                onClick={() => {
-                  authAPI.logout();
-                  window.location.href = "/login";
-                }}
-                style={{ border: "1px solid var(--color-error)" }}
-              >
-                Logout
-              </Button>
-              <div
-                onClick={() => navigate("/profile")}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 8,
-                  cursor: "pointer",
-                  padding: "2px 8px",
-                  borderRadius: 16,
-                  /* remove border for profile section */
-                  border: "none",
-                }}
-              >
-                <Avatar
-                  src={profile?.profilePicture}
-                  style={{
-                    backgroundColor: "var(--color-primary)",
-                    color: "var(--color-on-primary)",
-                    fontWeight: 600,
-                  }}
-                  size={28}
+              </Hint>
+              <Hint title="View task statistics">
+                <Button
+                  icon={<BarChartOutlined />}
+                  onClick={() => navigate("/tasks/stats")}
                 >
-                  {!profile?.profilePicture ? getInitials(profile) : null}
-                </Avatar>
+                  Stats
+                </Button>
+              </Hint>
+              <Hint title="Log out of your account">
+                <Button
+                  danger
+                  icon={<LogoutOutlined />}
+                  onClick={() => {
+                    authAPI.logout();
+                    window.location.href = "/login";
+                  }}
+                  style={{ border: "1px solid var(--color-error)" }}
+                >
+                  Logout
+                </Button>
+              </Hint>
+              <Hint title="Go to your profile">
                 <div
+                  onClick={() => navigate("/profile")}
                   style={{
                     display: "flex",
-                    flexDirection: "row",
                     alignItems: "center",
-                    gap: 6,
-                    lineHeight: 1,
-                    whiteSpace: "nowrap",
+                    gap: 8,
+                    cursor: "pointer",
+                    padding: "2px 8px",
+                    borderRadius: 16,
+                    /* remove border for profile section */
+                    border: "none",
                   }}
                 >
-                  <Typography.Text style={{ margin: 0 }}>
-                    {profile?.username || "My Account"}
-                  </Typography.Text>
+                  <Avatar
+                    src={profile?.profilePicture}
+                    style={{
+                      backgroundColor: "var(--color-primary)",
+                      color: "var(--color-on-primary)",
+                      fontWeight: 600,
+                    }}
+                    size={28}
+                  >
+                    {!profile?.profilePicture ? getInitials(profile) : null}
+                  </Avatar>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 6,
+                      lineHeight: 1,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    <Typography.Text style={{ margin: 0 }}>
+                      {profile?.username || "My Account"}
+                    </Typography.Text>
+                  </div>
                 </div>
-              </div>
+              </Hint>
             </Space>
           </div>
         </Header>
@@ -285,7 +293,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({
             paddingBottom: footer ? "96px" : undefined,
           }}
         >
-          {children}
+          <AnimationWrapper motionKey={location.pathname}>{children}</AnimationWrapper>
           {footer && (
             <div
               style={{
