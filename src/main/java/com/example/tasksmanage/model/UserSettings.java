@@ -16,7 +16,7 @@ public class UserSettings {
     private UUID userId;
 
     @Lob
-    @Column(name = "settings_json", columnDefinition = "TEXT", nullable = false)
+    @Column(name = "settings_json", nullable = false)
     private String settingsJson;
 
     public UUID getId() { return id; }

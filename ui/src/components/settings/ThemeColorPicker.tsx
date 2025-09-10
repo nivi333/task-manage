@@ -50,7 +50,6 @@ const ThemeColorPicker: React.FC<Props> = ({ value, onChange }) => {
         value={typeof value !== "undefined" ? value : colorScheme}
         onChange={(e) => {
           const v = e.target.value as ThemeColorScheme;
-          setColorScheme(v);
           onChange?.(v);
         }}
       >

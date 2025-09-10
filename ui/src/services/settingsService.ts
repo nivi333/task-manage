@@ -7,6 +7,7 @@ const LOCAL_KEY = 'tt_user_settings';
 
 const DEFAULTS: UserSettings = {
   theme: 'light',
+  colorScheme: 'purple',
   language: 'en',
   profile: { fullName: '', displayName: '', timezone: Intl.DateTimeFormat().resolvedOptions().timeZone },
   notifications: { emailEnabled: true, webEnabled: true, batchEnabled: false, enabledTypes: ['TASK_ASSIGNED','TASK_UPDATED','COMMENT_ADDED','MENTION','PROJECT_UPDATED'] },

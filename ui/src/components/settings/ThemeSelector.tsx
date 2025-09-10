@@ -24,8 +24,7 @@ const ThemeSelector: React.FC<Props> = ({ value, onChange }) => {
       <Radio.Group
         value={typeof value !== 'undefined' ? value : contextMode}
         onChange={(e) => {
-          const v = e.target.value as ThemeOption;
-          setThemeOption(v);
+          const v = e.target.value;
           onChange?.(v);
         }}
       >

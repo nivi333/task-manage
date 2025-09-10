@@ -1,9 +1,11 @@
- export type ThemeOption = "light" | "dark";
- export type ThemeColorScheme = "purple" | "blue" | "green" | "orange" | "pink";
+export type ThemeOption = "light" | "dark";
+export type ThemeColorScheme = "purple" | "blue" | "green" | "orange" | "pink";
+export type LanguageOption = "en" | "es" | "fr" | "de" | "hi";
 
- export type LanguageOption = "en" | "es" | "fr" | "de" | "hi";
-
-import type { BatchFrequency, NotificationTypeKey } from "./notificationPreferences";
+import type {
+  BatchFrequency,
+  NotificationTypeKey,
+} from "./notificationPreferences";
 
 export interface NotificationPreferences {
   emailEnabled: boolean;
@@ -21,7 +23,7 @@ export interface ProfileSettings {
 
 export interface UserSettings {
   theme: ThemeOption;
-  colorScheme?: ThemeColorScheme;
+  colorScheme: ThemeColorScheme;
   language: LanguageOption;
   profile: ProfileSettings;
   notifications: NotificationPreferences;

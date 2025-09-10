@@ -86,6 +86,11 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ onFormReady }) => {
       } catch (e) {
         // Keep defaults on error
         form.setFieldsValue(DEFAULTS);
+        try {
+          const notificationService =
+            require("../../services/notificationService").default;
+          notificationService.error("Unable to load settings. Using defaults.");
+        } catch {}
       } finally {
         if (mounted) setLoading(false);
       }
@@ -96,8 +101,17 @@ const SettingsForm: React.FC<SettingsFormProps> = ({ onFormReady }) => {
     };
   }, [form]);
 
+  const { setThemeOption, setColorScheme } =
+    require("../../context/ThemeContext").useTheme();
   const onFinish = async (values: UserSettings) => {
-    await settingsService.update(values);
+    // Fallback: ensure colorScheme is always present
+    const finalValues = {
+      ...values,
+      colorScheme: values.colorScheme || form.getFieldValue('colorScheme') || DEFAULTS.colorScheme,
+    };
+    await settingsService.update(finalValues);
+    setThemeOption(finalValues.theme);
+    setColorScheme(finalValues.colorScheme);
   };
 
   return (

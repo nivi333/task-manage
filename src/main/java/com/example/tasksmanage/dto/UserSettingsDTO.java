@@ -18,6 +18,7 @@ public class UserSettingsDTO {
     }
 
     public String theme; // light | dark
+    public String colorScheme; // purple | blue | green | orange | pink
     public String language; // en | es | fr | de | hi
     public ProfileSettings profile;
     public NotificationPreferences notifications;
